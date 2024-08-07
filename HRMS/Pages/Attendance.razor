@@ -1,0 +1,234 @@
+﻿@page "/attentancepage"
+@using HRMS.Components
+@inherits BaseComponents
+
+<MudContainer Class="my-5">
+    <MudGrid>
+        <MudItem lg="6" md="6" sm="6" xs="6">
+            <MudText Typo="Typo.h4" Class="Title">Attendance</MudText>
+        </MudItem>
+
+        <MudItem lg="6" md="6" sm="6" xs="6">
+            <MudButton Class="mx-3 buttonstyle" Style="float:right; height:35px;" @onclick="GoBack" Variant="@MudBlazor.Variant.Filled"><i class="fa-solid fa-angle-left" /></MudButton>
+        </MudItem>
+    </MudGrid>
+
+    <MudTabs Elevation="0" Rounded="true" ApplyEffectsToContainer="true">
+        @if (User.RoleId == 1 || User.RoleId == 2)
+        {
+            <MudTabPanel Text="DAILY ENTRY">
+
+                <MudDataGrid T="HRMS.Model.AttendanceModel" Bordered=true Striped=true Hover=true Items="@DateFilter1" Filterable="false" QuickFilter="@_quickFilter"
+                             Hideable="false">
+                    <ToolBarContent>
+                        <MudGrid>
+                            <MudItem lg="3" md="3" sm="3" xs="12">
+                                @foreach (var x in Present)
+                                {
+                                    <MudText Typo="Typo.h5" Style="padding-top: 7px;">Today Present: @x.TotalPresent</MudText>
+                                }
+                            </MudItem>
+                            <MudItem lg="1" md="1" sm="1" xs="6">
+                                <MudText Typo="Typo.h5" Style="float:right; padding-top:7px;">Date:</MudText>
+                            </MudItem>
+                            <MudItem lg="4" md="4" sm="4" xs="6">
+                                <MudStack>
+                                    <MudDateRangePicker @bind-DateRange="@_dateRange" Variant="Variant.Outlined" Margin="Margin.Dense" Editable="true" Clearable="true" PlaceholderStart="Start Date" PlaceholderEnd="End Date" DateFormat="dd-MM-yyyy" />
+                                </MudStack>
+                            </MudItem>
+                            <MudItem lg="1" md="1" sm="1" xs="2">
+                                <MudTooltip>
+                                    <ChildContent>
+                                        <MudIconButton Icon="@Icons.Material.Outlined.Info" />
+                                    </ChildContent>
+                                    <TooltipContent>
+                                        <MudText Typo="Typo.body2">Search by Employee ID, Name</MudText>
+                                    </TooltipContent>
+                                </MudTooltip>
+                            </MudItem>
+                            <MudItem lg="3" md="3" sm="3" xs="10" Class="d-flex">
+                                <MudTextField Variant="Variant.Outlined" Margin="Margin.Dense" Style="width:100%;" @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true" AdornmentColor="@MudBlazor.Color.Primary" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="@MudBlazor.Size.Medium" Class="mt-0"></MudTextField>
+                            </MudItem>
+                        </MudGrid>
+                    </ToolBarContent>
+                    <Columns>
+                        @foreach (var (Att, index) in DateFilter1.Select((value, i) => (value, i)))
+                        {
+                            Att.Sno = index + 1;
+                        }
+                        <PropertyColumn Property="x => x.Sno" Title="S.No" Sortable="false" Filterable="false" />
+                        <PropertyColumn Property="x => x.EmployeeCode" Title="Employee Code" />
+                        <PropertyColumn Property="x => x.EmployeeName" Title="Employee Name" />
+                        <PropertyColumn Property="x => x.date" Title="Date" Format="dd-MM-yyyy" />
+                        <PropertyColumn Property="x => x.PunchIn" Title="Punch In" />
+                        <PropertyColumn Property="x => x.PunchOut" Title="Punch Out" />
+                        <PropertyColumn Property="x => x.WorkingHours" Title="Working Hours" />
+                        <TemplateColumn Title="Action">
+                            <CellTemplate>
+                                <MudStack Row>
+                                    <MudButton Variant="Variant.Filled" Class="buttonstyle" OnClick="@(() => update(context.Item.Id))">Update</MudButton>
+                                </MudStack>
+                            </CellTemplate>
+                        </TemplateColumn>
+                    </Columns>
+                    <PagerContent>
+                        <MudGrid>
+                            <MudItem lg="12">
+                                @if (!DateFilter1.Any() || !_quickFilter(AttendanceEvent.FirstOrDefault()))
+                                {
+                                    <MudItem Class="text-center"><b>No Date Found</b></MudItem>
+                                }
+                                <MudDataGridPager T="HRMS.Model.AttendanceModel" />
+                            </MudItem>
+                        </MudGrid>
+                    </PagerContent>
+                </MudDataGrid>
+            </MudTabPanel>
+        }
+
+        @if (User.RoleId == 3 || User.RoleId == 4 || User.RoleId == 5)
+        {
+            <MudTabPanel Text="EMPLOYEE ATTENTANCE" Style="margin-left:15px;">
+
+                <MudGrid Class="my-1">
+                    @foreach (var x in Profile)
+                    {
+                        <MudItem lg="1" md="2" sm="2" xs="4">
+                            <MudAvatar Style="width:55px; height:55px;"></MudAvatar>
+                        </MudItem>
+                        <MudItem lg="3" md="3" sm="4" xs="8" Class="align-content-center" Style="display: inline-table; margin-left: -35px;">
+                            <MudText Class="EmployeeName">@x.EmployeeName</MudText>
+                            <MudDivider Style="border-color: black !important;" />
+                            <MudText Class="EmpId">@x.EmployeeCode</MudText>
+                        </MudItem>
+                    }
+                    <MudSpacer />
+
+                    <MudItem lg="4" md="3" sm="4" xs="12">
+                        <MudStack>
+                            <MudDateRangePicker @bind-DateRange="@_dateRange" Variant="Variant.Outlined" Margin="Margin.Dense" Editable="true" Clearable="true" PlaceholderStart="Start Date" PlaceholderEnd="End Date" DateFormat="dd-MM-yyyy" Style="margin-right:20px;" />
+                        </MudStack>
+                    </MudItem>
+                </MudGrid>
+                <MudDataGrid T="HRMS.Model.AttendanceModel" Bordered=true Striped=true Hover=true Items="@DateFilter2" Filterable="false" QuickFilter="@_quickFilter" Hideable="false">
+
+                    <Columns>
+                        @foreach (var (Emp, index) in FilteredAttendance.Select((value, i) => (value, i)))
+                        {
+                            Emp.Sno = index + 1;
+                        }
+                        <PropertyColumn Property="x => x.Sno" Title="S.No" Sortable="false" Filterable="false" />
+                        <PropertyColumn Property="x => x.date" Title="Date" Format="dd-MM-yyyy" />
+                        <PropertyColumn Property="x => x.PunchIn" Title="Punch In" />
+                        <PropertyColumn Property="x => x.PunchOut" Title="Punch Out" />
+                        <PropertyColumn Property="x => x.WorkingHours" Title="Working Hours" />
+                    </Columns>
+                    <PagerContent>
+                        @if (!DateFilter2.Any())
+                        {
+                            <MudItem Class="text-center"><b>No Date Found</b></MudItem>
+                        }
+                        <MudDataGridPager T="HRMS.Model.AttendanceModel" />
+                    </PagerContent>
+                </MudDataGrid>
+            </MudTabPanel>
+        }
+    </MudTabs>
+</MudContainer>
+
+@* MUD DIALOG *@
+
+<MudDialog Style="height:auto; width:100%;" @bind-IsVisible="visible">
+    <DialogContent>
+        <MudGrid Style="margin-top: -25px; margin-bottom: 15px;">
+            <MudItem lg="9" md="9" sm="9" xs="9">
+                <MudText Typo="Typo.h4" Class="Heading">Update Attendance</MudText>
+            </MudItem>
+            <MudItem lg="3" md="3" sm="3" xs="3">
+                <MudIconButton Icon="@Icons.Material.Filled.Close" Style="color:red; float:right;" OnClick="Cancel" />
+            </MudItem>
+        </MudGrid>
+        <MudGrid>
+            <MudItem lg="6" md="6" sm="6" xs="12">
+                <MudItem lg="12" md="12" sm="12" xs="12"><MudText>Employee ID</MudText></MudItem>
+                <MudItem lg="12" md="12" sm="12" xs="12"><MudTextField @bind-Value="@AttendanceModelObj.EmployeeCode" Margin="Margin.Dense" Variant="Variant.Outlined" Placeholder="Employee ID" ReadOnly Required /></MudItem>
+            </MudItem>
+
+            <MudItem lg="6" md="6" sm="6" xs="12">
+                <MudItem lg="12" md="12" sm="12" xs="12"><MudText>Employee Name</MudText></MudItem>
+                <MudItem lg="12" md="12" sm="12" xs="12"><MudTextField @bind-Value="@AttendanceModelObj.EmployeeName" Margin="Margin.Dense" Variant="Variant.Outlined" Placeholder="Employee Name" ReadOnly Required /></MudItem>
+            </MudItem>
+
+            <MudItem lg="6" md="6" sm="6" xs="12">
+                <MudItem lg="12" md="12" sm="12" xs="12"><MudText>Date</MudText></MudItem>
+                <MudItem lg="12" md="12" sm="12" xs="12"><MudDatePicker @bind-Date="AttendanceModelObj.date" Margin="Margin.Dense" PickerVariant="PickerVariant.Dialog" Color="@MudBlazor.Color.Primary" Variant="Variant.Outlined" Placeholder="Select Date" Mask="@(new DateMask("00-00-0000"))" DateFormat="dd-MM-yyyy" Required /></MudItem>
+            </MudItem>
+
+            <MudItem lg="6" md="6" sm="6" xs="12">
+                <MudItem lg="12" md="12" sm="12" xs="12"><MudText>Punch In</MudText></MudItem>
+                <MudItem lg="12" md="12" sm="12" xs="12"><MudTextField @bind-Value="AttendanceModelObj.PunchIn" Margin="Margin.Dense" Variant="Variant.Outlined" Required /></MudItem>
+            </MudItem>
+
+            <MudItem lg="6" md="6" sm="6" xs="12">
+                <MudItem lg="12" md="12" sm="12" xs="12"><MudText>Punch Out</MudText></MudItem>
+                <MudItem lg="12" md="12" sm="12" xs="12"><MudTextField @bind-Value="AttendanceModelObj.PunchOut" Margin="Margin.Dense" Variant="Variant.Outlined" Required /></MudItem>
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudItem Class="mx-5 mb-3">
+            <MudButton Class="buttonstyle" OnClick="@(() => Submit(AttendanceModelObj.Id))">Submit</MudButton>
+        </MudItem>
+    </DialogActions>
+</MudDialog>
+<style>
+    .btn1 {
+        margin-top: 6px;
+        height: 52px;
+    }
+
+    .Title {
+        margin-bottom: 15px;
+        margin-left: 11px;
+    }
+
+    .TwoFields {
+        color: black;
+        font-family: sans-serif;
+    }
+
+        .TwoFields:hover {
+            background-color: white;
+            color: #9358ad;
+        }
+
+    .EmployeeName {
+        font-size: large;
+        font-weight: 600;
+        text-transform: uppercase;
+        float: left;
+    }
+
+    .EmpId {
+        font-size: 15px;
+        font-weight: 600;
+        float: left;
+    }
+
+    .mud-icon-root {
+        text-align: center;
+    }
+
+    .mud-table-root .mud-table-head {
+        background-color: darkgray;
+    }
+
+    .mud-picker .mud-shrink .mud-range-input-separator {
+        color: #9358ad;
+    }
+
+    .mud-tooltip-root.mud-tooltip-inline {
+        float: inline-end;
+        margin-right: -15px;
+    }
+</style>

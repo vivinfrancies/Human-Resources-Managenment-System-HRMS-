@@ -1,0 +1,95 @@
+﻿@page "/hrpayroll"
+@using System.Net.Http.Json
+@using System.Net.Http
+@inherits BaseComponents
+@using HRMS.Model
+@using HRMS.Components;
+
+<MudContainer>
+    <MudText Typo="Typo.h4" Class="mt-15 d-flex">
+        Payroll Generation
+        <MudSpacer />
+        <MudButton Variant="Variant.Outlined" Class="buttonstyle mr-2" @onclick="GoBack"><i class="fa-solid fa-chevron-left"></i></MudButton>
+    </MudText>
+</MudContainer>
+
+<MudContainer>
+    <MudDataGrid Class="mt-5" Dense=true T="HRMS.Model.AllEmployeeDetails" Items="@allemployeedetails" Hover="true" Filterable="false" QuickFilter="@_quickFilter" Bordered=true Striped=true
+                 Hideable="false">
+
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Employee List</MudText>
+            <MudSpacer></MudSpacer>
+            <MudItem Class="d-flex">
+                <MudTooltip Text="Search Any Data from the Table">
+                    <MudIcon Icon="@Icons.Material.Outlined.Info" Size="@MudBlazor.Size.Medium" Class="mt-3 mr-1" />
+                </MudTooltip>
+                <MudTextField Style="width:100%" Margin="Margin.Dense" Variant="Variant.Outlined" @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                              AdornmentIcon="@Icons.Material.Filled.Search" IconSize="@MudBlazor.Size.Medium" AdornmentColor="@MudBlazor.Color.Primary" />
+            </MudItem>
+        </ToolBarContent>
+        <Columns>
+            <PropertyColumn Property="x =>x.ID" Title="EMPID" Sortable="false" Filterable="false"></PropertyColumn>
+            <PropertyColumn Property="x => x.EmployeeCode" Title="EmployeeCode" Sortable="false" Filterable="false"></PropertyColumn>
+            <PropertyColumn Property="x => x.EmployeeName" Title="EmployeeName" Sortable="false" Filterable="false" />
+            <PropertyColumn Property="x => x.Email" Title="Email" Sortable="false" Filterable="false" />
+            <PropertyColumn Property="x => x.Designation" Title="Designation" Sortable="false" Filterable="false" />
+            <PropertyColumn Property="x => x.DateOfJoining" Title="Date of Joining" Sortable="false" Filterable="false" Format="dd-MM-yyyy" />
+            <PropertyColumn Property="x => x.Salary" Title="Salary" Sortable="false" Filterable="false" />
+
+            <TemplateColumn Title="Action">
+                <CellTemplate>
+                    <MudStack Row>
+                        <MudButton Class="buttonstyle" OnClick="()=>generateslip(context.Item.EmployeeCode)">Generate</MudButton>
+                    </MudStack>
+                </CellTemplate>
+            </TemplateColumn>
+
+        </Columns>
+        <PagerContent>
+            @if (!_quickFilter(allemployeedetails.FirstOrDefault()))
+            {
+                <MudItem Class="text-center">@_noResultsMessage</MudItem>
+            }
+            <MudDataGridPager T="HRMS.Model.AllEmployeeDetails"></MudDataGridPager>
+        </PagerContent>
+    </MudDataGrid>
+</MudContainer>
+
+@code
+{
+
+}
+
+<style>
+    .searchicon {
+        float: right;
+    }
+
+    .mud-table-cell {
+        padding: 14px;
+    }
+
+    .mud-table-head {
+        padding: 12px;
+    }
+
+    .mud-table-root .mud-table-head {
+        background-color: darkgray;
+    }
+
+
+    .Save {
+        width: 50%;
+    }
+
+    .editempdet {
+        font-weight: 500;
+        font-size: 15px;
+    }
+
+    .buttonsstyle {
+        float: right;
+    }
+
+</style>

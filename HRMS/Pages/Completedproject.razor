@@ -1,0 +1,75 @@
+﻿@page "/Completedproject"
+@using HRMS.Components
+@inherits BaseComponents;
+
+<MudContainer Class="mb-3">
+    <MudItem Class="mt-15 d-flex">
+        <MudText Typo="Typo.h4">
+            Completed Project
+        </MudText>
+        <MudSpacer />
+        <MudButton Variant="Variant.Outlined" Class="buttonstyle mr-2" @onclick="GoBack"><i class="fa-solid fa-chevron-left"></i></MudButton>
+    </MudItem>
+</MudContainer>
+
+@*completed  table *@
+<MudContainer>
+    <MudDataGrid Bordered=true T="HRMS.Model.Project" Hover="true" Striped="true" Items="@ProjectEvents.Where(x => x.Status == false)" SortMode="SortMode.Multiple" Filterable="false" Hideable="true" QuickFilter="@_quickFilter">
+        <ToolBarContent>
+            <MudItem Class="position-absolute top-0 end-0 d-flex">
+                <MudTooltip Text="Search Any Data from the Table">
+                    <MudIcon Icon="@Icons.Material.Outlined.Info" Size="@MudBlazor.Size.Medium" Class="mt-3 mr-1 float-end" />
+                </MudTooltip>
+                <MudTextField Class="float-end" Margin="Margin.Dense" Variant="Variant.Outlined" @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                              AdornmentIcon="@Icons.Material.Filled.Search" IconSize="@MudBlazor.Size.Medium" AdornmentColor="@MudBlazor.Color.Primary" />
+            </MudItem>
+        </ToolBarContent>
+        <Columns>
+            @foreach (var (project, index) in ProjectEvents.Where(x => x.Status == false).Select((value, i) => (value, i)))
+            {
+                project.Sno = index + 1;
+            }
+            <PropertyColumn Style="text-align:center" Title="Sno" Property="x=>x.Sno" Filterable="false" Sortable="false" />
+            <PropertyColumn Style="text-align:center" Title="Project Name" Property="x=>x.ProjectName" />
+            <PropertyColumn Style="text-align:center" Title="ProjectCreated Date" Property="x=>x.CreatedDate" Format="dd-MM-yyyy" />
+            <PropertyColumn Style="text-align:center" Title="Due Date" Property="x=>x.DueDate" Format="dd-MM-yyyy" />
+            <PropertyColumn Style="text-align:center" Title="Client" Property="x=>x.ClientName" />
+            @* option *@
+            <TemplateColumn Title="More Option" Filterable="false" Sortable="false">
+                <CellTemplate>
+                    <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                        <MudMenuItem @onclick="()=>OpenDialog(context.Item.Id)">Team Members</MudMenuItem>
+                    </MudMenu>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+        <PagerContent>
+            @if (!_quickFilter(ProjectEvents.FirstOrDefault()))
+            {
+                <MudItem Class="text-center my-8">@_noResultsMessage</MudItem>
+            }
+            <MudDataGridPager T="HRMS.Model.Project" />
+        </PagerContent>
+
+    </MudDataGrid>
+</MudContainer>
+
+<style>
+
+    .table {
+        margin-top: 50px;
+    }
+
+    .topsearch {
+        margin-top: 50px;
+    }
+
+    .mud-table-head {
+        padding: 12px;
+    }
+
+    .mud-table-root .mud-table-head {
+        background-color: darkgray;
+    }
+
+</style>

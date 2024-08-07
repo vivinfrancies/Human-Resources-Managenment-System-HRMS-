@@ -1,0 +1,164 @@
+﻿@using HRMS.Components
+@inherits BaseComponents;
+
+<MudDialog Class="height1">
+    <DialogContent>
+        <MudContainer>
+            <MudItem Class="d-flex">
+                <MudIconButton Icon="@Icons.Material.Filled.Close" Color="@MudBlazor.Color.Error" Class="close" OnClick="Cancel" />
+            </MudItem>
+        </MudContainer>
+        <MudContainer Class="mt-5">
+            <MudForm @ref="form" @bind-IsValid="@success">
+                <MudGrid>
+                    @* project name *@
+                    <MudItem lg="6" md="6" sm="6" xs="12">
+                        <MudGrid>
+                            <MudItem Class="star" lg="12" md="12" sm="12" xs="12">
+                                Project Name<span>*</span>
+                            </MudItem>
+                            <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                                <MudTextField T="String" @bind-Value="Projectvalue.ProjectName" For="@(() =>Projectvalue.ProjectName)" Required="true" Placeholder="Enter Project Name" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+
+                    @* client name *@
+                    <MudItem lg="6" md="6" sm="6" xs="12">
+                        <MudGrid>
+                            <MudItem Class="star" lg="12" md="12" sm="12" xs="12">
+                                Client Name<span>*</span>
+                            </MudItem>
+                            <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                                <MudTextField T="String" @bind-Value="Projectvalue.ClientName" Required="true" Placeholder="Enter Client Name" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+
+                    @* End date *@
+                    <MudItem lg="6" md="6" sm="6" xs="12">
+                        <MudGrid>
+                            <MudItem Class="star" lg="12" md="12" sm="12" xs="12">
+                                End Date<span>*</span>
+                            </MudItem>
+                            <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                                <MudDatePicker Margin="Margin.Dense" Color="@MudBlazor.Color.Primary" Required="true" Variant="Variant.Outlined" Mask="@(new DateMask("dd-MM-yyyy"))" @bind-Date="Projectvalue.DueDate" DateFormat="dd-MM-yyyy" Placeholder="Select Start Date" />
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+
+                    @* Add team members *@
+                    <MudItem lg="6" md="6" sm="6" xs="12">
+                        <MudGrid>
+                            <MudItem Class="star" lg="12" md="12" sm="12" xs="12">
+                                Enter Team Members<span>*</span>
+                            </MudItem>
+                            <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                                <MudSelect T="string" Placeholder="Select Team Members" AnchorOrigin="Origin.BottomCenter" Required="true" Clearable="true" MultiSelection="true" @bind-SelectedValues="selectedTeamMembers" Variant="Variant.Outlined" Margin="Margin.Dense">
+                                    @foreach (var Emp in EmployeeListEvents)
+                                    {
+                                        var fullname = $"{Emp.Firstname1} {Emp.Middlename1} {Emp.Lastname1}";
+                                        <MudSelectItem T="string" Value="fullname">@fullname</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+
+                    @* selected project Members *@
+                    <MudItem lg="6" md="6" sm="6" xs="12">
+                        <MudGrid>
+                            <MudItem Class="star" lg="12" md="12" sm="12" xs="12">
+                                Team Members:
+                                <MudText>
+                                    @foreach (var x in selectedTeamMembers)
+                                    {
+                                        <MudText>@x</MudText>
+                                    }
+                                </MudText>
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+
+                    @* project Description *@
+                    <MudItem lg="12" md="12" sm="12" xs="12">
+                        <MudGrid>
+                            <MudItem Class="star" lg="12" md="12" sm="12" xs="12">
+                                Enter Project Description<span>*</span>
+                            </MudItem>
+                            <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                                <MudTextField T="String" @bind-Value="Projectvalue.Description" For="@(() =>Projectvalue.Description)" Lines="3" Placeholder="Description should be maximum of 120 character" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+
+                    <MudItem lg="12" md="12" sm="12" xs="12" Class="position-relative my-5">
+                        <MudButton OnClick="ToggleTaskVisibility" Class="position-absolute top-50 start-50 translate-middle buttonstyle">@Btnname</MudButton>
+                    </MudItem>
+
+                    @* project Task *@
+                    <MudItem hidden="@isTaskHidden" lg="12" md="12" sm="12" xs="12">
+                        <MudGrid>
+                            <MudItem lg="12" md="12" sm="12" xs="12">
+                                <MudText>Task Name:</MudText>
+                                <MudTextField T="string" Placeholder="Enter Task Name" @bind-Value="Projectvalue.TaskName" Required="true" Variant="Variant.Outlined" Clearable="true" Margin="Margin.Dense" />
+                            </MudItem>
+                            <MudItem lg="12" md="12" sm="12" xs="12">
+                                <MudText>Due Date:</MudText>
+                                <MudDatePicker Margin="Margin.Dense" PickerVariant="PickerVariant.Inline" Color="@MudBlazor.Color.Primary" Variant="Variant.Outlined" Required="true" Mask="@(new DateMask("dd-MM-yyyy"))" @bind-Date="Projectvalue.TaskDueDate" DateFormat="dd/MM/yyyy" Placeholder="Select Start Date" />
+                            </MudItem>
+                            <MudItem lg="12" md="12" sm="12" xs="12">
+                                <MudText>Select Members:</MudText>
+                                <MudAutocomplete Margin="Margin.Dense" T="string" Placeholder="Select Member" Clearable="true" Required="true" @bind-Value="Projectvalue.TeamMembers" SearchFunc="@Search1" Variant="Variant.Outlined" ProgressIndicatorColor="@MudBlazor.Color.Primary" />
+                            </MudItem>
+                            <MudItem lg="12" md="12" sm="12" xs="12">
+                                <MudText>Module :</MudText>
+                                <MudTextField T="string" Placeholder="Enter Module Name" @bind-Value="Projectvalue.Module" Required="true" Variant="Variant.Outlined" Clearable="true" Margin="Margin.Dense" />
+                            </MudItem>
+                            <MudItem lg="12" md="12" sm="12" xs="12">
+                                <MudButton Class="my-5 buttonstyle btn1" Disabled="@(!success)" OnClick="Submit" Style="float:right">
+                                    Submit
+                                </MudButton>
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+                </MudGrid>
+            </MudForm>
+        </MudContainer>
+    </DialogContent>
+</MudDialog>
+
+<style>
+    .star span {
+        padding: 3px;
+        color: red;
+    }
+
+    .field {
+        margin-top: -25px;
+    }
+
+    .btn1 {
+        margin-top: 10px;
+        width: 90px;
+    }
+
+    .height1 {
+        max-height: 85%;
+    }
+
+    .upload {
+        text-wrap: nowrap;
+    }
+
+    .close {
+        margin-top: -65px;
+        position: absolute;
+        z-index: 1;
+        margin-left: 80%;
+    }
+
+    .mud-icon-default {
+        color: #6f6f6f !important;
+    }
+</style>

@@ -1,0 +1,89 @@
+﻿@page "/Voluntaryresignationform"
+@using HRMS.Components
+@inherits BaseComponents;
+
+<div class="container">
+	<MudGrid Class="d-flex" Style="margin: unset; flex-wrap:wrap-reverse">
+		<MudItem>
+			<MudText><h1 class="Pagetitle">	Voluntary Resignation </h1></MudText>
+		</MudItem>
+
+		<MudSpacer />
+
+		<MudItem Class="m-2" Style="align-content:center;  flex-wrap: wrap;">
+			<MudButton Variant="Variant.Filled" Class="buttonstyle m-1" @onclick="GoBack">
+				<i class="fa-solid fa-angle-left"></i>
+			</MudButton>
+
+			<MudButton Variant="Variant.Filled" Class="buttonstyle m-1" Disabled="@(!success)">Apply</MudButton>
+		</MudItem>
+
+	</MudGrid>
+
+
+	<MudPaper>
+		<MudForm @ref="form" @bind-IsValid="@success">
+			<MudContainer>
+				<MudGrid>
+					@foreach (var x in Resignationform)
+					{
+						<MudItem lg="6" md="6" sm="6" xs="12">
+							<MudText Typo="Typo.subtitle1">Employee Id<span class="requriedcolor">*</span></MudText>
+							<MudTextField Variant="Variant.Outlined" @bind-Value="@_user.UserName" Placeholder="Employee Id" Margin="Margin.Dense" Required="true"></MudTextField>
+						</MudItem>
+						<MudItem lg="6" md="6" sm="6" xs="12">
+							<MudText Typo="Typo.subtitle1">Employee Name<span class="requriedcolor">*</span></MudText>
+							<MudTextField Variant="Variant.Outlined" @bind-Value="@_user.Firstname" Placeholder="Employee Name" Margin="Margin.Dense" Required="true"></MudTextField>
+						</MudItem>
+						<MudItem lg="6" md="6" sm="6" xs="12">
+							<MudText Typo="Typo.subtitle1">Employee Department<span class="requriedcolor">*</span></MudText>
+							<MudTextField Variant="Variant.Outlined" @bind-Value="@x.Designation1" Placeholder="Department Name" Margin="Margin.Dense" Required="true"></MudTextField>
+						</MudItem>
+						<MudItem lg="6" md="6" sm="6" xs="12">
+							<MudText Typo="Typo.subtitle1">Employee Role</MudText>
+							<MudTextField Variant="Variant.Outlined" @bind-Value="@_user.Role" Required="true" Margin="Margin.Dense" Placeholder="Role"></MudTextField>
+						</MudItem>
+						<MudItem lg="6" md="6" sm="6" xs="12">
+							<MudText Typo="Typo.subtitle1">Date Of joining</MudText>
+							<MudDatePicker PickerVariant="PickerVariant.Dialog" Variant="Variant.Outlined" Placeholder="Date of Birth" Margin="Margin.Dense" DateFormat="yyyy-MM-dd" @bind-Date="@x.Dateofjoining" ReadOnly="true" />
+						</MudItem>
+						<MudItem lg="6" md="6" sm="6" xs="12">
+							<MudText Typo="Typo.subtitle1">Last Date of work<span class="requriedcolor">*</span></MudText>
+							<MudDatePicker PickerVariant="PickerVariant.Dialog" Placeholder="Last Day of working" Variant="Variant.Outlined" Mask="@(new DateMask("0000-00-00"))" @bind-Date="@resigndatafill.LastDateOfWorking" DateFormat="yyyy-MM-dd" MinDate="DateTime.Today" Margin="Margin.Dense" Required="true" />
+						</MudItem>
+						
+						<MudItem lg="12" md="12" sm="12" xs="12">
+							<MudText Typo="Typo.subtitle1">Why are you filling for a resignation ?<span class="requriedcolor">*</span></MudText>
+							<MudSelect T="string" Placeholder="Reason" MultiSelection="true" @bind-Value="@resigndatafill.ReasonForResign" Variant="Variant.Outlined" Required="true">
+								@foreach (var values in resignReason)
+								{
+									<MudSelectItem T="string" Value="@values.problem">@values.problem</MudSelectItem>
+								}
+							</MudSelect>
+						</MudItem>
+						<MudItem lg="12" md="12" sm="12" xs="12">
+							<MudText Typo="Typo.subtitle1">Addition Reason(If no Reason Enter 'NA')<span class="requriedcolor">*</span></MudText>
+							<MudTextField @bind-Value="@resigndatafill.AdditionalReasonForResign" Placeholder="Addition Reason for Resign" Lines="3" Variant="Variant.Outlined" Margin="Margin.Dense" Required="true"></MudTextField>
+						</MudItem>
+						<MudItem lg="12" md="12" sm="12" xs="12">
+							<MudCheckBox @bind-Checked="@ok1" Required="true">
+								<MudText>Please Accept the Terms and Condition</MudText>
+							</MudCheckBox>
+						</MudItem>
+						<MudItem lg="12" md="12" sm="12" xs="12" Class="d-flex justify-content-center align-content-center">
+							<MudButton Variant="Variant.Outlined" Class="d-flex justify-content-center align-content-center" Color="@MudBlazor.Color.Primary" Disabled="@(!success)" OnClick="Save">Apply</MudButton>
+						</MudItem>
+					}
+				</MudGrid>
+			</MudContainer>
+
+		</MudForm>
+	</MudPaper>
+
+</div>
+<style>
+	.requriedcolor {
+		color: red;
+		margin-left: 5px;
+	}
+</style>

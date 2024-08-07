@@ -1,0 +1,121 @@
+﻿@page "/editsalary"
+@page "/editsalary/{Code}"
+@using System.Net.Http.Json
+@using System.Net.Http
+@inherits BaseComponents
+@using HRMS.Model
+@using HRMS.Components;
+
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-5 mb-9">
+    <MudGrid Class="mt-4">
+        <MudItem lg="11" md="11" sm="11" xs="11">
+            <MudText><h4>Edit Salary</h4></MudText>
+        </MudItem>
+        <MudItem lg="1" md="1" sm="1" xs="1">
+            <MudButton Variant="Variant.Outlined" Class="buttonstyle mr-2" @onclick="GoBack">
+                <i class="fa-solid fa-chevron-left"></i>
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+    <MudPaper Class="SalaryPaper mt-3">
+        <MudContainer>
+            <MudGrid>
+                @foreach (var x in finalsal)
+                {
+                    <MudItem lg="6" xs="12" sm="6" md="6">
+                        <MudText Class="editempdet">Employee Code<span style="padding:5px;color:red;">*</span></MudText>
+                        <MudAutocomplete Margin="Margin.Dense" Variant=Variant.Outlined T="String" @bind-Value="Code"
+                                         ResetValueOnEmptyText="@resetValueOnEmptyText"
+                                         CoerceText="@coerceText" CoerceValue="@coerceValue" />
+                    </MudItem>
+                    <MudItem lg="6" md="6" sm="6" xs="12">
+                        <MudText Class="editempdet">Select Month<span style="padding:5px;color:red;">*</span></MudText>
+                        <MudDatePicker @bind-Date="date" DateFormat="dd-MM-yyyy" Variant="Variant.Filled" Margin="Margin.Dense" />
+                    </MudItem>
+                    <MudItem lg="6" md="6" sm="6" xs="12">
+                        <MudText Typo=Typo.h6>Earnings</MudText>
+                    </MudItem>
+                    <MudItem lg="6" md="6" sm="6" xs="12">
+                        <MudText Typo=Typo.h6>Deductions</MudText>
+                    </MudItem>
+                    <MudItem lg="6" md="6" sm="6" xs="12">
+                        <MudText Class="editempdet">Basic<span style="padding:5px;color:red;">*</span></MudText>
+                        <MudTextField Margin="Margin.Dense" @bind-Value="x.BasicSalary" Placeholder="BasicSalary" Variant="Variant.Outlined" ReadOnly></MudTextField>
+                    </MudItem>
+                    <MudItem lg="6" md="6" sm="6" xs="12">
+                        <MudText Class="editempdet">ESI<span style="padding:5px;color:red;">*</span></MudText>
+                        <MudTextField Margin="Margin.Dense" @bind-Value="saldetails.ESI" Placeholder="ESI" Variant="Variant.Outlined" Required></MudTextField>
+                    </MudItem>
+                    <MudItem lg="6" md="6" sm="6" xs="12">
+                        <MudText Class="editempdet">House Rent<span style="padding:5px;color:red;">*</span></MudText>
+                        <MudTextField Margin="Margin.Dense" @bind-Value="saldetails.HouseRent" Placeholder="HouseRent" Variant="Variant.Outlined" Required></MudTextField>
+                    </MudItem>
+                    <MudItem lg="6" md="6" sm="6" xs="12">
+                        <MudText Class="editempdet">Tax<span style="padding:5px;color:red;">*</span></MudText>
+                        <MudTextField Margin="Margin.Dense" Placeholder="Tax Percentage" Variant="Variant.Outlined" @bind-Value="taxPercentage" Required></MudTextField>
+                        <MudText>RS.@saldetails.Tax /-</MudText>
+                    </MudItem>
+                    <MudItem lg="6" md="6" sm="6" xs="12">
+                        <MudText Class="editempdet">Conveyance<span style="padding:5px;color:red;">*</span></MudText>
+                        <MudTextField Margin="Margin.Dense" @bind-Value="saldetails.Conveyance" Placeholder="Conveyance" Variant="Variant.Outlined" Required></MudTextField>
+                    </MudItem>
+                    <MudItem lg="6" md="6" sm="6" xs="12">
+                        <MudText Class="editempdet">PF<span style="padding:5px;color:red;">*</span></MudText>
+                        <MudTextField Margin="Margin.Dense" Placeholder="PF Percentage" Variant="Variant.Outlined" @bind-Value="pfPercentage" Required></MudTextField>
+                        <MudText>RS.@saldetails.PF /-</MudText>
+                    </MudItem>
+                    <MudItem lg="6" md="6" sm="6" xs="12">
+                        <MudText Class="editempdet">Other Allowance<span style="padding:5px;color:red;">*</span></MudText>
+                        <MudTextField Margin="Margin.Dense" @bind-Value="saldetails.OtherAllowance" Placeholder="Other Allowance" Variant="Variant.Outlined" Required></MudTextField>
+                    </MudItem>
+                    <MudItem lg="6" md="6" sm="6" xs="12">
+                        <MudText Class="editempdet">Others<span style="padding:5px;color:red;">*</span></MudText>
+                        <MudTextField Margin="Margin.Dense" @bind-Value="x.Others" Placeholder="Others" Variant="Variant.Outlined" Required></MudTextField>
+                    </MudItem>
+                    <MudItem lg="6" md="6" sm="6" xs="12">
+                        <MudCheckBox @bind-Checked="hasReimbursement" Label="Reimbursement Claim" />
+                    </MudItem>
+                    @if (hasReimbursement)
+                    {
+                        <MudItem lg="6" md="6" sm="6" xs="12">
+                            <MudText Class="editempdet">Reimbursement</MudText>
+                            <MudTextField Margin="Margin.Dense" @bind-Value="x.Reimbursement" Placeholder="Reimbursement" Variant="Variant.Outlined"></MudTextField>
+                        </MudItem>
+                    }
+                    <MudItem lg="6" md="6" sm="6" xs="12">
+                        <MudText Class="editempdet">Net Salary<span style="padding:5px;color:red;">*</span></MudText>
+                        <MudTextField Margin="Margin.Dense" @bind-Value="x.NetSalary" Placeholder="Net Salary" Variant="Variant.Outlined" Required></MudTextField>
+                    </MudItem>
+                    <MudItem Style="text-align:center" lg="12" md="12" sm="12" xs="12">
+                        <MudButton Class="buttonsstyle" Variant=Variant.Filled Color=@MudBlazor.Color.Primary OnClick="CalculateNetSalary">Update</MudButton>
+                    </MudItem>
+                }
+            </MudGrid>
+        </MudContainer>
+    </MudPaper>
+</MudContainer>
+
+@code {
+
+
+}
+
+<style>
+    .Save {
+        width: 50%;
+    }
+
+    .editempdet {
+        font-weight: 500;
+        font-size: 15px;
+    }
+
+    .buttonsstyle {
+        float: right;
+    }
+
+    .SalaryPaper {
+        background-color: white margin:10px;
+    }
+</style>

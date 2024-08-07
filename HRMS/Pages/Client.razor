@@ -1,0 +1,64 @@
+﻿@page "/client"
+@using HRMS.Components
+@inherits BaseComponents;
+
+<MudContainer Class="mb-3">
+    <MudItem Class="mt-15 d-flex">
+        <MudText Typo="Typo.h4">
+            Client's Details
+        </MudText>
+        <MudSpacer />
+        <MudButton Variant="Variant.Outlined" Class="buttonstyle mr-2" @onclick="GoBack"><i class="fa-solid fa-chevron-left"></i></MudButton>
+    </MudItem>
+</MudContainer>
+
+@*completed  table *@
+<MudContainer>
+    <MudDataGrid Bordered=true T="HRMS.Model.Project" Hover="true" Striped="true" Items="@ProjectEvents" SortMode="SortMode.Multiple" Filterable="false" Hideable="true" QuickFilter="@_quickFilter">
+        <ToolBarContent>
+            <MudItem Class="position-absolute top-0 end-0 d-flex">
+                <MudTooltip Text="Search by Client or Project Name">
+                    <MudIcon Icon="@Icons.Material.Outlined.Info" Size="@MudBlazor.Size.Medium" Class="mt-3 mr-1 float-end" />
+                </MudTooltip>
+                <MudTextField Class="float-end" Margin="Margin.Dense" Variant="Variant.Outlined" @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                              AdornmentIcon="@Icons.Material.Filled.Search" IconSize="@MudBlazor.Size.Medium" AdornmentColor="@MudBlazor.Color.Primary" />
+            </MudItem>
+        </ToolBarContent>
+        <Columns>
+
+            <PropertyColumn Style="text-align:center" Title="Sno" Property="x=>x.Sno" Filterable="false" Sortable="false" />
+            <PropertyColumn Style="text-align:center" Title="Client Name" Property="x=>x.ClientName" Filterable="false" Sortable="false" />
+            <PropertyColumn Style="text-align:center" Title="Project Name" Property="x=>x.ProjectName" Filterable="false" Sortable="false" />
+            <PropertyColumn Style="text-align:center" Title="Project Created Date" Property="x=>x.CreatedDate" Format="dd-MM-yyyy" Filterable="false" Sortable="false" />
+
+        </Columns>
+        <PagerContent>
+            @if (!_quickFilter(ProjectEvents.FirstOrDefault()))
+            {
+                <MudItem Class="text-center my-8">@_noResultsMessage</MudItem>
+            }
+            <MudDataGridPager T="HRMS.Model.Project" />
+        </PagerContent>
+
+    </MudDataGrid>
+</MudContainer>
+
+<style>
+
+    .table {
+        margin-top: 50px;
+    }
+
+    .topsearch {
+        margin-top: 50px;
+    }
+
+    .mud-table-head {
+        padding: 12px;
+    }
+
+    .mud-table-root .mud-table-head {
+        background-color: darkgray;
+    }
+
+</style>

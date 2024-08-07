@@ -1,0 +1,159 @@
+﻿@using HRMS.Components
+@inherits BaseComponents
+
+<MudAppBar Class="bar">
+    <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="@MudBlazor.Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" Class="me-3" />
+    <MudImage Src="images/appbar/BytesTech.png" Style="width:100px; height:auto;margin-left:-20px; padding-top:3px;" />
+    <MudSpacer />
+
+    <MudMenu Class="profileimg" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopCenter">
+        <MudMenuItem Icon="@Icons.Material.Filled.AccountCircle" Href="/profile">Profile</MudMenuItem>
+        <MudMenuItem Icon="@Icons.Material.Filled.Password" OnClick="OpenDialog">Change Password</MudMenuItem>
+        <MudMenuItem Icon="@Icons.Material.Filled.Logout" OnClick="@(() => Clear(AttendanceModelObj.EmpId))">Logout</MudMenuItem>
+    </MudMenu>
+    <MudStack>
+        <MudText class="AccountName">@User.FirstName</MudText>
+        <MudText style="margin-right: 12px; font-size: 12px;">@User.Role</MudText>
+    </MudStack>
+</MudAppBar>
+<MudDrawer @bind-Open="@_drawerOpen" Variant="@DrawerVariant.Mini" Color="@MudBlazor.Color.Dark" OpenMiniOnHover="true" Style="text-wrap:nowrap">
+    <MudNavMenu>
+
+        <MudList Clickable="true" @bind-SelectedValue="selectedValue" Color="@MudBlazor.Color.Primary">
+            <MudListItem Text="Dashboard" Href="/dash" Icon="@Icons.Material.Filled.Dashboard" IconColor="@MudBlazor.Color.Primary" Class="menu" />
+
+            <MudListItem Text="Employee" Icon="fa-solid fa-user-tie" IconColor="@MudBlazor.Color.Primary" IconSize="MudBlazor.Size.Small" Class="menu">
+                <NestedList>
+
+                    <MudListItem Text="Employee List" Href="/employee" Value="8" Icon="fa-solid fa-users" IconColor="@MudBlazor.Color.Primary" IconSize="MudBlazor.Size.Small" Class="menu SubMenu" Style="text-wrap:nowrap" />
+                    <MudListItem Text="Voluntary Resignation" Href="/Voluntaryresignationform" Value="9" Icon="fa-solid fa-address-card" IconColor="@MudBlazor.Color.Primary" IconSize="MudBlazor.Size.Small" Class="menu SubMenu" Style="text-wrap:wrap" />
+                    @if (User.RoleId == 1 || User.RoleId == 2)
+                    {
+                        <MudListItem Text="Recruiter" Href="/Recruiterpage" Value="10" Icon="fa-solid fa-user-slash" IconColor="@MudBlazor.Color.Primary" IconSize="MudBlazor.Size.Small" Class="menu SubMenu" Style="text-wrap:nowrap" />
+                    }
+                </NestedList>
+            </MudListItem>
+
+            <MudListItem Text="Projects" Icon="fa-solid fa-boxes-stacked" IconColor="@MudBlazor.Color.Primary" IconSize="MudBlazor.Size.Small" Class="menu">
+                <NestedList>
+                    <MudListItem Href="/Projects" Text="Projects" Value="1" Icon="fa-solid fa-cubes-stacked" IconColor="@MudBlazor.Color.Primary" IconSize="MudBlazor.Size.Small" Class="menu SubMenu" Style="text-wrap:nowrap" />
+                    <MudListItem Href="/Completedproject" Text="Completed Project" Value="2" Icon="fa-solid fa-clipboard-check" IconColor="@MudBlazor.Color.Primary" IconSize="MudBlazor.Size.Small" Class="menu SubMenu" Style="text-wrap:nowrap" />
+                    <MudListItem Href="/Task" Text="Task" Value="3" Icon="fa-solid fa-list-check" IconColor="@MudBlazor.Color.Primary" IconSize="MudBlazor.Size.Small" Class="menu SubMenu" Style="text-wrap:nowrap" />
+                    @if (User.RoleId != 5)
+                    {
+                        <MudListItem Href="/client" Text="Client Details" Value="3" Icon="fa-solid fa-layer-group" IconColor="@MudBlazor.Color.Primary" IconSize="MudBlazor.Size.Small" Class="menu SubMenu" Style="text-wrap:nowrap" />
+                    }
+                </NestedList>
+            </MudListItem>
+
+            <MudListItem Text="Payroll" Icon="fa-solid fa-money-check-dollar" IconColor="@MudBlazor.Color.Primary" IconSize="MudBlazor.Size.Small" Class="menu">
+                <NestedList>
+                    <MudListItem Text="Payroll" Href="/payroll" Value="1" Icon="fa-solid fa-money-check-dollar" IconSize="MudBlazor.Size.Small" IconColor="@MudBlazor.Color.Primary" Class="menu SubMenu" />
+                    @if (User.RoleId == 1 || User.RoleId == 2)
+                    {
+                        <MudListItem Text="HR Payroll" Href="/hrpayroll" Value="1" Icon="fa-solid fa-money-check-dollar" IconSize="MudBlazor.Size.Small" IconColor="@MudBlazor.Color.Primary" Class="menu SubMenu" />
+                    }
+                </NestedList>
+            </MudListItem>
+
+            <MudListItem Text="Attendance" Href="/attentancepage" Icon="fa-solid fa-square-poll-vertical" IconSize="MudBlazor.Size.Small" IconColor="@MudBlazor.Color.Primary" Class="menu" />
+
+            <MudListItem Text="Leave" Icon="fa-solid fa-person-through-window" IconSize="MudBlazor.Size.Small" IconColor="@MudBlazor.Color.Primary" Class="menu">
+                <NestedList>
+                    @if (User.RoleId == 2 || User.RoleId == 4 || User.RoleId == 5)
+                    {
+                        <MudListItem Href="/approve" Text="My Leave" Value="6" Icon="fa-solid fa-person-through-window" IconSize="MudBlazor.Size.Small" IconColor="@MudBlazor.Color.Primary" Class="menu SubMenu" />
+                    }
+                    @if (User.RoleId == 3 || User.RoleId == 1)
+                    {
+                        <MudListItem Href="/Home" Text="Leave Request" Value="7" Icon="fa-solid fa-down-left-and-up-right-to-center" IconSize="MudBlazor.Size.Small" IconColor="@MudBlazor.Color.Primary" Class="menu SubMenu" />
+                        <MudListItem Href="/approve" Text="My Leave" Value="6" Icon="fa-solid fa-person-walking-luggage" IconSize="MudBlazor.Size.Small" IconColor="@MudBlazor.Color.Primary" Class="menu SubMenu" />
+                    }
+                </NestedList>
+            </MudListItem>
+
+            <MudListItem Text="Ticket" Icon="fa-solid fa-ticket" IconColor="@MudBlazor.Color.Primary" Class="menu">
+                <NestedList>
+                    @if (User.RoleId == 1 || User.RoleId == 2 || User.RoleId == 3)
+                    {
+                        <MudListItem Href="/Ticket" Text="Ticket" Value="4" Icon="@Icons.Material.Filled.BookOnline" IconColor="@MudBlazor.Color.Primary" Class="menu SubMenu" Style="text-wrap:nowrap" />
+                    }
+                    <MudListItem Href="/viewticket" Text="My Ticket" Value="5" Icon="@Icons.Material.Filled.BookOnline" IconColor="@MudBlazor.Color.Primary" Class="menu SubMenu" Style="text-wrap:nowrap" />
+                </NestedList>
+            </MudListItem>
+
+            <MudListItem Text="Reimbursement" Icon="fa-solid fa-file-invoice-dollar" IconSize="MudBlazor.Size.Small" IconColor="@MudBlazor.Color.Primary" Class="menu">
+                <NestedList>
+                    <MudListItem Text="Reimbursement" Href="/ReimbursementHistory" Value="11" Icon="fa-solid fa-file-invoice-dollar" IconSize="MudBlazor.Size.Small" IconColor="@MudBlazor.Color.Primary" Class="menu SubMenu" Style="text-wrap:nowrap" />
+                    <MudListItem Text="Company Policy" Href="/CompanyPolicy" Value="12" Icon="fa-solid fa-building-shield" IconSize="MudBlazor.Size.Small" IconColor="@MudBlazor.Color.Primary" Class="menu SubMenu" Style="text-wrap:nowrap" />
+                    @if (User.RoleId == 1 || User.RoleId == 3)
+                    {
+                        <MudListItem Text="Request" Href="/ReimbursementRequest" Value="13" Icon="@Icons.Material.Filled.ArrowCircleUp" IconSize="MudBlazor.Size.Small" IconColor="@MudBlazor.Color.Primary" Class="menu SubMenu" Style="text-wrap:nowrap" />
+                    }
+                </NestedList>
+            </MudListItem>
+            <MudListItem Text="View Holiday" Href="/holiday" Icon="@Icons.Material.Filled.CalendarMonth" IconSize="MudBlazor.Size.Medium" IconColor="@MudBlazor.Color.Primary" Class="menu" />
+            @if (User.RoleId == 1 || User.RoleId == 2)
+            {
+                <MudListItem Text="OnBoarding Form" Href="/Employeeonboarding" Icon="fa-solid fa-plane-departure" IconSize="MudBlazor.Size.Small" IconColor="@MudBlazor.Color.Primary" Class="menu" />
+            }
+        </MudList>
+    </MudNavMenu>
+</MudDrawer>
+
+
+<style>
+    .profileimg {
+        background-image: url("images/appbar/profile.jpg");
+        background-size: cover;
+        height: 50px;
+        width: 50px;
+    }
+
+    .bar {
+        background: White;
+        color: Black;
+    }
+
+    .Brand {
+        margin-left: 6px;
+        margin-top: 6px;
+        font-size: 24px;
+    }
+
+    .AccountName {
+        margin-right: 12px;
+        font-size: 18px;
+    }
+
+    .SubMenu {
+        margin-left: -16px;
+        width: auto;
+    }
+
+    .menu {
+        --mud-palette-primary: white;
+        font-size: 500;
+    }
+
+        .menu:hover {
+            --mud-palette-primary: #9358ad;
+            color: #9358ad;
+            background-color: white;
+            .mud-icon-default
+
+    {
+        color: #9358ad;
+    }
+
+    }
+
+    .mud-icon-default {
+        color: white;
+    }
+
+    .gap-3 {
+        gap: 0px !important;
+    }
+
+</style>

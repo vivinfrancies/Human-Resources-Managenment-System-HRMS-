@@ -1,0 +1,151 @@
+﻿@using HRMS.Components
+@inherits BaseComponents;
+@page "/Recruiterpage"
+<div class="container">
+	<MudGrid Class="d-flex" Style="margin: unset; flex-wrap:wrap-reverse">
+		<MudItem>
+			<MudText><h1 class="Pagetitle">	Onboarding and Offboarding </h1></MudText>
+		</MudItem>
+
+		<MudSpacer />
+
+		<MudItem Class="m-2" Style="align-content:center;  flex-wrap: wrap;">
+			<MudButton Variant="Variant.Filled" Class="buttonstyle m-1" @onclick="GoBack">
+				<i class="fa-solid fa-angle-left"></i>
+			</MudButton>
+
+
+		</MudItem>
+
+	</MudGrid>
+
+	<MudGrid>
+		<MudItem lg="8" md="8" sm="8" xs="12">
+
+		</MudItem>
+		<MudItem lg="1" md="1" sm="1" xs="12">
+
+		</MudItem>
+		<MudItem Class="boxwith d-flex" lg="3" md="3" sm="3" xs="12">
+			<MudTooltip Text="Search Any Data from the Table">
+				<MudIcon Icon="@Icons.Material.Outlined.Info" Size="@MudBlazor.Size.Medium" Class="mt-3 mr-1" />
+			</MudTooltip>
+			<MudTextField Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="@MudBlazor.Color.Primary" @bind-Value="@serach" Variant="Variant.Outlined" Immediate="true" Margin="Margin.Dense"></MudTextField>
+		</MudItem>
+
+	</MudGrid>
+
+
+
+
+
+	<MudTabs Elevation="4" Rounded="true" Centered="true" Class="my-5">
+		<MudTabPanel Text="EMPLOYEE ONBOARDING ">
+			<MudPaper>
+				<MudDataGrid T="HRMS.Model.EmployeeList" Items="@Onboardingaccept" Striped="true" Hover="true" Bordered="true" QuickFilter="@qf1">
+
+					<Columns>
+
+						<PropertyColumn Property="x=>x.Employeecode" Title="Employee ID" />
+						<PropertyColumn Property="x=>x.Firstname1" Title="Employee Name" />
+						<PropertyColumn Property="x=>x.Email1" Title="Employee Email" />
+						<PropertyColumn Property="x=>x.Role1" Title="Role" />
+						<PropertyColumn Property="x=>x.Designation1" Title="Designation" />
+						<PropertyColumn Property="x=>x.Dateofjoining" Title="Date of Joining" Format="dd-MM-yyyy" />
+						<PropertyColumn Property="x=>x.Mobilenumber1" Title="Contact" />
+						<TemplateColumn CellClass="d-flex justify-end" Title="Action" Filterable="false" Sortable="false">
+							<CellTemplate>
+								<MudStack Row>
+									<MudButton Size="@MudBlazor.Size.Small" Variant="@Variant.Filled" Color="@MudBlazor.Color.Info" OnClick="()=>Dialogfunc(context.Item.Employeecode)">VIEW</MudButton>
+								</MudStack>
+							</CellTemplate>
+						</TemplateColumn>
+					</Columns>
+				</MudDataGrid>
+			</MudPaper>
+		</MudTabPanel>
+		<MudDialog @bind-IsVisible="visible" Options="dialogOptions">
+			<TitleContent>
+				<MudText Typo="Typo.h6" Class="d-flex align-content-center justify-content-center">Employee Basic Details</MudText>
+			</TitleContent>
+			<DialogContent>
+				<MudContainer>
+					<MudGrid>
+						<MudItem lg="12" md="12" sm="12" xs="12">
+							<MudText Typo="Typo.subtitle1">Religion :@Religion </MudText>
+						</MudItem>
+						<MudItem lg="12" md="12" sm="12" xs="12">
+							<MudText Typo="Typo.subtitle1">Nationality :@Nationality </MudText>
+						</MudItem>
+						<MudItem lg="12" md="12" sm="12" xs="12">
+							<MudText Typo="Typo.subtitle1">Emergencycontact :@Emergencycontact </MudText>
+						</MudItem>
+						<MudItem lg="12" md="12" sm="12" xs="12">
+							<MudText Typo="Typo.subtitle1">Salary :@Salary </MudText>
+						</MudItem>
+						<MudItem lg="12" md="12" sm="12" xs="12">
+							<MudText Typo="Typo.subtitle1">Bankname :@Bankname </MudText>
+						</MudItem>
+						<MudItem lg="12" md="12" sm="12" xs="12">
+							<MudText Typo="Typo.subtitle1">Accountnumber :@Accountnumber </MudText>
+						</MudItem>
+						<MudItem lg="12" md="12" sm="12" xs="12">
+							<MudText Typo="Typo.subtitle1">Ifsccode :@Ifsccode </MudText>
+						</MudItem>
+						<MudItem lg="12" md="12" sm="12" xs="12">
+							<MudText Typo="Typo.subtitle1">Pfaccount :@Pfaccount </MudText>
+						</MudItem>
+					</MudGrid>
+
+				</MudContainer>
+			</DialogContent>
+			<DialogActions>
+				<MudButton Variant="Variant.Filled" OnClick="Submit" Class="px-10" Color="MudBlazor.Color.Info">Close</MudButton>
+			</DialogActions>
+		</MudDialog>
+
+		<MudTabPanel Text="RESIGNATION APPROVE">
+			<MudPaper>
+				<MudDataGrid T="HRMS.Model.ResignationTableview" Items="@Resignation" Striped="true" Bordered="true" QuickFilter="@qf2" Hover="true">
+
+					<Columns>
+						@* 	<PropertyColumn Property="x=>x.serialnum" Title="S.No" Filterable="false" Sortable="false" /> *@
+						<PropertyColumn Property="x=>x.EmployeeCode" Title="Employee Id" />
+						<PropertyColumn Property="x=>x.EmployeeName" Title="Employee Name" />
+						<PropertyColumn Property="x=>x.Dateofjoining" Title="Date of Joining" Format="dd-MM-yyyy" />
+						<PropertyColumn Property="x=>x.LastDateOfWorking" Title="Last Date Of Working" Format="dd-MM-yyyy" />
+						<PropertyColumn Property="x=>x.Designation" Title="Designation" />
+						<PropertyColumn Property="x=>x.ReasonForResign" Title="Reason" />
+						<TemplateColumn CellClass="d-flex justify-end" Title="Action" Filterable="false" Sortable="false">
+							<CellTemplate>
+								<MudStack Row>
+									<MudButton Size="@MudBlazor.Size.Small" Variant="@Variant.Filled" Color="@MudBlazor.Color.Success" Disabled="@context.Item.afteraccept" OnClick="()=>Acceptput(context.Item.EmployeeCode)">Approve</MudButton>
+									<MudButton Size="@MudBlazor.Size.Small" Variant="@Variant.Filled" Color="@MudBlazor.Color.Error" Disabled="@context.Item.afterreject" OnClick="()=>RejectPut(context.Item.EmployeeCode)">Reject</MudButton>
+								</MudStack>
+							</CellTemplate>
+						</TemplateColumn>
+					</Columns>
+				</MudDataGrid>
+			</MudPaper>
+		</MudTabPanel>
+	</MudTabs>
+</div>
+
+
+
+<style>
+	.mud-table-root .mud-table-head {
+		background-color: darkgray;
+	}
+
+	.boxwith {
+		width: 300px;
+	}
+
+	@@media Screen and(max-width:769px) {
+		.boxwith {
+			width: 300px !important;
+		}
+	}
+</style>
+

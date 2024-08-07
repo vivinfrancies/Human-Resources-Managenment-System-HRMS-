@@ -1,0 +1,224 @@
+﻿@page "/ReimbursementClaim"
+
+<MudGrid Class="mudtop">
+
+	<MudContainer Class="my-5">
+
+
+		@* Profile Avatar*@
+		<MudGrid>
+			<MudItem>
+				<MudAvatar Style="height:70px; width:70px;">
+					<MudImage Src="@img" Alt="Profile Image"></MudImage>
+				</MudAvatar>
+			</MudItem>
+			<MudItem Class="avatorname">
+				<MudText Class="Employeename"><h5>@Employeename</h5></MudText>
+				<MudDivider Style="--mud-palette-divider: black; border-width:3px; " />
+				<MudText Class="EmployeeID">Emp ID : @EmpID</MudText>
+			</MudItem>
+
+			<MudItem lg="12"></MudItem>
+		</MudGrid>
+
+
+		@* ReimbursementDetails *@
+		<MudGrid Class="my-5">
+
+			<MudItem Class="inputlableitem" xs="12" sm="6" md="6" lg="2">
+				<MudText Class="inputlable">Expense :</MudText>
+			</MudItem>
+
+			<MudItem xs="12" sm="6" md="6" lg="2">
+				<MudAutocomplete T="String" @bind-Value='ExpenseValue' SearchFunc="@searchexpense" Variant="Variant.Outlined" Placeholder="Select Your Expenses" Margin="Margin.Dense"></MudAutocomplete>
+			</MudItem>
+
+			<MudItem Class="inputlableitem" xs="12" sm="6" md="6" lg="2">
+				<MudText Class="inputlable">Bill No :</MudText>
+			</MudItem>
+
+			<MudItem xs="12" sm="6" md="6" lg="2">
+				<MudTextField T="int" Variant="Variant.Outlined" @bind-Value='billno' Placeholder="Bill Number" Margin="Margin.Dense"></MudTextField>
+			</MudItem>
+
+			<MudItem Class="inputlableitem" xs="12" sm="6" md="6" lg="2">
+				<MudText Class="inputlable">Bill Date :</MudText>
+			</MudItem>
+
+			<MudItem xs="12" sm="6" md="6" lg="2">
+				<MudDatePicker @bind-Date="@date" Placeholder="Pick Your Date" Color="@MudBlazor.Color.Success" PickerVariant="PickerVariant.Dialog" Orientation="@MudBlazor.Orientation.Landscape" Variant="Variant.Outlined" Margin="Margin.Dense" DateFormat="dd-MM-yyyy" />
+			</MudItem>
+		</MudGrid>
+
+
+		@* File Upload *@
+		<MudPaper Class="fileuploadpaper">
+			<MudGrid Class="mx-5 d-flex">
+				<MudItem md="3" lg="3">
+					<MudFileUpload T="IReadOnlyList<IBrowserFile>" FilesChanged="UploadFiles" Accept=".pdf , .gif ,.jpg , .png">
+						<ButtonTemplate>
+							<MudButton HtmlTag="label" EndIcon="@Icons.Material.Outlined.UploadFile" for="@context.Id" Variant="Variant.Filled" Class="buttonstyle">
+								Upload File
+							</MudButton>
+						</ButtonTemplate>
+					</MudFileUpload>
+				</MudItem>
+
+				<MudItem md="6" lg="6">
+					@if (files != null)
+					{
+						<MudList>
+							@foreach (var bill in files)
+							{
+								<MudListItem Icon="@Icons.Material.Outlined.AttachFile">
+									<MudChip Color="@MudBlazor.Color.Success">@bill.Name</MudChip>
+								</MudListItem>
+							}
+						</MudList>
+					}
+				</MudItem>
+				<MudItem md="3" lg="3">
+					<MudText Typo="@Typo.h6" Style="font-family: 'Cascadia Mono';">@files.Count() File@(files.Count() == 1 ? "" : "s") Uploaded</MudText>
+				</MudItem>
+			</MudGrid>
+		</MudPaper>
+
+		<MudGrid Class="mt-5">
+			<MudItem xs="12" sm="12" md="12" lg="6" >
+				<MudPaper Class="fileuploadpaper2">
+					<MudGrid Class="m-5" Style="align-content:center; justify-content:center;">
+						<MudItem Class="alignitem">
+							<MudText Style="font-family: 'Cascadia Mono';">Total Expense : </MudText>
+						</MudItem>
+						<MudItem Class="alignitem">
+							<MudTextField T="int" Variant="Variant.Outlined" Placeholder="Type Your Expense Amount"></MudTextField>
+						</MudItem>
+					</MudGrid>
+				</MudPaper>
+			</MudItem>
+
+			<MudItem xs="12" sm="12" md="12" lg="6">
+				<MudPaper Class="fileuploadpaper2">
+					<MudGrid Class="m-5 d-flex" Style="align-content:center; justify-content:center;">
+						<MudItem Class="alignitem">
+							<MudText Style="font-family: 'Cascadia Mono';"> 
+								 Not Exceed ₹ 750
+							</MudText>
+						</MudItem>
+						<MudItem Class="alignitem">
+							<MudButton Variant="Variant.Filled" Class="buttonstyle">Submit Form</MudButton>
+						</MudItem>
+					</MudGrid>
+				</MudPaper>
+			</MudItem>
+		
+		</MudGrid>
+	</MudContainer>
+</MudGrid>
+
+
+
+<style>
+	body{
+		background-color: #e7d8f7;
+	}
+	.inputlable{
+		font-family: 'Cascadia Mono';
+	}
+	.fileuploadpaper{
+		width:100%;
+		background-color: #d9d9d9;
+		border-radius:15px;
+	}
+
+	.buttonstyle {
+		width: 250px;
+		height: 60px;
+		border-radius: 15px;
+		transition: scale 0.3s ease-in-out;
+		font-family: 'Cascadia Mono';
+	}
+
+		.buttonstyle:hover {
+			scale: 1.03;
+			transition: scale 0.3s ease-in-out;
+		}
+	
+	.alignitem{
+		display:flex;
+		justify-content:center;
+		align-items:center;
+		
+	}
+	.fileuploadpaper2{
+		height:15vh;
+		background-color: #d9d9d9;
+		border-radius: 15px;
+		align-items: center;
+		justify-content: center;
+
+	}
+	.inputlableitem{
+		display: flex;
+		align-items: center;
+		justify-content:center;
+	}
+	.uploadbutton{
+		justify-content:center;
+		align-items: center;
+		display: flex;
+	}
+	.avatorname {
+		align-items: baseline;
+		flex-wrap: wrap;
+		align-content: center;
+		justify-content: space-between;
+	}
+	.Employeename {
+		font-family: 'Cascadia Mono';
+	}
+
+	.EmployeeID {
+		font-family: 'Cascadia Mono';
+	}
+</style>
+
+@code {
+	public DateTime? date;
+
+
+
+	public int billno;
+
+	public string ExpenseValue;
+
+	public string img = "images/Profileimg.jpg";
+
+	public string Employeename = "Gokul Chinnusamy";
+
+	public string EmpID = "EMP15207012";
+
+	public string[] Expencedropdown ={
+		"Internet","Travel"
+	};
+
+	public async Task<IEnumerable<string>> searchexpense(string value)
+	{
+		if (string.IsNullOrEmpty(value))
+			return Expencedropdown;
+		return Expencedropdown.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+	}
+
+
+	//Upload File
+
+	IList<IBrowserFile> files = new List<IBrowserFile>();
+
+	public void UploadFiles(IReadOnlyList<IBrowserFile> files)
+	{
+		foreach (var file in files)
+		{
+			this.files.Add(file);
+		}
+	}
+}

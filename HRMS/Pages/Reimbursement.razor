@@ -1,0 +1,106 @@
+﻿@page "/Reimbursement"
+
+<MudContainer>
+	<MudGrid>
+
+		<MudSpacer />
+
+		<MudItem>
+			<MudText Style="text-align:end;"><h1 style="font-family:'Cascadia Mono';">Reimbursement<br />Claim</h1></MudText>
+		</MudItem>
+
+
+	</MudGrid>
+	<MudPaper Class="paperdashboard">
+		<MudItem Class="papermargin">
+			<MudGrid>
+				<MudItem>
+					<MudAvatar Style="height:70px; width:70px;">
+						<MudImage Src="@img" Alt="Profile Image"></MudImage>
+					</MudAvatar>
+				</MudItem>
+				<MudItem Class="avatorname">
+					<MudText Class="Employeename"><h5>@Employeename</h5></MudText>
+					<MudDivider Class="divider" />
+					<MudText Class="EmployeeID">Emp ID : @EmpID</MudText>
+				</MudItem>
+			</MudGrid>
+
+			<MudGrid>
+				<MudItem>
+					<MudButton Variant="Variant.Filled" Class="buttonstyle" Href="/ReimbursementS">Apply Reimbursement</MudButton>
+				</MudItem>
+				<MudItem>
+					<MudButton Class="buttonstyle" Href="/ReimbursementHistory">Claim History <MudIcon Icon="@Icons.Material.Outlined.History" /></MudButton>
+				</MudItem>
+			</MudGrid>
+
+		</MudItem>
+	</MudPaper>
+</MudContainer>
+
+
+<style>
+	body {
+		background-color: #e7d8f7;
+	}
+
+	.paperdashboard {
+		border-radius: 15px;
+		background-color: transparent;
+		box-shadow: 2px 2px #9d4edd;
+		border-width: 1px;
+		border-color: #9d4edd;
+		box-shadow: blur(2rem);
+	}
+
+	.papermargin {
+		margin: 10px;
+	}
+
+	.divider {
+		color: black;
+		width: 20px;
+	}
+
+	.buttonstyle {
+		width: 250px;
+		height: 60px;
+		border-radius: 15px;
+		transition: scale 0.3s ease-in-out;
+		font-family: 'Cascadia Mono';
+	}
+
+		.buttonstyle:hover {
+			scale: 1.03;
+			transition: scale 0.3s ease-in-out;
+		}
+
+	.avatorname {
+		align-items: baseline;
+		flex-wrap: wrap;
+		align-content: center;
+		justify-content: space-between;
+	}
+
+	.Employeename {
+		font-family: 'Cascadia Mono';
+	}
+
+	.EmployeeID {
+		font-family: 'Cascadia Mono';
+	}
+</style>
+@code {
+
+	public string img = "images/Profileimg.jpg";
+
+	public string Employeename = "Gokul Chinnusamy";
+
+	public string EmpID = "EMP15207012";
+
+
+
+
+
+}

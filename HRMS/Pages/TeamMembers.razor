@@ -1,0 +1,34 @@
+﻿@page "/teammember"
+@using HRMS.Components
+@inherits BaseComponents;
+
+<MudDialog>
+    <DialogContent>
+        <MudItem Class="d-flex">
+            <MudText Typo="Typo.h4">Team Members</MudText>
+            <MudSpacer />
+            <MudIconButton Icon="@Icons.Material.Filled.Close" Color="@MudBlazor.Color.Error" OnClick="Cancel" />
+        </MudItem>
+        <MudDataGrid T="HRMS.Model.Project" Items="ProjectEvents" RowsPerPage="5" Dense="true" Bordered="true" Filterable="false">
+            <Columns>
+                @foreach (var (project, index) in ProjectEvents.Select((value, i) => (value, i)))
+                {
+                    project.Sno = index + 1;
+                }
+                <PropertyColumn Title="Sno" Property="x=>x.Sno" Filterable="false" Sortable="false" />
+                <PropertyColumn Title="Name" Property="x=>x.TeamMembers" Filterable="false" Sortable="false" />
+                <PropertyColumn Title="Role" Property="x=>x.Roles" Filterable="false" Sortable="false" />
+                <PropertyColumn Title="Module" Property="x=>x.Module" Filterable="false" Sortable="false" />
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager T="HRMS.Model.Project" />
+            </PagerContent>
+        </MudDataGrid>
+    </DialogContent>
+</MudDialog>
+
+<style>
+    .mud-table-root .mud-table-head {
+        background-color: darkgray;
+    }
+</style>

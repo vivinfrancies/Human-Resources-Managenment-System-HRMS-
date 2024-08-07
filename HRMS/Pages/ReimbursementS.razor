@@ -1,0 +1,233 @@
+﻿@page "/ReimbursementS"
+@using HRMS.Components
+@inherits BaseComponents;
+@using System.Text.Json
+
+
+<MudContainer>
+
+	<MudText Typo="Typo.h4" Class="my-10 d-flex" Style="flex-wrap:wrap-reverse;">
+		Reimbursement
+		<MudSpacer />
+		<MudButton Variant="Variant.Outlined" Class="buttonstyle m-2" @onclick="GoBack"><i class="fa-solid fa-chevron-left"></i></MudButton>
+	</MudText>
+
+</MudContainer>
+
+<MudContainer>
+
+
+	<MudItem Class="d-flex">
+		<MudItem Class="m-2" Style="align-content:center">
+			<MudAvatar Style="height:70px; width:70px;">
+				<MudImage Src="@($"http://localhost:5141/api/wwwroot/uploads/{User.FullName}")" Alt="Profile Image"></MudImage>
+			</MudAvatar>
+		</MudItem>
+		<MudItem Class="m-2" Style="align-content:center">
+			<MudText Class="Employeename"><h5 style="margin-bottom: 3px;">@User.FullName</h5></MudText>
+			<MudDivider Style="--mud-palette-divider: black; border-width:3px; border-radius: 15px;" />
+			<MudText Class="EmployeeID">EMP Code : @User.UserName</MudText>
+		</MudItem>
+	</MudItem>
+
+
+</MudContainer>
+
+<MudForm @bind-isvalid="@success" @ref="form">
+	<MudContainer Class="mt-3">
+		<MudPaper Class="mainpaper">
+			<MudGrid Class="d-flex">
+
+
+				@* Expense *@
+				<MudItem xs="12" sm="12" md="3" lg="3">
+					<MudItem Class="m-3">
+						<MudText Class="inputlable">Expense :</MudText>
+					</MudItem>
+
+					<MudItem Class="m-3">
+
+						<MudSelect @bind-Value="selectedexpense" Margin="Margin.Dense" T="string" Variant="Variant.Outlined" Placeholder="Select Your Expenses" Clearable=true Required=true>
+
+							@foreach (var i in Expensetype)
+							{
+								<MudSelectItem Value="@(i.Expensetypes)" />
+							}
+						</MudSelect>
+					</MudItem>
+
+				</MudItem>
+
+
+				@* BillNo *@
+				<MudItem xs="12" sm="12" md="3" lg="3">
+					<MudItem Class="m-3">
+						<MudText Class="inputlable">Bill No :</MudText>
+					</MudItem>
+
+					<MudItem Class="m-3">
+						<MudTextField T="String" Variant="Variant.Outlined" @bind-Value='@reimbursement.BillNo' Placeholder="Bill Number" Margin="Margin.Dense" Required=true></MudTextField>
+					</MudItem>
+				</MudItem>
+
+
+				@* BillDate *@
+				<MudItem xs="12" sm="12" md="3" lg="3">
+					<MudItem Class="m-3">
+						<MudText Class="inputlable m-3">Bill Date :</MudText>
+					</MudItem>
+
+					<MudItem Class="m-3">
+						<MudDatePicker @bind-Date="@reimbursement.BillDate" Placeholder="Pick Your Date" PickerVariant="PickerVariant.Dialog" Orientation="@MudBlazor.Orientation.Landscape" Variant="Variant.Outlined" Margin="Margin.Dense" MaxDate="DateTime.Now" DateFormat="dd-MM-yyyy" Class="datepicker" Required=true></MudDatePicker>
+					</MudItem>
+
+
+
+				</MudItem>
+
+				@* BillAmount *@
+				<MudItem xs="12" sm="12" md="3" lg="3">
+
+					<MudItem Class="m-3">
+						<MudText Class="inputlable m-3">Bill Amount :</MudText>
+					</MudItem>
+
+					<MudItem Class="m-3">
+						<MudTextField T="int?" @bind-Value="@reimbursement.BillAmount" Variant="Variant.Outlined" Placeholder="Type Your Expense Amount" Margin="Margin.Dense" Required=true></MudTextField>
+					</MudItem>
+				</MudItem>
+			</MudGrid>
+		</MudPaper>
+	</MudContainer>
+
+	@* UploadPaper *@
+
+	<MudContainer Class="mt-3">
+		<MudPaper Class="UploadPaper">
+			<MudItem Class="d-flex justify-content-center m-3" lg="12">
+				<MudText Class="FileCount"> @(Billfile != null ? "" : "No ") Bill Uploaded</MudText>
+			</MudItem>
+
+			<MudItem Style="text-align: center;" Class="m-3">
+				@if (Billfile != null)
+				{
+					<MudChip Class="ChipFileName">
+						<MudText Class="ChipFileNameText">@Billfile.Name (@Billfile.Size)</MudText>
+					</MudChip>
+				}
+			</MudItem>
+		</MudPaper>
+	</MudContainer>
+
+	@* ButtonGrid *@
+
+	<MudContainer Class="mt-3">
+		<MudGrid>
+
+			<MudItem xs="12" sm="6" md="6" lg="6" Class="Buttonclass">
+
+				<MudFileUpload T="IBrowserFile" For="@(() => Billfile)" @bind-Files="Billfile" Accept=".pdf , .jpg, .png" Required="true">
+
+					<ButtonTemplate>
+						<MudButton StartIcon="@Icons.Material.Outlined.FileUpload" HtmlTag="label" Class="buttonstyle" for="@context">Upload Bills</MudButton>
+					</ButtonTemplate>
+
+				</MudFileUpload>
+				@{
+					if (Billfile != null)
+					{
+						try
+						{
+							if (Billfile.Size <= 512 * 1024)
+							{
+								var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".pdf" };
+								var extension = Path.GetExtension(Billfile.Name).ToLower();
+
+								if (allowedExtensions.Contains(extension))
+								{
+									var buffers3 = new byte[Billfile.Size];
+									Billfile.OpenReadStream(512 * 1024).ReadAsync(buffers3);
+									reimbursement.Bill = Billfile.Name;
+									reimbursement.FileContent3 = buffers3;
+								}
+								else
+								{
+									Snackbar.Add("File format not supported. Allowed formats are .jpg, .jpeg, .png, and .pdf.", Severity.Warning);
+									Billfile = null;
+								}
+							}
+							else
+							{
+								Snackbar.Add("File size must be below 512 KB.", Severity.Warning);
+								Billfile = null;
+							}
+						}
+						catch (Exception ex)
+						{
+							Snackbar.Add(ex.Message);
+						}
+					}
+				}
+
+			</MudItem>
+			<MudSpacer />
+			<MudItem xs="12" sm="6" md="6" lg="6" Class="Buttonclass ">
+				<MudButton Variant="Variant.Filled" Class="buttonstyle" Disabled="@(!success)" OnClick="@Applyreimburstment">Submit Form</MudButton>
+			</MudItem>
+
+		</MudGrid>
+	</MudContainer>
+</MudForm>
+
+
+<style>
+	.avatorname {
+		align-content: center;
+	}
+
+	.mainpaper {
+		width: 100%;
+		background-color: transparent;
+		border-width: 1px;
+	}
+
+	.UploadPaper {
+		background-color: transparent;
+		border-width: 1px;
+	}
+
+	.Buttonclass {
+		text-align-last: center;
+		align-content: end;
+	}
+
+	.ChipFileName {
+		background-color: #9d4edd;
+		color: white
+	}
+
+	.mud-chip-content {
+		content-visibility: auto;
+	}
+
+	.datepicker {
+		--mud-palette-primary: #9d4edd;
+	}
+
+	.mud-input.mud-input-outlined .mud-input-outlined-border {
+		border-width: 0.5px;
+		border-color: black;
+		--mud-palette-primary: #9d4edd;
+	}
+
+	.mud-popover.mud-popover-open {
+		background-color: #faf8fc;
+		--mud-palette-primary: black;
+		--mud-palette-text-primary: black;
+		--mud-palette-primary-hover: #9358ad;
+	}
+
+	.ExpenseDropdown {
+		background-color: transparent;
+	}
+</style>

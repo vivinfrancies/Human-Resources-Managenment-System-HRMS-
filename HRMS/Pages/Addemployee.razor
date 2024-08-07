@@ -1,0 +1,57 @@
+﻿@page "/addemployee"
+
+<MudDialog>
+
+    <DialogContent>
+        <MudGrid Class="addemployee">
+            <MudItem lg="11" md="11" sm="11" xs="11">
+                <MudText><h4>Add Employee</h4></MudText>
+            </MudItem>
+            <MudItem lg="1" md="1" sm="1" xs="1">
+                <MudIconButton Icon="@Icons.Material.Filled.Close" Color="@MudBlazor.Color.Error" OnClick="Cancel"></MudIconButton>
+            </MudItem>
+        </MudGrid>
+        <MudGrid>
+            
+            <MudItem lg="6" md="6" sm="6" xs="12">
+                <MudText>Employee Name</MudText>
+                <MudTextField T="String" Placeholder="Name" Variant="Variant.Outlined"></MudTextField>
+            </MudItem>
+            <MudItem lg="6" md="6" sm="6" xs="12">
+                <MudText>Employee ID</MudText>
+                <MudTextField T="String" Placeholder="Id" Variant="Variant.Outlined"></MudTextField>
+            </MudItem>
+            <MudItem lg="6" md="6" sm="6" xs="12">
+                <MudText>Email</MudText>
+                <MudTextField T="String" Placeholder="Email" Variant="Variant.Outlined"></MudTextField>
+            </MudItem>
+            <MudItem lg="6" md="6" sm="6" xs="12">
+                <MudText>Role</MudText>
+                <MudTextField T="String" Placeholder="Role" Variant="Variant.Outlined"></MudTextField>
+            </MudItem>
+            <MudItem lg="6" md="6" sm="6" xs="12">
+                <MudText>Joindate</MudText>
+                <MudTextField T="string" Placeholder="JoinDate" Variant="Variant.Outlined"></MudTextField>
+            </MudItem>
+            <MudItem Style="text-align:center" lg="12" md="12" sm="12" xs="12">
+                <MudButton Variant=Variant.Filled Class="buttonstyle">Add Employee</MudButton>
+            </MudItem>
+
+           
+
+        </MudGrid>
+    </DialogContent>
+ 
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+
+}
+<style>
+    .addemployee {
+        margin-top: -30px;
+    }
+</style>

@@ -1,0 +1,246 @@
+﻿@page "/profile"
+
+@using HRMS.Components
+
+@inherits BaseComponents
+
+
+<MudContainer Class="mt-8">
+    @* Bio Data *@
+    <div class="biodata">
+        <MudCard>
+            <MudGrid Class="mx-1">
+                <MudItem lg="2" md="2" sm="6" xs="12">
+                    <MudImage Src="images/Profile/Profile/profile.jpeg" Style="border-radius:50%;" Height="150" Width="150" />
+
+                </MudItem>
+                @foreach (var ProdifeList in ProfileList)
+                {
+                    <MudItem lg="4" md="4" sm="6" xs="12">
+                        <MudText Typo="Typo.h4">@ProdifeList.Firstname1  @ProdifeList.Middlename1</MudText>
+                        <MudText Typo="Typo.body1">@ProdifeList.Role1</MudText>
+                        <MudText Typo="Typo.body2">@ProdifeList.Designation1</MudText>
+                        <MudText Style="margin-top:20px;" Typo="Typo.h6">Employee Code : @ProdifeList.Employeecode</MudText>
+                        <MudText Typo="Typo.body2">Date of Join : @ProdifeList.Dateofjoining?.ToString("dd-MM-yyyy")</MudText>
+                    </MudItem>
+                    <MudItem lg="5" md="5" sm="6" xs="12">
+                        <MudGrid Class="mb-1">
+                            <MudItem lg="4" md="6" sm="6" xs="12">
+                                 <MudText Class="fw-bold" Typo="Typo.body1">Phone Number :</MudText>
+                            </MudItem>
+                            <MudItem lg="6" md="6" sm="6" xs="12">
+                                 <MudText Typo="Typo.body1"> @ProdifeList.Mobilenumber1</MudText>
+                            </MudItem>
+                            <MudItem lg="4" md="6" sm="6" xs="12">
+                                <MudText Class="fw-bold" Typo="Typo.body1">Mail :</MudText>
+                            </MudItem>
+                            <MudItem lg="6" md="6" sm="6" xs="12">
+                                <MudText Typo="Typo.body1"> @ProdifeList.Email1</MudText>
+                            </MudItem>
+                            <MudItem lg="4" md="6" sm="6" xs="12">
+                                <MudText Class="fw-bold" Typo="Typo.body1">Experience :</MudText>
+                            </MudItem>
+                            <MudItem lg="6" md="6" sm="6" xs="12">
+                                <MudText Typo="Typo.body1"> @ProdifeList.Experience</MudText>
+                            </MudItem>
+                            <MudItem lg="4" md="6" sm="6" xs="12">
+                                <MudText Class="fw-bold" Typo="Typo.body1">Gender :</MudText>
+                            </MudItem>
+                            <MudItem lg="6" md="6" sm="6" xs="12">
+                                <MudText Typo="Typo.body1"> @ProdifeList.Gender1</MudText>
+                            </MudItem>
+                            <MudItem lg="4" md="6" sm="6" xs="12">
+                                <MudText Class="fw-bold" Typo="Typo.body1">Country :</MudText>
+                            </MudItem>
+                            <MudItem lg="6" md="6" sm="6" xs="12">
+                                <MudText Typo="Typo.body1"> @ProdifeList.Country1</MudText>
+                            </MudItem>
+                            <MudItem lg="4" md="6" sm="6" xs="12">
+                                <MudText Class="fw-bold" Typo="Typo.body1">Address :</MudText>
+                            </MudItem>
+                            <MudItem lg="6" md="6" sm="6" xs="12">
+                                <MudText Typo="Typo.body1"> @ProdifeList.Address1</MudText>
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+
+
+                    @* <MudItem lg="2" md="2" sm="6" xs="12">
+                        <MudText Class="fw-bold" Typo="Typo.body1">Phone Number :</MudText>
+                        <MudText Class="fw-bold" Typo="Typo.body1">Mail :</MudText>
+                        <MudText Class="fw-bold" Typo="Typo.body1">Experience :</MudText>
+                        <MudText Class="fw-bold" Typo="Typo.body1">Gender :</MudText>
+                        <MudText Class="fw-bold" Typo="Typo.body1">Country :</MudText>
+                        <MudText Class="fw-bold" Typo="Typo.body1">Address :</MudText>
+                    </MudItem>
+                    <MudItem lg="3" md="3" sm="6" xs="12">
+                        <MudText Typo="Typo.body1"> @ProdifeList.Mobilenumber1</MudText>
+                        <MudText Typo="Typo.body1"> @ProdifeList.Email1</MudText>
+                        <MudText Typo="Typo.body1"> @ProdifeList.Experience</MudText>
+                        <MudText Typo="Typo.body1"> @ProdifeList.Gender1</MudText>
+                        <MudText Typo="Typo.body1"> @ProdifeList.Country1</MudText>
+                        <MudText Typo="Typo.body1"> @ProdifeList.Address1</MudText>
+                    </MudItem> *@
+                }
+                <MudItem lg="1" md="1" sm="1" xs="12">
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="@MudBlazor.Color.Primary" OnClick="OpenDialog" />
+                   
+                </MudItem>
+            </MudGrid>
+        </MudCard>
+    </div>
+
+    @* Personal Information & Emergency Contact *@
+    <div class="PersonalInformation">
+
+        <MudGrid Class="mt-8">
+            @* Personal Information *@
+            <MudItem lg="6" md="6" sm="6" xs="12">
+                <MudCard>
+                    @foreach (var ProdifeList in ProfileList)
+                    {
+                        <MudGrid Class="mx-1">
+                            <MudItem lg="12" md="12" sm="12" xs="12" Class="edu">
+                                <MudCardHeader Class="Cardhead">
+                                    <CardHeaderContent>
+                                        <MudText Typo="Typo.h6">Personal Informations</MudText>
+                                    </CardHeaderContent>
+                                </MudCardHeader>
+                            </MudItem>
+                           
+                            <MudItem lg="4" md="4" sm="6" xs="12">
+                                <MudText Class="fw-bold" Typo="Typo.body1">Date Of Birth :</MudText>
+                                <MudText Class="fw-bold" Typo="Typo.body1">Relationship :</MudText>
+                                <MudText Class="fw-bold" Typo="Typo.body1">Emergency Contact :</MudText>
+                                <MudText Class="fw-bold" Typo="Typo.body1">Nationality :</MudText>
+                                <MudText Class="fw-bold" Typo="Typo.body1">Religion :</MudText>
+                                <MudText Class="fw-bold" Typo="Typo.body1">Marital status :</MudText>
+                            </MudItem>
+                            <MudItem lg="8" md="8" sm="6" xs="12">
+                                <MudText Typo="Typo.body1">@ProdifeList.Dateofbirth1.ToString("dd-MM-yyyy")</MudText>
+                                <MudText Typo="Typo.body1">@ProdifeList.Relationship1</MudText>
+                                <MudText Typo="Typo.body1">@ProdifeList.Emergencycontact1</MudText>
+                                <MudText Typo="Typo.body1">@ProdifeList.Nationality1</MudText>
+                                <MudText Typo="Typo.body1">@ProdifeList.Religion1</MudText>
+                                <MudText Typo="Typo.body1">@ProdifeList.Maritalstatus1</MudText>
+                            </MudItem>
+                        </MudGrid>
+                    }
+                </MudCard>
+                <MudCard Class="mt-9">
+                    @foreach (var ProdifeList in ProfileList)
+                    {
+                        <MudGrid Class="mx-1">
+                            <MudItem lg="12" md="12" sm="12" xs="12" Class="edu">
+                                <MudCardHeader Class="Cardhead">
+                                    <CardHeaderContent>
+                                        <MudText Typo="Typo.h6">Bank Information</MudText>
+                                    </CardHeaderContent>
+                                </MudCardHeader>
+                            </MudItem>
+                        
+                            <MudItem lg="4" md="4" sm="6" xs="12">
+                                <MudText Class="fw-bold" Typo="Typo.body1">Bank Name :</MudText>
+                                <MudText Class="fw-bold" Typo="Typo.body1">Bank Account No :</MudText>
+                                <MudText Class="fw-bold" Typo="Typo.body1">IFSC Code :</MudText>
+                                <MudText Class="fw-bold" Typo="Typo.body1">PF Account No :</MudText>
+                               
+
+                            </MudItem>
+                            <MudItem lg="8" md="8" sm="6" xs="12">
+                                <MudText Typo="Typo.body1">@ProdifeList.Bankname1</MudText>
+                                <MudText Typo="Typo.body1">@ProdifeList.Accountnumber1</MudText>
+                                <MudText Typo="Typo.body1">@ProdifeList.Ifsccode1</MudText>
+                                <MudText Typo="Typo.body1">@ProdifeList.Pfaccount1</MudText>
+
+                            </MudItem>
+                        </MudGrid>
+                    }
+                </MudCard>
+               
+            </MudItem>
+
+            @foreach (var ProdifeList in ProfileList)
+            {
+            @* Educationa Information *@
+            <MudItem lg="6" md="6" sm="6" xs="12">
+                <MudCard Class="pb-6">
+                    <MudGrid Class="mx-1">
+                        <MudItem lg="12" md="12" sm="12" xs="12" Class="edu">
+                            <MudCardHeader Class="Cardhead">
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.h6">Educational Information</MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                        </MudItem>
+                        <MudItem lg="12" md="12" sm="12" xs="12">
+                            <MudTimeline>
+
+                                <MudTimelineItem Color="@MudBlazor.Color.Info" TimelineAlign="TimelineAlign.End">
+                                    <ItemOpposite>
+                                        <MudText Color="@MudBlazor.Color.Info" Typo="Typo.body1" GutterBottom="true">@ProdifeList.Pgcollegename1</MudText>
+                                        <MudText Typo="Typo.overline">@ProdifeList.Pgcoursename1</MudText>
+                                    </ItemOpposite>
+                                    <ItemContent>
+                                            <MudText Typo="Typo.button">@ProdifeList.Pgstartdate1.ToString("yyyy") - @ProdifeList.Pgenddate1.ToString("yyyy")</MudText>
+                                    </ItemContent>
+                                </MudTimelineItem>
+
+                                <MudTimelineItem Color="@MudBlazor.Color.Info" TimelineAlign="TimelineAlign.End">
+                                    <ItemOpposite>
+                                        <MudText Color="@MudBlazor.Color.Info" Typo="Typo.body1" GutterBottom="true">@ProdifeList.Ugcollagename1</MudText>
+                                        <MudText Typo="Typo.overline">@ProdifeList.Ugcoursename1</MudText>
+                                    </ItemOpposite>
+                                    <ItemContent>
+                                            <MudText Typo="Typo.button">@ProdifeList.Ugstartdate1.ToString("yyyy") - @ProdifeList.Ugenddate1.ToString("yyyy")</MudText>
+                                    </ItemContent>
+                                </MudTimelineItem>
+
+                                <MudTimelineItem Color="@MudBlazor.Color.Info" TimelineAlign="TimelineAlign.End">
+                                    <ItemOpposite>
+                                        <MudText Color="@MudBlazor.Color.Info" Typo="Typo.body1" GutterBottom="true">@ProdifeList.HSCschoolname1</MudText>
+                                        <MudText Typo="Typo.overline">@ProdifeList.HSCcoursename1</MudText>
+                                    </ItemOpposite>
+                                    <ItemContent>
+                                            <MudText Typo="Typo.button">@ProdifeList.HSCstartdate1.ToString("yyyy") - @ProdifeList.HSCenddate1.ToString("yyyy")</MudText>
+                                    </ItemContent>
+                                </MudTimelineItem>
+
+                                <MudTimelineItem Color="@MudBlazor.Color.Info" TimelineAlign="TimelineAlign.End">
+                                    <ItemOpposite>
+                                        <MudText Color="@MudBlazor.Color.Info" Typo="Typo.body1" GutterBottom="true">@ProdifeList.SSLCschoolname1</MudText>
+                                        <MudText Typo="Typo.overline">SSLC</MudText>
+                                    </ItemOpposite>
+                                    <ItemContent>
+                                            <MudText Typo="Typo.button">@ProdifeList.SSLCstartdate1.ToString("yyyy") - @ProdifeList.SSLCenddate1.ToString("yyyy")</MudText>
+                                    </ItemContent>
+                                </MudTimelineItem>
+
+
+                            </MudTimeline>
+                        </MudItem>
+                    </MudGrid>
+                </MudCard>
+            </MudItem>
+            }
+        </MudGrid>
+
+    </div>
+
+</MudContainer>
+
+
+
+
+<style>
+    .Cardhead {
+        background-color: #bfbaba;
+        color: black;
+        text-align: center;
+        height: 40px;
+    }
+
+    .edu {
+        padding-right: 7% !important;
+    }
+</style>

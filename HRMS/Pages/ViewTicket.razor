@@ -1,0 +1,204 @@
+﻿@page "/viewticket"
+
+@using HRMS.Components
+@using HRMS.Model
+@inherits BaseComponents;
+
+
+<MudItem Class="mt-4">
+    <MudContainer>
+
+        <MudGrid Class="my-3">
+            <MudItem xl="6" lg="6" md="6" sm="6" xs="12">
+                <MudText Typo="Typo.h4">View Tickets</MudText>
+
+            </MudItem>
+            <MudItem xl="6" lg="6" md="6" sm="6" xs="12">
+
+                <MudButton Class="buttonstyle" Style="float:right" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" OnClick="OpenDialog">
+                    Add Ticket
+                </MudButton>
+                <MudButton Class="mx-3 buttonstyle" Style="float:right" @onclick="GoBack" Variant="@MudBlazor.Variant.Filled"><MudIcon Icon="@Icons.Material.Filled.ArrowBackIosNew"></MudIcon></MudButton>
+            </MudItem>
+
+        </MudGrid>
+
+        <div class="my-4">
+            <MudDataGrid Items="@ticketModellist" T="TicketModel" Bordered=true Striped=true Hover=true>
+                <Columns>
+                    @foreach (var (project, index) in ticketModellist.Select((value, i) => (value, i)))
+                    {
+                        project.SNo = index + 1;
+                    }
+                    <PropertyColumn Property="x => x.SNo" Title="S.No" Sortable="false" Filterable="false" />
+                    <PropertyColumn Property="x => x.TicketId" Title="Ticket Id" />
+                    <PropertyColumn Property="x => x.TicketSubject" Title="Ticket Subject" />
+                    <PropertyColumn Property="x => x.FirstName" Title="Employee Name" />
+                    <PropertyColumn Property="x => x.RaiseDate" Title="Raise Date" Format="dd-MM-yyyy" />
+                    <PropertyColumn Property="x => x.Priority" Title="Priority" CellStyleFunc="@colorstyle" />
+                    <PropertyColumn Property="x => x.Status" Title="Status" CellStyleFunc="@colorstyle1" />
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="TicketModel" />
+                </PagerContent>
+            </MudDataGrid>
+        </div>
+    </MudContainer>
+</MudItem>
+
+<!-- #region TicketRaised Dialog Inline  -->
+
+<MudDialog @bind-IsVisible="visible" Options="dialogOptions">
+
+    <TitleContent>
+        <MudGrid Class="DialogHeader">
+            <MudItem lg="6" md="6" sm="6" xs="10">
+                <MudText Typo="Typo.h4">Add Ticket</MudText>
+            </MudItem>
+
+        </MudGrid>
+    </TitleContent>
+
+    <DialogContent>
+        <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+            <MudGrid>
+                <MudItem lg="6" md="6" sm="6" xs="12">
+                    <MudGrid>
+                        <MudItem lg="12" md="12" sm="12" xs="12">
+                            <MudText>Employee Code</MudText>
+                        </MudItem>
+                        <MudItem lg="12" md="12" sm="12" xs="12">
+                            <MudTextField T="string" @bind-Value="ticketModel.EmployeeCode" Placeholder="Employee Code" Variant="Variant.Outlined" Margin="Margin.Dense" ReadOnly></MudTextField>
+                        </MudItem>
+                        <MudItem lg="12" md="12" sm="12" xs="12">
+                            <MudText>Designation</MudText>
+                        </MudItem>
+                        <MudItem lg="12" md="12" sm="12" xs="12">
+                            <MudSelect T="string" @bind-Value="ticketModel.Designation" Placeholder="Designation" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense" ReadOnly>
+                                @foreach (var x in Designations)
+                                {
+                                    <MudSelectItem Value="@(x.DesignationName)" />
+                                }
+                            </MudSelect>
+                        </MudItem>
+                        <MudItem lg="12" md="12" sm="12" xs="12">
+                            <MudText>Priority<span style="padding:5px;color:red;">*</span></MudText>
+                        </MudItem>
+                        <MudItem lg="12" md="12" sm="12" xs="12">
+                            <MudSelect T="string" @bind-Value="ticketModel.Priority" Placeholder="Priority" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense" Clearable="true" Adornment="Adornment.End" AdornmentColor="@MudBlazor.Color.Primary" AdornmentIcon="@Icons.Material.Filled.KeyboardArrowDown">
+                                @foreach (var x in selectPriority)
+                                {
+                                    <MudSelectItem Value="@(x.Priority)" />
+                                }
+                            </MudSelect>
+                        </MudItem>
+
+                    </MudGrid>
+                </MudItem>
+                <MudItem lg="6" md="6" sm="6" xs="12">
+                    <MudGrid>
+                        <MudItem lg="12" md="12" sm="12" xs="12">
+                            <MudText>Employee Name</MudText>
+                        </MudItem>
+                        <MudItem lg="12" md="12" sm="12" xs="12">
+                            <MudTextField T="string" @bind-Value="ticketModel.FirstName" Placeholder="Name" Variant="Variant.Outlined" Margin="Margin.Dense" ReadOnly></MudTextField>
+                        </MudItem>
+                        <MudItem lg="12" md="12" sm="12" xs="12">
+                            <MudText>Ticket Subject<span style="padding:5px;color:red;">*</span></MudText>
+                        </MudItem>
+                        <MudItem lg="12" md="12" sm="12" xs="12">
+                            <MudSelect T="string" @bind-Value="ticketModel.TicketSubject" Placeholder="Ticket Subject" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense" Clearable="true" Adornment="Adornment.End" AdornmentColor="@MudBlazor.Color.Primary" AdornmentIcon="@Icons.Material.Filled.KeyboardArrowDown" Immediate="true">
+                                @foreach (var x in ticketSubjectList)
+                                {
+                                    <MudSelectItem Value="@(x.Subject)" />
+                                }
+
+                            </MudSelect>
+
+                        </MudItem>
+
+
+
+                    </MudGrid>
+                </MudItem>
+                <MudItem lg="12" md="12" sm="12" xs="12">
+                    <MudText>Description<span style="padding:5px;color:red;">*</span></MudText>
+                </MudItem>
+                <MudItem lg="12" md="12" sm="12" xs="12">
+                    <MudTextField @bind-Value="ticketModel.Description" T="string" Lines="4" Variant="Variant.Outlined" Placeholder="Optional" Required="true"></MudTextField>
+                </MudItem>
+
+
+                <MudItem Class="d-flex">
+                    <MudFileUpload T="IBrowserFile" For="@(() => TicketImage)" @bind-Files="TicketImage" Accept=".pdf , .jpg, .png" Required="true">
+
+                        <ButtonTemplate>
+                            <MudButton StartIcon="@Icons.Material.Outlined.FileUpload" HtmlTag="label" Class="buttonstyle" for="@context">Fille Upload</MudButton>
+                        </ButtonTemplate>
+                        <SelectedTemplate>
+                            @if (context != null && TicketImage != null)
+                            {
+                                <MudText Class="px-3" Style="display:inline">@context.Name (@($"{TicketImage.Size / 1000.00:0}") KB)</MudText>
+                            }
+                        </SelectedTemplate>
+
+                    </MudFileUpload>
+                    @{
+                        if (TicketImage != null)
+                        {
+                            try
+                            {
+                                if (TicketImage.Size <= 512 * 1024)
+                                {
+                                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".pdf" };
+                                    var extension = Path.GetExtension(TicketImage.Name).ToLower();
+
+                                    if (allowedExtensions.Contains(extension))
+                                    {
+                                        var buffers3 = new byte[TicketImage.Size];
+                                        TicketImage.OpenReadStream(512 * 1024).ReadAsync(buffers3);
+                                        ticketModel.AttachFile = TicketImage.Name;
+                                        ticketModel.FileContent3 = buffers3;
+                                    }
+                                    else
+                                    {
+                                        Snackbar.Add("File format not supported. Allowed formats are .jpg, .jpeg, .png, and .pdf.", Severity.Warning);
+                                        TicketImage = null;
+                                    }
+                                }
+                                else
+                                {
+                                    Snackbar.Add("File size must be below 512 KB.", Severity.Warning);
+                                    TicketImage = null;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Snackbar.Add(ex.Message);
+                            }
+                        }
+                    }
+                </MudItem>
+
+            </MudGrid>
+            <MudItem Class="Submit">
+                <MudButton Variant="Variant.Filled" Color="@MudBlazor.Color.Primary" Disabled="@(!success)" OnClick="Saves" Class="px-10">Submit</MudButton>
+            </MudItem>
+        </MudForm>
+    </DialogContent>
+</MudDialog>
+
+<!-- #endregion -->
+
+
+<style>
+    .mud-table-root .mud-table-head {
+        background-color: darkgray;
+    }
+
+    
+    .Submit{
+        float:right;
+        padding-bottom:3%;
+    }
+</style>

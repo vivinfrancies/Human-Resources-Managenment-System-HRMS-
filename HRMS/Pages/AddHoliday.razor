@@ -1,0 +1,83 @@
+﻿@inherits BaseComponents;
+@using HRMS.Components
+
+<MudDialog Class="height1">
+    <DialogContent>
+        <MudContainer>
+            <MudItem Class="d-flex">
+                <MudText Typo="Typo.h4">Add New Holidays</MudText>
+                <MudSpacer />
+                <MudIconButton Icon="@Icons.Material.Filled.Close" Color="@MudBlazor.Color.Error" OnClick="Cancel" />
+            </MudItem>
+        </MudContainer>
+        <MudContainer Class="mt-15">
+            <MudGrid>
+                @* Holiday Name *@
+                <MudItem lg="12" md="12" sm="12" xs="12">
+                    <MudGrid>
+                        <MudItem Class="star" lg="12" md="12" sm="12" xs="12">
+                            Holidays<span>*</span>
+                        </MudItem>
+                        <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                            <MudTextField T="String" @bind-Value="_holidayevent.HolidayName" Placeholder="Enter Holidays" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                        </MudItem>
+                    </MudGrid>
+                </MudItem>
+
+                @* Holiday Date *@
+                <MudItem lg="12" md="12" sm="12" xs="12">
+                    <MudGrid>
+                        <MudItem Class="star" lg="12" md="12" sm="12" xs="12">
+                            Date<span>*</span>
+                        </MudItem>
+                        <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                            <MudDatePicker Margin="Margin.Dense" Color="@MudBlazor.Color.Info" PickerVariant="PickerVariant.Dialog" Variant="Variant.Outlined" Placeholder="Select Date" Mask="@(new DateMask("0000-00-00"))" DateFormat="yyyy-MM-dd" @bind-Date="_holidayevent.HolidayNewDate" />
+                        </MudItem>
+                    </MudGrid>
+                </MudItem>
+
+                @* Holiday Day *@
+                <MudItem lg="12" md="12" sm="12" xs="12">
+                    <MudGrid>
+                        <MudItem Class="star" lg="12" md="12" sm="12" xs="12">
+                            Day <span>*</span>
+                        </MudItem>
+                        <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                            <MudDatePicker Margin="Margin.Dense" Color="@MudBlazor.Color.Info" Variant="Variant.Outlined" Placeholder="Select Date" DateFormat="dddd" ReadOnly="true" FixYear="@DateTime.Today.Year" @bind-Date="_holidayevent.HolidayNewDate" />
+                        </MudItem>
+                    </MudGrid>
+                </MudItem>
+
+
+                <MudItem lg="12" md="12" sm="12" xs="12" Class="py-2">
+                    <MudButton Class="buttonstyle btn1" OnClick="Saves">
+                        Submit
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudContainer>
+    </DialogContent>
+</MudDialog>
+
+<style>
+
+
+    .star span {
+        padding: 3px;
+        color: red;
+    }
+
+    .field {
+        margin-top: -25px;
+    }
+
+    .btn1 {
+        margin-top: 10px;
+        width: 50px;
+        margin-left: 85%;
+    }
+
+    .height1 {
+        max-height: 85%;
+    }
+</style>

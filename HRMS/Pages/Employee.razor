@@ -1,0 +1,110 @@
+﻿@page "/employee"
+@using HRMS.Components
+@inherits BaseComponents;
+
+<MudContainer>
+    <MudText Typo="Typo.h4" Class="mt-15 d-flex">
+        Employees
+        <MudSpacer />
+        <MudButton Variant="Variant.Outlined" Class="buttonstyle mr-2" @onclick="GoBack"><i class="fa-solid fa-chevron-left"></i></MudButton>
+
+    </MudText>
+    <MudGrid>
+        <MudItem lg="8" md="8" sm="8" xs="6">
+        </MudItem>
+        <MudItem lg="4" md="4" sm="4" xs="6" Class="mb-2 mt-3 d-flex">
+            <MudTooltip>
+                <ChildContent>
+                    <MudIconButton Icon="@Icons.Material.Outlined.Info" />
+                </ChildContent>
+                <TooltipContent>
+                    <MudText Typo="Typo.body2">Search by Name, </MudText>
+                </TooltipContent>
+            </MudTooltip>
+            <MudTextField @bind-Value="_searchString" Placeholder="Search" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="@MudBlazor.Size.Medium" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentColor="@MudBlazor.Color.Primary" Margin="Margin.Dense" Immediate=true></MudTextField>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+
+<MudContainer>
+    <MudDataGrid T="HRMS.Model.EmployeeList" Items="EmployeeListEvents" Hover="true" QuickFilter="@_quickFilter" Bordered=true RowsPerPage="5">
+        <Columns>
+            @foreach (var (project, index) in EmployeeListEvents.Select((value, i) => (value, i)))
+            {
+                project.Sno = index + 1;
+            }
+            <PropertyColumn Style="text-align:center" Title="Sno" Property="x=>x.Sno" Filterable="false" Sortable="false" />
+            <PropertyColumn Property="x =>x.Employeecode" Title="EMPID"></PropertyColumn>
+            <PropertyColumn Property="x => x.Firstname1 + x.Middlename1 + x.Lastname1" Title="Name"></PropertyColumn>
+            <PropertyColumn Property="x => x.Role1" Title="Role" />
+            <PropertyColumn Property="x => x.Email1" Title="Email" />
+            <PropertyColumn Property="x => x.Designation1" Title="Department" />
+            <PropertyColumn Property="x => x.Salary1" Title="Salary" />
+            <PropertyColumn Property="x => x.Dateofjoining" Title="Date of Joining" Format="dd-MM-yyyy" />
+            <PropertyColumn Property="x => x.Mobilenumber1" Title="Mobile" Filterable="false" Sortable="false" />
+            <TemplateColumn>
+                <CellTemplate>
+                    <MudIconButton Size="@MudBlazor.Size.Small" Icon="@Icons.Material.Filled.MoreVert" OnClick="() =>OpenDialog(context.Item.Firstname1)" />
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+        <PagerContent>
+            @if (!_quickFilter(EmployeeListEvents.FirstOrDefault()))
+            {
+                <MudItem Class="text-center">@_noResultsMessage</MudItem>
+            }
+            <MudDataGridPager T="HRMS.Model.EmployeeList"></MudDataGridPager>
+        </PagerContent>
+    </MudDataGrid>
+</MudContainer>
+
+<MudDialog @bind-IsVisible="visible" Options="dialogOptions">
+    <TitleContent>
+        <MudText Typo="Typo.h4">EMPLOYEE INFORMATION</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudGrid>
+            <MudItem lg="6" md="6" xs="12" sm="6">
+                <MudText>Name:</MudText>
+            </MudItem>
+            <MudItem lg="6" md="6" xs="12" sm="6">
+                <MudText>@_EmployeeList.Firstname1  @_EmployeeList.Middlename1  @_EmployeeList.Lastname1</MudText>
+            </MudItem>
+            <MudItem lg="6" md="6" xs="12" sm="6">
+                <MudText>Designation:</MudText>
+            </MudItem>
+            <MudItem lg="6" md="6" xs="12" sm="6">
+                <MudText>@_EmployeeList.Designation1</MudText>
+            </MudItem>
+            <MudItem lg="6" md="6" xs="12" sm="6">
+                <MudText>Date Of Joining:</MudText>
+            </MudItem>
+            <MudItem lg="6" md="6" xs="12" sm="6">
+                <MudText>@_EmployeeList.Dateofjoining?.ToString("dd-MM-yyyy")</MudText>
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="@MudBlazor.Color.Primary" OnClick="Submit" Class="px-10">Close</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+<style>
+    .searchicon {
+        float: right;
+    }
+
+    .mud-table-cell {
+        padding: 14px;
+    }
+
+    .mud-table-head {
+        padding: 12px;
+    }
+
+    .mud-table-root .mud-table-head {
+        background-color: darkgray;
+    }
+</style>

@@ -1,0 +1,162 @@
+﻿@page "/ReimbursementRequest"
+@using HRMS.Components
+@inherits BaseComponents;
+
+<MudContainer>
+	<MudItem Class="my-15 d-flex" Style="flex-wrap:wrap-reverse;">
+		<MudText Typo="Typo.h4">
+			Reimbursement Request
+		</MudText>
+		<MudSpacer />
+		<MudButton Variant="Variant.Outlined" Class="buttonstyle mr-2" @onclick="GoBack"><i class="fa-solid fa-chevron-left"></i></MudButton>
+	</MudItem>
+</MudContainer>
+
+<MudContainer>
+
+	<MudDataGrid Items="Reimburstmentrequesttable" T="HRMS.Model.Reimbursement" RowsPerPage="10" Filterable=false SortMode="@SortMode.None" Bordered=true Striped=true Hover=true Dense=true QuickFilter="@QuickFilterRequests" Style="border-radius:15px; margin-bottom:20px;" Class="datagrid">
+		<ToolBarContent>
+			<MudText Typo="Typo.h6" Class="toolbartitle">Pending Claim Request's</MudText>
+			<MudSpacer />
+			<MudItem Class="d-flex">
+				<MudTooltip Text="Search Data from the Table" Arrow="true" Placement="Placement.Left" Duration="1000" Color="MudBlazor.Color.Primary">
+					<MudIcon Icon="@Icons.Material.Outlined.Info" Size="@MudBlazor.Size.Medium" Class="mt-3 mr-1" />
+				</MudTooltip>
+				<MudTextField AdornmentColor="MudBlazor.Color.Primary" @bind-Value="@SearchRequests" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Outlined.Search" Immediate=true Variant="Variant.Outlined" Margin="Margin.Dense" Placeholder="Search Claim Request's"></MudTextField>
+			</MudItem>
+		</ToolBarContent>
+		<Columns>
+			<PropertyColumn Property="x => x.EmpCode" Title="Employee Code"></PropertyColumn>
+			<PropertyColumn Property="x => x.FirstName" Title="Employee Name"></PropertyColumn>
+			<PropertyColumn Property="x => x.Expensetypes" Title="Expense Type"></PropertyColumn>
+			<PropertyColumn Property="x => x.BillNo" Title="Bill Number"></PropertyColumn>
+			<PropertyColumn Property="x => x.BillDate" Title="Bill Date" Format="dd-MM-yyyy"></PropertyColumn>
+			<PropertyColumn Property="x => x.AppliedDate" Title="Applied Date" Format="dd-MM-yyyy"></PropertyColumn>
+			<TemplateColumn Title="Claim Amount">
+				<CellTemplate>
+					<MudText>₹ @context.Item.BillAmount</MudText>
+				</CellTemplate>
+			</TemplateColumn>
+			<TemplateColumn Title="Status" Sortable="true">
+				<CellTemplate>
+
+					@{
+						var status = context.Item.Status;
+						var color = status switch
+						{
+							"Pending" => @MudBlazor.Color.Warning,
+							"Approved" => @MudBlazor.Color.Success,
+							"Rejected" => @MudBlazor.Color.Error,
+							_ => @MudBlazor.Color.Default
+						};
+
+						if (context.Item.Status == "Approved" || context.Item.Status == "Rejected")
+						{
+							context.Item.Accpt = true;
+							context.Item.declin = true;
+						}
+
+						Reimburstmentrequesttable = Reimburstmentrequesttable
+						.OrderByDescending(x => x.Status == "Pending")
+						.ThenBy(x => x.Status == "Approved")
+						.ThenBy(x => x.Status == "Rejected")
+						.ToList();
+					}
+
+					<MudChip Style="@context.Item.color" Color="@color" Class="chiptext"><MudText>@context.Item.Status</MudText></MudChip>
+
+				</CellTemplate>
+			</TemplateColumn>
+
+			<TemplateColumn>
+				<CellTemplate>
+					<MudStack Row>
+
+						<MudTooltip Text="Approve Claim" Arrow="true" Placement="Placement.Left" Duration="1000" Color="MudBlazor.Color.Success">
+							<MudIconButton Icon="@Icons.Material.Filled.Done" Class="iconRadius mx-1" Variant="Variant.Filled" Color="@MudBlazor.Color.Success" Disabled="@context.Item.Accpt" OnClick="() => Approvebut(context.Item.Id)"></MudIconButton>
+						</MudTooltip>
+
+						<MudTooltip Text="Reject Claim" Arrow="true" Placement="Placement.Top" Duration="1000" Color="MudBlazor.Color.Error">
+							<MudIconButton Icon="@Icons.Material.Filled.Close" Class="iconRadius mx-1" Variant="Variant.Filled" Color="@MudBlazor.Color.Error" Disabled="@context.Item.Accpt" OnClick="() => Rejectbut(context.Item.Id)"></MudIconButton>
+						</MudTooltip>
+
+						<MudTooltip Text="Show Bill File" Arrow="true" Placement="Placement.Right" Duration="1000" Color="MudBlazor.Color.Primary">
+							<MudIconButton Icon="@Icons.Material.Filled.FileOpen" Class="iconRadius mx-1" Variant="Variant.Filled" Color="@MudBlazor.Color.Primary" OnClick="() => opendialogue(context.Item.Id)"></MudIconButton>
+						</MudTooltip>
+
+					</MudStack>
+				</CellTemplate>
+			</TemplateColumn>
+		</Columns>
+		<PagerContent>
+
+			@{
+				if (!QuickFilterRequests(Reimburstmentrequesttable.FirstOrDefault()))
+				{
+					<MudItem Class="text-center">No Data Found 📪</MudItem>
+				}
+			}
+
+			<MudDataGridPager T="HRMS.Model.Reimbursement"></MudDataGridPager>
+		</PagerContent>
+	</MudDataGrid>
+
+</MudContainer>
+<MudDialog @bind-IsVisible="Visible">
+	<TitleContent>
+		<MudText>
+			<MudIcon Icon="@Icons.Material.Filled.FileUpload" Class="mr-3" /> Attached Bill Slip
+		</MudText>
+	</TitleContent>
+
+	<DialogContent>
+		<MudChip Color="MudBlazor.Color.Primary">
+			<MudText>File Name : @reimbursement.Bill</MudText>
+		</MudChip>
+		<MudChip Color="MudBlazor.Color.Primary">
+			<MudText>Role :  @reimbursement.Roles</MudText>
+		</MudChip>
+	</DialogContent>
+
+	<DialogActions>
+		<MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary" OnClick="Submit" Class="px-10">Close</MudButton>
+	</DialogActions>
+</MudDialog>
+
+<style>
+	.mud-table-toolbar {
+		height: fit-content;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		margin: 5px;
+	}
+
+	.mud-table-pagination {
+		display: flex;
+	}
+
+	.mud-table-root .mud-table-head {
+		background-color: darkgray;
+	}
+
+	.mud-table-cell {
+		padding: 10px !important;
+	}
+
+	.downloadfile {
+		color: darkgray;
+	}
+
+	.chiptext {
+		color: white;
+	}
+
+	.mud-table-cell {
+		overflow-wrap: anywhere;
+	}
+
+	.iconRadius {
+		border-radius: 50% !important;
+	}
+</style>

@@ -1,0 +1,230 @@
+﻿@page "/CompanyPolicy"
+@using HRMS.Components
+@inherits BaseComponents;
+
+
+<MudContainer>
+
+	<MudText Typo="Typo.h4" Class="mt-15 d-flex" Style="flex-wrap:wrap-reverse;">
+		Company Policy's
+		<MudSpacer />
+		<MudButton Variant="Variant.Outlined" Class="buttonstyle mr-2" @onclick="GoBack"><i class="fa-solid fa-chevron-left"></i></MudButton>
+	</MudText>
+
+	<MudPaper Style="text-align:justify">
+		<MudItem Class="m-4">
+			<MudText Typo="Typo.h4" Class="fontstyle">Policy Introduction</MudText>
+
+			<MudContainer>
+				<MudText Typo="Typo.body1" Class="fontstyle my-3"> <span style="color:#9d4edd"> > </span> A company’s policies serve as a framework that outlines the expectations, procedures, and guidelines for behavior and actions in various scenarios within the organization. They are crucial as they ensure consistency, promote fairness, enhance efficiency, and help in compliance with legal regulations.</MudText>
+				<MudText Typo="Typo.body1" Class="fontstyle my-3"> <span style="color:#9d4edd"> > </span> Company policies are essentially a set of rules that establish formal expectations for the responsibilities of employees and the company. They may regulate different aspects of the employer-employee relationship, such as health and safety, communication, work schedule, compensation and benefits, and more.</MudText>
+				<MudText Typo="Typo.body1" Class="fontstyle my-3"> <span style="color:#9d4edd"> > </span> The primary goal of having policies in place is to minimize the risk of legal issues and other severe consequences for the company and its employees. In some countries, certain company policies are required by law.</MudText>
+				<MudText Typo="Typo.body1" Class="fontstyle my-3"> <span style="color:#9d4edd"> > </span> All the company policies are usually collected in an employee handbook. An employee handbook is a document that organizes the company’s policies and procedures, mission, vision, and values. This is a lengthy resource a new hire should get familiar with during their first days at work.</MudText>
+
+				<MudGrid>
+					<MudItem lg="12" Style="text-align:center;">
+						<MudText Typo="Typo.h6" Class="fontstyle">1. Leave Policy's</MudText>
+						<MudText Typo="Typo.h6" Class="fontstyle">2. Reimbursement Policy's</MudText>
+					</MudItem>
+				</MudGrid>
+			</MudContainer>
+
+		</MudItem>
+	</MudPaper>
+
+
+	@* Leave Policy *@
+	<MudPaper Style="text-align:justify; padding-bottom:20px;">
+		<MudItem Class="m-4">
+			<MudText Typo="Typo.h5" Class="fontstyle">1. Leave Policy's</MudText>
+		</MudItem>
+
+		<MudContainer Class="mb-4">
+			<MudItem Class="mx-4 my-3" Style="text-align:center">
+				<MudText Typo="Typo.button" Class="fontstyle my-3"> A company’s leave policy is a set of guidelines and procedures that determine how employees can take time off and for which reasons. Here are some key components that are typically included in a leave policy:</MudText>
+			</MudItem>
+
+			<MudItem Class="mx-4 my-3">
+				<MudText Typo="Typo.body2" Class="fontstyle my-3"> <span style="color:#9d4edd"> 1 . </span> Eligibility and Application Requirements: Clear guidelines on who is eligible for leave and how to apply for it.</MudText>
+			</MudItem>
+
+			<MudItem Class="mx-4 my-3">
+				<MudText Typo="Typo.body2" Class="fontstyle my-3"> <span style="color:#9d4edd"> 2 . </span> Types of Leaves: The policy should outline the various types of leaves available, such as earned leave, casual leave, sick leave, maternity leave, and leave without pay. </MudText>
+			</MudItem>
+
+			<MudItem Class="mx-4 my-3">
+				<MudText Typo="Typo.body2" Class="fontstyle my-3"> <span style="color:#9d4edd"> 3 . </span> Leave Rules: The policy should specify rules for various aspects like granting of leave, eligibility, availing, encashment, etc. </MudText>
+			</MudItem>
+
+			<MudItem Class="mx-4 my-3">
+				<MudText Typo="Typo.body2" Class="fontstyle my-3"> <span style="color:#9d4edd"> 4 . </span> Weekend Policy: The policy should include rules for weekends. </MudText>
+			</MudItem>
+
+			<MudItem Class="mx-4 my-3">
+				<MudText Typo="Typo.body2" Class="fontstyle my-3"> <span style="color:#9d4edd"> 5 . </span> Public Holidays: The policy should include a list of public holidays for the year. <MudLink Href="/holiday"><MudText Typo="Typo.caption">View Public Holidays</MudText></MudLink></MudText>
+			</MudItem>
+
+			<MudItem Class="mx-4 my-3">
+				<MudText Typo="Typo.body2" Class="fontstyle my-3"> <span style="color:#9d4edd"> 6 . </span> Pay and Benefits: Information on the amount of notice required before taking a leave and the process for providing such notice. Details regarding pay and benefits during the leave period should also be included. </MudText>
+			</MudItem>
+
+
+			<MudItem>
+
+				<MudDataGrid Dense=true Striped=true Bordered=true Hover=true T="HRMS.Model.Reimbursement" Items="leavelimitview">
+
+					<Columns>
+						<PropertyColumn Property="x =>x.Roles" Title="Employee Role" IsEditable=false></PropertyColumn>
+						<PropertyColumn Property="x =>x.LeaveLimit" Title="Allocated Leave's"></PropertyColumn>
+
+
+						@if (User.RoleId == 1 || User.RoleId == 3)
+						{
+							<TemplateColumn>
+								<CellTemplate>
+									<MudTooltip Text="Click here to Edit Leave Limit" Placement="Placement.Right" Arrow="true" Duration="1000">
+										<MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => OpenDialog(context.Item.Roles)"></MudIconButton>
+
+									</MudTooltip>
+								</CellTemplate>
+							</TemplateColumn>
+						}
+					</Columns>
+
+				</MudDataGrid>
+
+				<MudDialog @bind-IsVisible="Visible">
+					<TitleContent>
+						<MudText Typo="Typo.h6">
+							<MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3" /> Edit Leave Basket
+						</MudText>
+					</TitleContent>
+
+					<DialogContent>
+						<MudItem>
+							<MudTextField T="int?" @bind-Value="Reimbursement.LeaveLimit" Variant="Variant.Outlined"></MudTextField>
+						</MudItem>
+					</DialogContent>
+					<DialogActions>
+						<MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary" OnClick="Submit">Submit</MudButton>
+					</DialogActions>
+
+				</MudDialog>
+
+
+			</MudItem>
+
+
+		</MudContainer>
+
+	</MudPaper>
+
+
+	@* Reimburstment Policy *@
+	<MudPaper Style="text-align:justify; padding-bottom:20px;">
+		<MudItem Class="m-4">
+			<MudText Typo="Typo.h5" Class="fontstyle">2.Reimbursement Policy's</MudText>
+		</MudItem>
+
+		<MudContainer>
+			<MudItem Class="mx-4 my-3" Style="text-align:center">
+				<MudText Typo="Typo.button" Class="fontstyle my-3">  A company’s reimbursement policy outlines the procedures for reimbursing employees for work-related expenses. Here are some key components that are typically included in a reimbursement policy:</MudText>
+			</MudItem>
+
+			<MudItem Class="mx-4 my-3">
+				<MudText Typo="Typo.body2" Class="fontstyle my-3"> <span style="color:#9d4edd"> 1 . </span> Eligibility and Application Requirements: Clear guidelines on who is eligible for reimbursement and how to apply for it. </MudText>
+			</MudItem>
+
+			<MudItem Class="mx-4 my-3">
+				<MudText Typo="Typo.body2" Class="fontstyle my-3"> <span style="color:#9d4edd"> 2 . </span> Types of Leaves: The policy should outline the various types of leaves available, such as earned leave, casual leave, sick leave, maternity leave, and leave without pay. </MudText>
+			</MudItem>
+
+			<MudItem Class="mx-4 my-3">
+				<MudText Typo="Typo.body2" Class="fontstyle my-3"> <span style="color:#9d4edd"> 3 . </span> Types of Expenses: The policy should outline the various types of expenses that are eligible for reimbursement, such as travel expenses, food expenditures, accommodations, training, medical, etc.</MudText>
+			</MudItem>
+
+			<MudItem Class="mx-4 my-3">
+				<MudText Typo="Typo.body2" Class="fontstyle my-3"> <span style="color:#9d4edd"> 4 . </span> Non-reimbursable Expenses: The policy should specify which expenses are not eligible for reimbursement. </MudText>
+			</MudItem>
+
+			<MudItem Class="mx-4 my-3">
+				<MudText Typo="Typo.body2" Class="fontstyle my-3"> <span style="color:#9d4edd"> 5 . </span> Employee Responsibilities: The policy should outline the employee’s responsibilities while spending money on behalf of the organization. </MudText>
+			</MudItem>
+
+			<MudItem Class="mx-4 my-3">
+				<MudText Typo="Typo.body2" Class="fontstyle my-3"> <span style="color:#9d4edd"> 6 . </span> Approver’s Responsibilities: The policy should outline the responsibilities of the person/department who is approving and processing the expenditures. </MudText>
+			</MudItem>
+
+			<MudItem Class="mx-4 my-3">
+				<MudText Typo="Typo.body2" Class="fontstyle my-3"> <span style="color:#9d4edd"> 7 . </span> Procedure for Reimbursement: The policy should outline the steps to be followed by the employees and approvers while processing any reimbursement on behalf of the organization. </MudText>
+			</MudItem>
+
+			<MudItem Class="mx-4 my-3">
+
+				<MudDataGrid T="HRMS.Model.Reimbursement" Items="expenselimitview" Dense=true Bordered=true Hover=true Striped=true>
+					<Columns>
+
+						<PropertyColumn Property="x=> x.Roles" Title="Role"></PropertyColumn>
+						<TemplateColumn Title="Internet Limit (₹)">
+							<CellTemplate>
+								<MudText>₹ @context.Item.InternetLimit</MudText>
+							</CellTemplate>
+						</TemplateColumn>
+
+						<TemplateColumn Title="Travel Limit (₹)">
+							<CellTemplate>
+								<MudText>₹ @context.Item.TravelLimit</MudText>
+							</CellTemplate>
+						</TemplateColumn>
+
+						@if (User.RoleId == 1 || User.RoleId == 3)
+						{
+							<TemplateColumn>
+								<CellTemplate>
+									<MudTooltip Text="Click here to Edit Expense Limit" Placement="Placement.Right" Arrow="true" Duration="1000">
+										<MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() => OpenDialog2(context.Item.Roles)"></MudIconButton>
+									</MudTooltip>
+								</CellTemplate>
+							</TemplateColumn>
+						}
+
+					</Columns>
+				</MudDataGrid>
+
+				<MudDialog @bind-IsVisible="Visible2">
+					<TitleContent>
+						<MudText Typo="Typo.h6">
+							<MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3" /> Edit Reimbursement Policy
+						</MudText>
+					</TitleContent>
+
+					<DialogContent>
+						<MudText Typo="Typo.button">Internet</MudText>
+						<MudTextField T="int?" @bind-Value="Reimbursement.InternetLimit" Variant="Variant.Outlined"></MudTextField>
+						<MudText Typo="Typo.button">Travel</MudText>
+						<MudTextField T="int?" @bind-Value="Reimbursement.TravelLimit" Variant="Variant.Outlined"></MudTextField>
+
+					</DialogContent>
+
+					<DialogActions>
+						<MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Primary" OnClick="Submitt">Submit</MudButton>
+					</DialogActions>
+				</MudDialog>
+
+
+			</MudItem>
+
+
+		</MudContainer>
+
+	</MudPaper>
+</MudContainer>
+
+
+
+
+<style>
+	.mud-table-root .mud-table-head {
+		background-color: darkgray;
+	}
+</style>

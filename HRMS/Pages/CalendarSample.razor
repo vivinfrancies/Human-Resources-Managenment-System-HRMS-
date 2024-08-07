@@ -1,0 +1,12 @@
+﻿@page "/"
+
+@using Heron.MudCalendar
+@using HRMS.Components
+@inherits BaseComponents
+@layout EmptyLayout
+
+<MudCalendar />
+
+@code {
+  private DateTime selectedDate = DateTime.Now;
+}

@@ -1,0 +1,283 @@
+﻿@page "/approve"
+@using MudExtensions
+@using HRMS.Components
+@inherits BaseComponents
+
+<MudContainer Class="mt-7 mb-5">
+	<MudGrid Class="mt-7 leave">
+		<MudItem lg="6" md="6" sm="6" xs="12">
+			<h4 class="leavelist "> Leave Mangement</h4>
+		</MudItem>
+		<MudItem Class="btnleave" lg="6" md="6" sm="6" xs="12">
+			<MudButton Variant="Variant.Outlined" Class="buttonstyle mr-2" @onclick="GoBack"><i class="fa-solid fa-chevron-left"></i></MudButton>
+			<MudButton Class="buttonstyle" @onclick="OpenDialog" StartIcon="@Icons.Material.Filled.Add" Variant="Variant.Filled">Apply</MudButton>
+		</MudItem>
+	</MudGrid>
+</MudContainer>
+
+
+<MudContainer>
+	<MudGrid>
+		@foreach (var item in chartmodel)
+		{
+
+			<MudItem lg="4" md="4" xs="12" sm="6">
+				<MudPaper Class="piechart p-4">
+					<MudGrid>
+						<MudItem lg="6" md="6" sm="6" xs="6">
+							<MudText Class="mx-2" Style="font-size:15px;font-weight:bold;">@item.LeaveTypename</MudText>
+						</MudItem>
+						<MudItem lg="6" md="6" sm="6" xs="6">
+							<MudText Class="ms-2 mt-1" Style="font-size:15px;padding-left:10px;"> Consumed Leaves</MudText>
+							<MudText Class="ms-2" Style="font-fize:30px;padding-left:10px;">@item.Leave Days</MudText>
+						</MudItem>
+					</MudGrid>
+
+				</MudPaper>
+			</MudItem>
+		}
+
+
+		<MudItem lg="4" md="4" xs="12" sm="6">
+			<MudPaper Class="piechart p-4">
+				<MudGrid>
+					@foreach (var item in AnnualLeaveCount)
+					{
+						if (item.Leavedetails == "Taken Leave")
+						{
+							<MudItem lg="6" md="6" sm="6" xs="6">
+								<MudText Class="ms-2 mt-1" Style="font-size:15px;font-weight:bold;padding-left:10px;">@item.Leavedetails</MudText>
+								<MudText Class="mx-2 px-4 ms-2">@item.EmpLeave Days</MudText>
+							</MudItem>
+
+						}
+					}
+					@foreach (var item in AnnualLeaveCount)
+					{
+						if (item.Leavedetails == "Remaining Leave")
+						{
+							<MudItem lg="6" md="6" sm="6" xs="6">
+								<MudText Class="ms-2 mt-1" Style="font-size:15px;font-weight:bold;padding-left:10px;">@item.Leavedetails</MudText>
+								<MudText Class="mx-2 px-4 ms-2">@item.EmpTotalLeave Days</MudText>
+							</MudItem>
+
+						}
+					}
+				</MudGrid>
+			</MudPaper>
+		</MudItem>
+	</MudGrid>
+
+
+	<MudGrid>
+		<MudItem Class="leavehistory" lg="12" md="12" xs="12" sm="12">
+			<MudText Class="leavetype" Style="font-size:20px;">Leave History</MudText>
+		</MudItem>
+		<MudItem lg="12" md="12" xs="12" sm="12">
+			<MudDataGrid Class="tablestyle" T="HRMS.Model.ListModel" Items="@SingleLeaveList" Hover="true" Bordered=true RowsPerPage="5">
+				<Columns>
+					<PropertyColumn Property="x => x.Leavetypename" Title="Leave type" Style="font-style:bold;" />
+					<PropertyColumn Property="x => x.StartDate" Title="Startdate" Format="dd-MM-yyyy" />
+					<PropertyColumn Property="x => x.EndDate" Title="End date" Format="dd-MM-yyyy" />
+					<PropertyColumn Property="x => x.Reason" Title="Reason" />
+					<PropertyColumn Property="x => x.Status" Title="Status" CellStyleFunc="@statuscolor" />
+
+					<TemplateColumn Title="Edit" Filterable="false" Sortable="false">
+
+						<CellTemplate>
+							@{
+								var status = context.Item.Status;
+								if (context.Item.Status == "Accepted" || context.Item.Status == "Rejected")
+								{
+									context.Item.Accept = true;
+								}
+
+								SingleLeaveList = SingleLeaveList
+								.OrderByDescending(x => x.Status == "Pending")
+								.ThenBy(x => x.Status == "Accepted")
+								.ThenBy(x => x.Status == "Rejected")
+								.ToList();
+							}
+							<MudIconButton Icon="@Icons.Material.Outlined.Edit" Disabled="@context.Item.Accept" OnClick="() =>OpenInLineDialog(context.Item.ID)"></MudIconButton>
+						</CellTemplate>
+					</TemplateColumn>
+				</Columns>
+				<PagerContent>
+					<MudDataGridPager T="HRMS.Model.ListModel"></MudDataGridPager>
+				</PagerContent>
+			</MudDataGrid>
+		</MudItem>
+	</MudGrid>
+</MudContainer>
+
+<MudDialog @bind-IsVisible="@value">
+	<DialogContent>
+		<MudGrid Class="form">
+			<MudItem xs="10" sm="10" md="10" lg="10">
+				<MudText Typo="Typo.h5">Leave Application</MudText>
+			</MudItem>
+			<MudItem xs="2" sm="2" md="2" lg="2">
+				<MudIconButton Icon="@Icons.Material.Filled.Close" Style="color:red;float:right;" OnClick="Cancel"></MudIconButton>
+			</MudItem>
+			<MudItem xs="12" sm="6" md="6" lg="6">
+				<MudText>Start Date <span class="requriedcolor">*</span></MudText>
+				<MudStack>
+					<MudDatePicker Margin="Margin.Dense" Color="@MudBlazor.Color.Info" Variant="Variant.Outlined" Placeholder="Select Start Date" Mask="@(new DateMask("0000-00-00"))" MinDate="DateTime.Now" DateFormat="yyyy-MM-dd" @bind-Date="Employeeleave.StartDate" />
+				</MudStack>
+			</MudItem>
+
+			<MudItem xs="12" sm="6" md="6" lg="6">
+				<MudText>End Date<span class="requriedcolor">*</span></MudText>
+				<MudDatePicker Placeholder="End Date" Variant="Variant.Outlined" Margin="Margin.Dense" Required="true" PickerVariant="PickerVariant.Dialog" Mask="@(new DateMask("0000-00-00"))" MinDate="DateTime.Now" DateFormat="yyyy-MM-dd" @bind-Date="@Employeeleave.EndDate"></MudDatePicker>
+			</MudItem>
+
+			<MudItem xs="12" sm="6" md="6" lg="6">
+				<MudText>Leave Type<span class="requriedcolor">*</span></MudText>
+				<MudSelect Placeholder="Leave Type" T="int" @bind-Value="Employeeleave.leavetypeid" Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.KeyboardArrowDown" FullWidth="true" Margin="Margin.Dense" Required="true">
+					@foreach (var x in leaveTypeapprove)
+					{
+						<MudSelectItem Style="height:40px;" Value="@(x.Id)">@x.LeaveName</MudSelectItem>
+					}
+
+				</MudSelect>
+			</MudItem>
+			<MudItem xs="12" sm="12" md="12" lg="12">
+				<MudText>Reason<span class="requriedcolor">*</span></MudText>
+				<MudTextField Placeholder="Reason" T="String" Required="true" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="@Employeeleave.Reason"></MudTextField>
+			</MudItem>
+		</MudGrid>
+	</DialogContent>
+	<DialogActions>
+		<MudButton Color="@MudBlazor.Color.Primary" OnClick="EditSaves" Variant="@MudBlazor.Variant.Filled">Submit</MudButton>
+	</DialogActions>
+</MudDialog>
+
+<MudDialog @bind-IsVisible="@value1">
+	<DialogContent>
+		<MudForm @bind-isvalid="@submit" @ref="form">
+			<MudGrid Class="form">
+
+				<MudItem xs="10" sm="10" md="10" lg="10">
+					<MudText Typo="Typo.h5">Leave Application</MudText>
+				</MudItem>
+
+				<MudItem xs="2" sm="2" md="2" lg="2">
+					<MudIconButton Icon="@Icons.Material.Filled.Close" Style="color:red;float:right;" OnClick="closeApplyLeave"></MudIconButton>
+				</MudItem>
+
+				<MudItem xs="12" sm="6" md="6" lg="6">
+					<MudText>Start Date <span class="requriedcolor">*</span></MudText>
+					<MudStack>
+						<MudDatePicker Margin="Margin.Dense" Color="@MudBlazor.Color.Info" Variant="Variant.Outlined" Placeholder="Select Start Date" Mask="@(new DateMask("0000-00-00"))" MinDate="DateTime.Now" DateFormat="yyyy-MM-dd" @bind-Date="leaveEvent1.Startdate" />
+					</MudStack>
+				</MudItem>
+
+				<MudItem xs="12" sm="6" md="6" lg="6">
+					<MudText>End Date<span class="requriedcolor">*</span></MudText>
+					<MudDatePicker Placeholder="End Date" Variant="Variant.Outlined" Margin="Margin.Dense" Required="true" PickerVariant="PickerVariant.Dialog" Mask="@(new DateMask("0000-00-00"))" MinDate="DateTime.Now" DateFormat="yyyy-MM-dd" @bind-Date="@leaveEvent1.Enddate"></MudDatePicker>
+				</MudItem>
+
+				<MudItem xs="12" sm="6" md="6" lg="6">
+					<MudText>Leave Type<span class="requriedcolor">*</span></MudText>
+					<MudSelect Placeholder="Leave Type" T="int" @bind-Value="LeaveId.Id" Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.KeyboardArrowDown" FullWidth="true" Margin="Margin.Dense" Required="true">
+						@foreach (var x in leaveTypeapprove)
+						{
+							<MudSelectItem Style="height:40px;" Value="@(x.Id)">@x.LeaveName</MudSelectItem>
+						}
+					</MudSelect>
+				</MudItem>
+
+				<MudItem xs="12" sm="12" md="12" lg="12">
+					<MudText>Reason<span class="requriedcolor">*</span></MudText>
+					<MudTextField Placeholder="Reason" T="String" Required="true" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="@leaveEvent1.Reason"></MudTextField>
+				</MudItem>
+
+				<MudItem xs="12" sm="12" md="12" lg="12">
+					<MudText>Detailed Reason<span class="requriedcolor">*</span></MudText>
+					<MudTextField Placeholder="Detailed Reason" T="String" Required="true" Variant="Variant.Outlined" Lines=2 Margin="Margin.Dense" @bind-Value="@leaveEvent1.Detailedreason"></MudTextField>
+				</MudItem>
+
+			</MudGrid>
+		</MudForm>
+	</DialogContent>
+	<DialogActions>
+		<MudButton Color="@MudBlazor.Color.Primary" OnClick="Saves" Variant="@MudBlazor.Variant.Filled" Disabled="@(!submit)">Submit</MudButton>
+	</DialogActions>
+</MudDialog>
+
+<style>
+	.btnleave {
+		display: flex;
+		justify-content: end;
+	}
+
+	@@media(max-width:767px) {
+		.leave {
+			flex-flow: column-reverse;
+		}
+
+		.btnleave {
+			display: flex;
+			justify-content: space-between;
+		}
+	}
+
+	.leavetype {
+		font-weight: 400;
+		text-align: center;
+		padding-top: 5px;
+		padding-bottom: 5px;
+	}
+
+	.leavehistory {
+		display: flex;
+		justify-content: space-between;
+	}
+
+
+	.datepicker {
+		justify-content: center;
+		diaplay: flex;
+		align-items: center;
+		text-align: center;
+		align-self: center;
+	}
+
+	.mud-table-cell {
+		padding: 9px;
+	}
+
+	.mud-grid-spacing-xs-3 > .mud-grid-item {
+		padding: 9px;
+	}
+
+	.mud-table-root .mud-table-head .mud-table-cell {
+		font-weight: bold;
+	}
+
+	.mud-table-root .mud-table-head {
+		background-color: darkgray;
+	}
+
+	.donutstyle {
+		color: black;
+		transition: 0.4s ease-in-out;
+	}
+
+		.donutstyle:hover {
+			scale: 1.03;
+			transition: 0.4s ease-in-out;
+			cursor: pointer;
+		}
+</style>
+
+<style>
+	.form {
+		overflow-x: hidden;
+	}
+
+	.requriedcolor {
+		color: red;
+		margin-left: 4px;
+	}
+</style>

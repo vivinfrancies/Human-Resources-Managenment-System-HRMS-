@@ -1,0 +1,362 @@
+﻿@page "/generateslip/{ID:int}"
+@* @page "/generateslip"*@
+@using System.Net.Http.Json
+@using System.Net.Http
+@inherits BaseComponents
+@using HRMS.Model
+@using HRMS.Components;
+
+<MudContainer MaxWidth="MaxWidth.Medium">
+    <MudGrid Class="mt-7">
+        <MudItem lg="9" md="9" sm="9" xs="9">
+            <MudText  Class="payslip">Payslip</MudText>
+        </MudItem>
+        <MudItem Style="justify-content: end; display: flex;" lg="3" md="3" sm="3" xs="3">
+            <MudButton Variant="Variant.Outlined" Class="buttonstyle mr-2" @onclick="GoBack"><i class="fa-solid fa-chevron-left"></i></MudButton>
+        </MudItem>
+    </MudGrid>
+   
+    <MudPaper Class="mb-5 p-2 mt-5 pb-16 payslip-container">
+        <MudContainer>
+            <MudGrid Class="mt-4">
+                <MudItem lg="10" md="10" sm="10" xs="7">
+                    <MudText Typo=Typo.h4>Bytes Technologies</MudText>
+                    <MudText Typo=Typo.caption>Tex Park Road, Nehru Nagar West, Coimbatore, Tamil Nadu 641014</MudText>
+                </MudItem>
+                <MudItem lg="2" md="2" sm="2" xs="5">
+                    <MudImage Style="height:auto;width:100px" Src="images/appbar/BytesTech.png"></MudImage>
+                </MudItem>
+            </MudGrid>
+            <MudDivider Class="divider"></MudDivider>
+            <MudItem>
+                <MudText Class="payslipheading" Style="font-weight:500;font-size:20px">Payslip for the month of @DateTime.Now.ToString("MMMM yyyy")</MudText>
+                <MudText Class="payslipheading" Style="font-weight:400;font-size:15px">Employee Payroll Summary</MudText>
+            </MudItem>
+            <MudGrid Class="mt-4 mb-4">
+                <MudItem lg="6" md="6" sm="6" xs="12">
+                    @foreach (var x in payslipdetails)
+                    {
+                        <MudGrid>
+                            <MudItem lg="5" md="5" sm="5" xs="5">
+                                <MudInputLabel Class="empinput">Employee Name:</MudInputLabel>
+                            </MudItem>
+                            <MudItem lg="7" md="7" sm="7" xs="7">
+                                <MudText>@x.EmployeeName</MudText>
+                            </MudItem>
+                            <MudItem lg="5" md="5" sm="5" xs="5">
+                                <MudInputLabel Class="empinput">Designation:</MudInputLabel>
+                            </MudItem>
+                            <MudItem lg="7" md="7" sm="7" xs="7">
+                                <MudText>@x.Designation</MudText>
+                            </MudItem>
+                            <MudItem lg="5" md="5" sm="5" xs="5">
+                                <MudInputLabel Class="empinput">PF A/C Number:</MudInputLabel>
+                            </MudItem>
+                            <MudItem lg="7" md="7" sm="7" xs="7">
+                                <MudText>@x.PFAccount</MudText>
+                            </MudItem>
+                            <MudItem lg="5" md="5" sm="5" xs="5">
+                                <MudInputLabel Class="empinput">Bank Account No:</MudInputLabel>
+                            </MudItem>
+                            <MudItem lg="7" md="7" sm="7" xs="7">
+                                <MudText>@x.AccountNumber</MudText>
+                            </MudItem>
+                        </MudGrid>
+                    }
+                </MudItem>
+                <MudItem lg="6" md="6" sm="6" xs="12">
+                    @foreach (var x in payslipdetails)
+                    {
+                        <MudGrid>
+                            <MudItem lg="5" md="5" sm="5" xs="5">
+                                <MudInputLabel Class="empinput">Employee Id:</MudInputLabel>
+                            </MudItem>
+                            <MudItem lg="7" md="7" sm="7" xs="7">
+                                <MudText>@x.EmployeeCode</MudText>
+                            </MudItem>
+                            <MudItem lg="5" md="5" sm="5" xs="5">
+                                <MudInputLabel Class="empinput">Bank Name:</MudInputLabel>
+                            </MudItem>
+                            <MudItem lg="7" md="7" sm="7" xs="7">
+                                <MudText>@x.BankName</MudText>
+                            </MudItem>
+                            <MudItem lg="5" md="5" sm="5" xs="5">
+                                <MudInputLabel Class="empinput">Date of Joining:</MudInputLabel>
+                            </MudItem>
+                            <MudItem lg="7" md="7" sm="7" xs="7">
+                                <MudText>@x.DateOfJoining.ToString("dd-MM-yyyy")</MudText>
+                            </MudItem>
+                        </MudGrid>
+                    }
+                </MudItem>
+            </MudGrid>
+            <MudDivider Class="divider"></MudDivider>
+            <MudGrid Class="mt-4 mb-4">
+                <MudItem lg="6" md="6" sm="6" xs="12">
+                    @foreach (var x in payslipdetails)
+                    {
+                        <MudGrid>
+
+                            <MudItem Class="salaryheading" lg="6" md="6" sm="6" xs="6">
+                                <MudText Class="heading">Earnings</MudText>
+                            </MudItem>
+                            <MudItem Class="salaryheading" lg="3" md="3" sm="3" xs="3">
+                                <MudText Class="heading">Amount</MudText>
+                            </MudItem>
+                            <MudItem Class="salaryheading" lg="3" md="3" sm="3" xs="3">
+                                <MudText Class="heading">YTD</MudText>
+                            </MudItem>
+                            <MudItem lg="6" md="6" sm="6" xs="6">
+                                <MudText Class="empinput">Basic</MudText>
+                            </MudItem>
+                            <MudItem lg="3" md="3" sm="3" xs="3">
+                                <MudText>@x.BasicSalary</MudText>
+                            </MudItem>
+                            <MudItem lg="3" md="3" sm="3" xs="3">
+                                <MudText>@(x.BasicSalary * 12)</MudText>
+                            </MudItem>
+                            <MudItem lg="6" md="6" sm="6" xs="6">
+                                <MudText Class="empinput">House Rent</MudText>
+                            </MudItem>
+                            <MudItem lg="3" md="3" sm="3" xs="3">
+                                <MudText>@x.HouseRent</MudText>
+                            </MudItem>
+                            <MudItem lg="3" md="3" sm="3" xs="3">
+                                <MudText>@(x.HouseRent * 12)</MudText>
+                            </MudItem>
+                            <MudItem lg="6" md="6" sm="6" xs="6">
+                                <MudText Class="empinput">Conveyance</MudText>
+                            </MudItem>
+                            <MudItem lg="3" md="3" sm="3" xs="3">
+                                <MudText>@x.Conveyance</MudText>
+                            </MudItem>
+                            <MudItem lg="3" md="3" sm="3" xs="3">
+                                <MudText>@(x.Conveyance * 12)</MudText>
+                            </MudItem>
+                            <MudItem lg="6" md="6" sm="6" xs="6">
+                                <MudText Class="empinput">Other Allowance</MudText>
+                            </MudItem>
+                            <MudItem lg="3" md="3" sm="3" xs="3">
+                                <MudText>@x.OtherAllowance</MudText>
+                            </MudItem>
+                            <MudItem lg="3" md="3" sm="3" xs="3">
+                                <MudText>@(x.OtherAllowance * 12)</MudText>
+                            </MudItem>
+
+                        </MudGrid>
+                    }
+
+                </MudItem>
+                <MudItem lg="6" md="6" sm="6" xs="12">
+                    @foreach (var x in payslipdetails)
+                    {
+                        <MudGrid>
+                            <MudItem Class="salaryheading" lg="6" md="6" sm="6" xs="6">
+                                <MudText Class="heading">Deductions</MudText>
+                            </MudItem>
+                            <MudItem Class="salaryheading" lg="3" md="3" sm="3" xs="3">
+                                <MudText Class="heading">Amount</MudText>
+                            </MudItem>
+                            <MudItem Class="salaryheading" lg="3" md="3" sm="3" xs="3">
+                                <MudText Class="heading">YTD</MudText>
+                            </MudItem>
+                            <MudItem lg="6" md="6" sm="6" xs="6">
+                                <MudText Class="empinput">ESI</MudText>
+                            </MudItem>
+                            <MudItem lg="3" md="3" sm="3" xs="3">
+                                <MudText>@x.ESI</MudText>
+                            </MudItem>
+                            <MudItem lg="3" md="3" sm="3" xs="3">
+                                <MudText>@(x.ESI * 12)</MudText>
+                            </MudItem>
+                            <MudItem lg="6" md="6" sm="6" xs="6">
+                                <MudText Class="empinput">Tax</MudText>
+                            </MudItem>
+                            <MudItem lg="3" md="3" sm="3" xs="3">
+                                <MudText>@x.Tax</MudText>
+                            </MudItem>
+                            <MudItem lg="3" md="3" sm="3" xs="3">
+                                <MudText>@(x.Tax * 12)</MudText>
+                            </MudItem>
+                            <MudItem lg="6" md="6" sm="6" xs="6">
+                                <MudText Class="empinput">PF</MudText>
+                            </MudItem>
+                            @* check here *@
+                            <MudItem lg="3" md="3" sm="3" xs="3">
+                                <MudText>@x.PF</MudText>
+                            </MudItem>
+                            <MudItem lg="3" md="3" sm="3" xs="3">
+                                <MudText>@(x.PF * 12)</MudText>
+                            </MudItem>
+                            <MudItem lg="6" md="6" sm="6" xs="6">
+                                <MudText Class="empinput">Others</MudText>
+                            </MudItem>
+                            <MudItem lg="3" md="3" sm="3" xs="3">
+                                <MudText>@x.Others</MudText>
+                            </MudItem>
+                            <MudItem lg="3" md="3" sm="3" xs="3">
+                                <MudText>@(x.Others * 12)</MudText>
+                            </MudItem>
+                        </MudGrid>
+                    }
+
+                </MudItem>
+            </MudGrid>
+            <MudGrid>
+                @foreach (var x in payslipdetails)
+                {
+                    <MudItem lg="6" md="6" sm="6" xs="6">
+                        <MudDivider Class="divider"></MudDivider>
+                        <MudGrid Class="mt-2">
+                            <MudItem Class="empinput" lg="6" md="6" sm="6" xs="6">
+                                <MudText Class="empinput">Gross Earnings</MudText>
+                            </MudItem>
+                            <MudItem Class="empinput" lg="6" md="6" sm="6" xs="6">
+                                <MudText Class="empinput">@x.TotalEarnings</MudText>
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+                    <MudItem lg="6" md="6" sm="6" xs="6">
+                        <MudDivider Class="divider"></MudDivider>
+                        <MudGrid Class="mt-2">
+                            <MudItem Class="empinput" lg="6" md="6" sm="6" xs="6">
+                                <MudText Class="empinput">Gross Deductions</MudText>
+                            </MudItem>
+                            <MudItem Class="empinput" lg="6" md="6" sm="6" xs="6">
+                                <MudText Class="empinput">@x.TotalDeductions</MudText>
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+                }
+            </MudGrid>
+            <MudDivider Class="divider mt-3"></MudDivider>
+
+
+            <MudGrid Class="mt-4">
+                @foreach (var x in payslipdetails)
+                {
+                    <MudItem Class="salaryheading" lg="9" md="9" sm="9" xs="9">
+                        <MudText Class="heading">Reimbursement</MudText>
+                    </MudItem>
+                    <MudItem Class="salaryheading" lg="3" md="3" sm="3" xs="3">
+                        <MudText Class="heading">Amount</MudText>
+                    </MudItem>
+                    
+                    <MudItem lg="9" md="9" sm="9" xs="9">
+                        <MudText Class="empinput">Reimbursement</MudText>
+                    </MudItem>
+                    <MudItem lg="3" md="3" sm="3" xs="3">
+                        <MudText>@x.Reimbursement</MudText>
+                    </MudItem>
+                   
+                }
+            </MudGrid>
+            <MudDivider Class="divider mt-4"></MudDivider>
+            @foreach (var x in payslipdetails)
+            {
+                <MudGrid Class="mt-2">
+                    <MudItem lg="9" md="9" sm="9" xs="9">
+                        <MudText Class="empinput">Total Reimbursement</MudText>
+                    </MudItem>
+                    <MudItem lg="3" md="3" sm="3" xs="3">
+                        <MudText Class="empinput">@x.Reimbursement</MudText>
+                    </MudItem>
+                </MudGrid>
+            }
+
+            @foreach (var x in payslipdetails)
+            {
+                <MudItem Class="Totalnetsalary mt-9 mb-9">
+                    <div Class="salary">
+                        <MudText Class="Netsalary">Total Net Payable Rs @x.NetSalary <span class="amountinwords">(@ConvertToWords(@x.NetSalary)Rupees Only)</span></MudText>
+                        <MudText Class="netformula">Total Netpayable=(Gross Earnings-Gross Deductions+Reimbursement)</MudText>
+                    </div>
+                </MudItem>
+
+            }
+
+            @* print *@
+
+            <MudGrid>
+                <MudItem Class="download" lg="12" md="12" xs="12" sm="12">
+                    <MudButton OnClick="DownloadPDF" Class="print">Print</MudButton>
+                </MudItem>
+            </MudGrid>
+
+        </MudContainer>
+    </MudPaper>
+</MudContainer>
+
+@code {
+
+
+}
+
+<style>
+    .payslipheading {
+        padding-top: 20px;
+    }
+
+    .payslip {
+        font-weight: bold;
+        font-size: 20px;
+    }
+
+    .divider {
+        border-width: 1px;
+        border-color: black !important;
+    }
+
+    .empinput {
+        font-weight: 700;
+        font-size: 17px;
+    }
+
+    .salaryheading {
+        background-color: #e9d1f0;
+    }
+
+    .heading {
+        font-weight: 700;
+        font-size: 18px;
+    }
+
+    .Netsalary {
+        font-size: 20px;
+        font-weight: 700;
+        color: #4B0082;
+    }
+
+    .amountinwords {
+        font-size: 12px;
+    }
+
+    .Totalnetsalary {
+        border: 3px solid #e9d1f0;
+        border-style: dotted;
+        width: 100%;
+        text-align: center;
+    }
+
+    .netformula {
+        font-size: 10px;
+        color: grey;
+    }
+
+    .salary {
+        margin: 20px;
+    }
+
+    .download {
+        text-align: center;
+        align-items: center;
+        align-content: center;
+        display: flex;
+        justify-content: center;
+    }
+
+    .print {
+        background-color: #4B0082;
+        color: white;
+    }
+</style>

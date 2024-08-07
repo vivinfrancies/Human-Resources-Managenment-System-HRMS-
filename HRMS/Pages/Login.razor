@@ -1,0 +1,116 @@
+﻿@page "/"
+
+@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+
+@using HRMS.Components
+@inherits BaseComponents
+@layout EmptyLayout
+@inject HttpClient HttpClient
+
+
+<MudGrid Class="display">
+	<MudItem Class="d-flex align-center justify-center mud-width-full" Style="flex-direction:column;">
+		<MudPaper Class="p-5">
+			<MudItem hidden="@_loginDetails">
+				<MudItem Class="mb-3">
+					<MudText Typo="Typo.h4" Style="text-align:center">Login</MudText>
+				</MudItem>
+				<MudForm @ref="form">
+
+					<MudGrid Spacing="0" Class="mb-5">
+						<MudItem xxl="12" xl="12" lg="12" md="12" sm="12" xs="12">
+							<MudText>Empolyee ID</MudText>
+						</MudItem>
+						<MudItem xxl="12" xl="12" lg="12" md="12" sm="12" xs="12">
+							<MudTextField T=string @bind-Value="_login.UserName" Margin="Margin.Dense" Placeholder="Employee ID" Variant="Variant.Outlined" Required=true></MudTextField>
+						</MudItem>
+					</MudGrid>
+
+					<MudGrid Spacing="0" Class="mb-5">
+						<MudItem xxl="12" xl="12" lg="12" md="12" sm="12" xs="12">
+							<MudText>Password</MudText>
+						</MudItem>
+						<MudItem xxl="12" xl="12" lg="12" md="12" sm="12" xs="12">
+							<MudTextField T=string @bind-Value="_login.Password" Margin="Margin.Dense" Placeholder="Password" Variant="Variant.Outlined" InputType="@PasswordInput" Required=true Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="ButtonTestclick" AdornmentAriaLabel="Show Password" />
+						</MudItem>
+						<MudLink Class="mt-2" Style="float:right" Href="/forgetpass">Forget Password?</MudLink>
+					</MudGrid>
+					<MudText Typo="Typo.caption" Style="color:red">@error</MudText>
+
+					<MudGrid>
+						<MudItem xxl="12" xl="12" lg="12" md="12" sm="12" xs="12">
+							<MudItem Class="d-flex align-content-end justify-content-end">
+								<MudButton Class="buttonstyle" Variant="Variant.Outlined" OnClick="LoginDetails">Submit</MudButton>
+							</MudItem>
+						</MudItem>
+					</MudGrid>
+
+				</MudForm>
+
+			</MudItem>
+			<MudItem hidden="@_newuserpass" Class="mb-3">
+				<MudItem Class="mb-3">
+					<MudText Typo="Typo.h4" Style="text-align:center">Set Password</MudText>
+				</MudItem>
+				<MudForm @ref="form" @bind-IsValid="@success">
+					<MudGrid Spacing="0" Class="mb-5">
+						<MudItem xxl="12" xl="12" lg="12" md="12" sm="12" xs="12">
+							<MudText>New Password</MudText>
+						</MudItem>
+						<MudItem xxl="12" xl="12" lg="12" md="12" sm="12" xs="12">
+							<MudTextField T="string" @bind-Value="@_Pass" Margin="Margin.Dense" Placeholder="New Password" Variant="Variant.Outlined" InputType="@PasswordInput1" Required=true @ref="pwField1" Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength1))" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon1" OnAdornmentClick="ButtonTestclick1" AdornmentAriaLabel="Show Password" />
+						</MudItem>
+					</MudGrid>
+
+					<MudGrid Spacing="0">
+						<MudItem xxl="12" xl="12" lg="12" md="12" sm="12" xs="12">
+							<MudText>Confirm Password</MudText>
+						</MudItem>
+						<MudItem xxl="12" xl="12" lg="12" md="12" sm="12" xs="12">
+							<MudTextField T=string @bind-Value="@_login.NewPassword" Margin="Margin.Dense" Placeholder="Re-Enter Password" Variant="Variant.Outlined" InputType="@PasswordInput2" Required=true Validation="@(new Func<string, string>(PasswordMatch))" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon2" OnAdornmentClick="ButtonTestclick2" AdornmentAriaLabel="Show Password" />
+						</MudItem>
+					</MudGrid>
+
+				</MudForm>
+				<MudGrid>
+					<MudItem xxl="12" xl="12" lg="12" md="12" sm="12" xs="12">
+						<MudItem Class="d-flex align-content-end justify-content-end">
+							<MudButton Class="buttonstyle" Variant="Variant.Outlined" Disabled="@(!success)" OnClick="SetPassword">Set Password</MudButton>
+						</MudItem>
+					</MudItem>
+				</MudGrid>
+			</MudItem>
+
+
+		</MudPaper>
+	</MudItem>
+
+</MudGrid>
+
+
+
+
+
+
+
+<style>
+	.error {
+		color: red;
+		text-align: center;
+	}
+
+	.display {
+		height: 90vh;
+		width: 100vw;
+	}
+
+	.reg {
+		--mud-palette-primary: red;
+		text-decoration: none;
+	}
+
+	.appbardis {
+		display: none;
+	}
+</style>

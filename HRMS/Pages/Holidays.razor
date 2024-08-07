@@ -1,0 +1,257 @@
+﻿@page "/holiday"
+@using HRMS.Components
+@using HRMS.Model
+@inherits BaseComponents;
+
+<MudContainer Class="mb-3">
+    <MudText Typo="Typo.h4" Class="mt-15 d-flex">
+        Official Holidays
+        <MudSpacer />
+        <MudButton Variant="Variant.Outlined" Class="buttonstyle mr-2" @onclick="GoBack"><i class="fa-solid fa-chevron-left"></i></MudButton>
+        @if (User.RoleId == 1 || User.RoleId == 2)
+        {
+            <MudButton Variant="Variant.Outlined" Class="buttonstyle" StartIcon="@Icons.Material.Filled.Add" @onclick="OpenDialog">Add Holidays</MudButton>
+        }
+    </MudText>
+</MudContainer>
+
+
+
+@*Holiday  table *@
+<MudContainer Class="mb-14">
+    <MudDataGrid Bordered=true T="HRMS.Model.Holiday" RowsPerPage="100" Hover="true" Striped="true" Items="@holidayEvents" SortMode="SortMode.Multiple" QuickFilter="@_quickFilter" Filterable="false" Hideable="true">
+
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Holidays List</MudText>
+            <MudSpacer />
+            <MudItem Class="d-flex">
+                <MudTooltip Text="Search Any Holidays Name or Day">
+                    <MudIcon Icon="@Icons.Material.Outlined.Info" Size="@MudBlazor.Size.Medium" Class="mt-3 mr-1" />
+                </MudTooltip>
+                <MudTextField Style="width:100%" Margin="Margin.Dense" Variant="Variant.Outlined" @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" Immediate="true"
+                              AdornmentColor="@MudBlazor.Color.Primary" IconSize="@MudBlazor.Size.Medium" />
+            </MudItem>
+        </ToolBarContent>
+        <Columns>
+
+            <PropertyColumn Style="text-align:center" Title="Sno" Property="x=>x.Sno" Filterable="false" Sortable="false" />
+            <PropertyColumn Style="text-align:center" Title="Holidays" Property="x=>x.HolidayName" Filterable="false" Sortable="false" />
+            <PropertyColumn Style="text-align:center" Title="Date" Property="x=>x.HolidayNewDate" Format="dd-MM-yyyy" Filterable="false" Sortable="false" />
+            <PropertyColumn Style="text-align:center" Title="Day" Property="x=>x.HolidayDay" Filterable="false" Sortable="false" />
+            @if (User.RoleId == 1 || User.RoleId == 2)
+            {
+                <TemplateColumn Title="Edit" Filterable="false" Sortable="false">
+                    <CellTemplate>
+                        <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() =>OpenInLineDialog(context.Item.Id)"></MudIconButton>
+                    </CellTemplate>
+                </TemplateColumn>
+
+                <TemplateColumn Filterable="false" Sortable="false">
+                    <CellTemplate>
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="MudBlazor.Color.Error" OnClick="() =>OpenInLineDeleteDialog(context.Item.Id)"></MudIconButton>
+                    </CellTemplate>
+                </TemplateColumn>
+            }
+
+        </Columns>
+        <PagerContent>
+            <MudGrid>
+                <MudItem lg="12">
+                    @if (!_quickFilter(holidayEvents.FirstOrDefault()))
+                    {
+                        <MudItem Class="text-center"><b>@_searchString1</b></MudItem>
+                    }
+
+                </MudItem>
+            </MudGrid>
+        </PagerContent>
+    </MudDataGrid>
+</MudContainer>
+
+
+
+
+<MudDialog @bind-IsVisible="visible" Class="height1">
+
+    <TitleContent>
+        <MudGrid>
+            <MudItem lg="10" md="10" xs="8" sm="8">
+                <MudText Typo="Typo.h4">Holiday Details</MudText>
+            </MudItem>
+            <MudItem xs="4" sm="4" md="2" lg="2">
+                <MudIconButton Icon="@Icons.Material.Filled.Close" Style="color:red;float:right;" OnClick="Close" />
+            </MudItem>
+        </MudGrid>
+    </TitleContent>
+    <DialogContent>
+        <MudGrid>
+
+            @* Holiday Name *@
+            <MudItem lg="12" md="12" sm="12" xs="12">
+                <MudGrid>
+                    <MudItem Class="star" lg="12" md="12" sm="12" xs="12">
+                        Holidays<span>*</span>
+                    </MudItem>
+                    <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                        <MudTextField T="String" Placeholder="Enter Holidays" @bind-Value="_holiday.HolidayName" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+
+            @* Holiday Date *@
+            <MudItem lg="12" md="12" sm="12" xs="12">
+                <MudGrid>
+                    <MudItem Class="star" lg="12" md="12" sm="12" xs="12">
+                        Date<span>*</span>
+                    </MudItem>
+                    <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                        <MudDatePicker Margin="Margin.Dense" Color="@MudBlazor.Color.Info" Variant="Variant.Outlined" PickerVariant="PickerVariant.Dialog" Placeholder="Select Date" Mask="@(new DateMask("0000-00-00"))" DateFormat="yyyy-MM-dd" @bind-Date="_holiday.HolidayNewDate" />
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+
+
+            @* Holiday Day *@
+            <MudItem lg="12" md="12" sm="12" xs="12">
+                <MudGrid>
+                    <MudItem Class="star" lg="12" md="12" sm="12" xs="12">
+                        Day <span>*</span>
+                    </MudItem>
+                    <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                        <MudDatePicker Margin="Margin.Dense" Color="@MudBlazor.Color.Info" Variant="Variant.Outlined" DateFormat="dddd" ReadOnly="true" @bind-Date="_holiday.HolidayNewDate" />
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+
+            <MudItem lg="12" md="12" sm="12" xs="12">
+                <MudButton Class="btncolor btn1" Variant="Variant.Filled" Color="MudBlazor.Color.Primary" OnClick="Submit">Submit</MudButton>
+            </MudItem>
+
+        </MudGrid>
+    </DialogContent>
+
+
+</MudDialog>
+
+
+<MudDialog @bind-IsVisible="visible1" Class="height1">
+    <DialogContent>
+        <MudContainer>
+            <MudItem Class="d-flex">
+                <MudText Typo="Typo.h4">Add New Holidays</MudText>
+                <MudSpacer />
+                <MudIconButton Icon="@Icons.Material.Filled.Close" Color="@MudBlazor.Color.Error" OnClick="CloseDialog" />
+            </MudItem>
+        </MudContainer>
+        <MudContainer Class="mt-15 mb-5">
+            <MudGrid>
+                @* Holiday Name *@
+                <MudItem lg="12" md="12" sm="12" xs="12">
+                    <MudGrid>
+                        <MudItem Class="star" lg="12" md="12" sm="12" xs="12">
+                            Holidays<span>*</span>
+                        </MudItem>
+                        <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                            <MudTextField T="String" @bind-Value="_holiday.HolidayName" Placeholder="Enter Holidays" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                        </MudItem>
+                    </MudGrid>
+                </MudItem>
+
+                @* Holiday Date *@
+                <MudItem lg="12" md="12" sm="12" xs="12">
+                    <MudGrid>
+                        <MudItem Class="star" lg="12" md="12" sm="12" xs="12">
+                            Date<span>*</span>
+                        </MudItem>
+                        <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                            <MudDatePicker Margin="Margin.Dense" Color="@MudBlazor.Color.Info" PickerVariant="PickerVariant.Dialog" Variant="Variant.Outlined" Placeholder="Select Date" Mask="@(new DateMask("0000-00-00"))" DateFormat="yyyy-MM-dd" @bind-Date="_holiday.HolidayNewDate" />
+                        </MudItem>
+                    </MudGrid>
+                </MudItem>
+
+                @* Holiday Day *@
+                <MudItem lg="12" md="12" sm="12" xs="12">
+                    <MudGrid>
+                        <MudItem Class="star" lg="12" md="12" sm="12" xs="12">
+                            Day <span>*</span>
+                        </MudItem>
+                        <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                            <MudDatePicker Margin="Margin.Dense" Color="@MudBlazor.Color.Info" Variant="Variant.Outlined" Placeholder="Select Date" DateFormat="dddd" ReadOnly="true" FixYear="@DateTime.Today.Year" @bind-Date="_holiday.HolidayNewDate" />
+                        </MudItem>
+                    </MudGrid>
+                </MudItem>
+
+
+                <MudItem lg="12" md="12" sm="12" xs="12" Class="py-2">
+                    <MudButton Class="buttonstyle btn1" OnClick="Saves">
+                        Submit
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudContainer>
+    </DialogContent>
+</MudDialog>
+
+
+
+<MudDialog @bind-IsVisible="visible2">
+    <TitleContent>
+        <MudGrid>
+            <MudItem lg="10" md="10" xs="8" sm="8">
+                <MudText Typo="Typo.h4">Delete</MudText>
+            </MudItem>
+            <MudItem xs="4" sm="4" md="2" lg="2">
+                <MudIconButton Icon="@Icons.Material.Filled.Close" Style="color:red;float:right;" OnClick="CloseDeleteDialog" />
+            </MudItem>
+        </MudGrid>
+    </TitleContent>
+    <DialogContent>
+        <MudText>Do you really want to delete the Holiday of @_holiday.HolidayName?</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Class="mb-1 pb-1" Variant="Variant.Filled" Color="MudBlazor.Color.Primary" OnClick="CloseDeleteDialog">Cancel</MudButton>
+        <MudButton Class="mb-1 pb-1" Variant="Variant.Filled" Color="MudBlazor.Color.Error" OnClick="Delete">Delete</MudButton>
+    </DialogActions>
+</MudDialog>
+
+<style>
+    .star span {
+        padding: 3px;
+        color: red;
+    }
+
+    .field {
+        margin-top: -25px;
+    }
+
+    .btn1 {
+        float: right;
+    }
+
+    .height1 {
+        max-height: 85%;
+    }
+
+    .table {
+        margin-top: 50px;
+    }
+
+    .topsearch {
+        margin-top: 50px;
+    }
+
+    .mud-table-head {
+        padding: 12px;
+    }
+
+    .mud-table-root .mud-table-head {
+        background-color: darkgray;
+    }
+
+    .table > :not(caption) > > {
+        padding: 0;
+        background-color: var(--bs-table-bg);
+        border-bottom-width: 0px;
+        box-shadow: 0;
+    }
+</style>

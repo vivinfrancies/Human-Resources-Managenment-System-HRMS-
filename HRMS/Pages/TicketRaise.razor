@@ -1,0 +1,128 @@
+﻿@page "/ticketraise"
+@using HRMS.Components
+@inherits BaseComponents;
+
+<MudDialog>
+    <DialogContent>
+
+        <MudGrid Class="DialogHeader">
+            <MudItem lg="6" md="6" sm="6" xs="10">
+                <MudText Typo="Typo.h4">Add Ticket</MudText>
+            </MudItem>
+            <MudItem lg="6" md="6" sm="6" xs="2" Class="d-flex justify-content-end align-content-end">
+                <MudIconButton Icon="@Icons.Material.Filled.Close" Color="@MudBlazor.Color.Error" OnClick="Cancel"></MudIconButton>
+            </MudItem>
+        </MudGrid>
+        <MudGrid>
+            <MudItem lg="6" md="6" sm="6" xs="12">
+                <MudGrid>
+                    <MudItem lg="12" md="12" sm="12" xs="12">
+                        <MudText>Employee Name<span style="padding:5px;color:red;">*</span></MudText>
+                    </MudItem>
+                    <MudItem lg="12" md="12" sm="12" xs="12">
+                        <MudTextField T="string" Placeholder="Name" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                    </MudItem>
+                    <MudItem lg="12" md="12" sm="12" xs="12">
+                        <MudText>Ticket Subject<span style="padding:5px;color:red;">*</span></MudText>
+                    </MudItem>
+                    <MudItem lg="12" md="12" sm="12" xs="12">
+                        <MudTextField T="string" Variant="Variant.Outlined" Placeholder="Subject" Margin="Margin.Dense"></MudTextField>
+                    </MudItem>
+
+                </MudGrid>
+            </MudItem>
+            <MudItem lg="6" md="6" sm="6" xs="12">
+                <MudGrid>
+                    <MudItem lg="12" md="12" sm="12" xs="12">
+                        <MudText>Department<span style="padding:5px;color:red;">*</span></MudText>
+                    </MudItem>
+                    <MudItem lg="12" md="12" sm="12" xs="12">
+                        <MudSelect T="string" Placeholder="Department" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense">
+                            <MudSelectItem T="string" Value="@("Front-end Developer")" />
+                            <MudSelectItem T="string" Value="@("Back-end Developer")" />
+                            <MudSelectItem T="string" Value="@("UI Designer")" />
+                            <MudSelectItem T="string" Value="@("Marketing")" />
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem lg="12" md="12" sm="12" xs="12">
+                        <MudText>Priority<span style="padding:5px;color:red;">*</span></MudText>
+                    </MudItem>
+                    <MudItem lg="12" md="12" sm="12" xs="12">
+                        <MudSelect T="string" Placeholder="Priority" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Margin="Margin.Dense">
+                            <MudSelectItem T="string" Value="@("High")" />
+                            <MudSelectItem T="string" Value="@("Medium")" />
+                            <MudSelectItem T="string" Value="@("Low")" />
+                        </MudSelect>
+                    </MudItem>
+
+                </MudGrid>
+            </MudItem>
+            <MudItem lg="12" md="12" sm="12" xs="12">
+                <MudText>Description</MudText>
+            </MudItem>
+            <MudItem lg="12" md="12" sm="12" xs="12">
+                <MudTextField T="string" Lines="4" Variant="Variant.Outlined" Placeholder="Optional"></MudTextField>
+            </MudItem>
+          
+            <MudItem Class="d-flex">
+                <MudItem>
+                    <MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles">
+                        <ButtonTemplate>
+                            <MudButton HtmlTag="label"
+                                       Variant="Variant.Filled"
+                                       Color="@MudBlazor.Color.Primary"
+                                       StartIcon="@Icons.Material.Filled.CloudUpload"
+                                       for="@context.Id">
+                                Upload Files
+                            </MudButton>
+                        </ButtonTemplate>
+                    </MudFileUpload>
+                    <MudItem>
+                        @if (files != null)
+                        {
+                            <MudText Typo="@Typo.h6">@files.Count() File@(files.Count() == 1 ? "" : "s"):</MudText>
+                            <MudList>
+                                @foreach (var file in files)
+                                {
+                                    <MudListItem Icon="@Icons.Material.Filled.AttachFile" @key="@file">
+                                        @file.Name <code>@file.Size bytes</code>
+                                    </MudListItem>
+                                }
+                            </MudList>
+                        }
+                    </MudItem>
+                </MudItem>
+            </MudItem>
+
+
+
+            <MudItem lg="12" md="12" sm="12" xs="12" Class="d-flex justify-content-end align-content-end">
+                <MudButton Variant="Variant.Filled" Color="@MudBlazor.Color.Primary" OnClick="Submit">Submit</MudButton>
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+}
+
+@code
+{
+    IList<IBrowserFile> files = new List<IBrowserFile>();
+    private void UploadFiles(IBrowserFile file)
+    {
+        files.Add(file);
+    }
+}
+
+
+
+<style>
+    .DialogHeader {
+        margin-bottom: 20px;
+    }
+</style>

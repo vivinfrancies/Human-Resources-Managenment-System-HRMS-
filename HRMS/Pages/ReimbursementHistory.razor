@@ -1,0 +1,116 @@
+﻿@page "/ReimbursementHistory"
+@using HRMS.Components
+@inherits BaseComponents;
+
+<MudContainer>
+
+	<MudGrid Class="d-flex" Style="margin: unset; flex-wrap:wrap-reverse">
+		<MudItem>
+			<MudText><h1 class="Pagetitle">Reimbursement Claim's </h1></MudText>
+		</MudItem>
+
+		<MudSpacer />
+
+		<MudItem Class="m-2" Style="align-content:center; flex-wrap: wrap;">
+			<MudButton Variant="Variant.Filled" Class="buttonstyle" @onclick="GoBack">
+				<i class="fa-solid fa-angle-left"></i>
+			</MudButton>
+
+			<MudButton Variant="Variant.Filled" Class="buttonstyle" Href="/ReimbursementS" StartIcon="@Icons.Material.Outlined.Add">Apply Reimbursement</MudButton>
+		</MudItem>
+
+	</MudGrid>
+
+</MudContainer>
+
+<MudContainer>
+
+	<MudDataGrid Items="Personalhistory" T="HRMS.Model.Reimbursement" RowsPerPage="10" Hover=true Bordered=true Striped=true Dense=false QuickFilter="@_quickFilter" Style="border-radius:15px; margin-bottom:20px;">
+
+		<ToolBarContent>
+
+			<MudItem>
+
+				<MudItem Class="d-flex m-2" Style="align-content:center;">
+					<MudItem Class="m-2" Style="align-content:center;">
+						<MudAvatar Style="height:70px; width:70px;">
+							<MudImage Src="" Alt="Profile Image"></MudImage>
+						</MudAvatar>
+					</MudItem>
+					<MudItem Class="mx-1" Style="align-content:center;">
+						<MudText Class="Employeename"><h5 style="margin-bottom: 3px;">@User.FullName</h5></MudText>
+						<MudDivider Style="--mud-palette-divider: black; border-width:3px; border-radius: 15px;" />
+						<MudText Class="EmployeeID">EMP Code : @User.UserName</MudText>
+					</MudItem>
+				</MudItem>
+
+			</MudItem>
+
+			<MudSpacer />
+
+			<MudItem Class="d-flex">
+				<MudTooltip Text="Search Data from the Table" Placement="Placement.Left" Duration="1000" Color="MudBlazor.Color.Primary">
+					<MudIcon Icon="@Icons.Material.Outlined.Info" Size="@MudBlazor.Size.Medium" Class="mt-3 mr-1" />
+				</MudTooltip>
+				<MudTextField @bind-Value="@_searchString" Variant="Variant.Outlined" Margin="Margin.Dense" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.Search" AdornmentColor="@MudBlazor.Color.Dark" Immediate="true" Style="max-width:max-content;"></MudTextField>
+			</MudItem>
+
+		</ToolBarContent>
+
+		<Columns>
+			<PropertyColumn Property="x=>x.Id" Title="Claim ID" Filterable="false" Sortable="false"></PropertyColumn>
+			<PropertyColumn Property="x=>x.BillDate" Title="Bill Date" Format="dd-MM-yyyy"></PropertyColumn>
+			<PropertyColumn Property="x=>x.Expensetypes" Title="Expense Type"></PropertyColumn>
+			<PropertyColumn Property="x=>x.Status" Title="Status" CellStyleFunc="@Expensebg"></PropertyColumn>
+			<TemplateColumn Title="Claim Amount">
+				<CellTemplate>
+					<MudText>₹  @context.Item.BillAmount</MudText>
+				</CellTemplate>
+			</TemplateColumn>
+
+		</Columns>
+
+		<PagerContent>
+
+			@{
+				if (!_quickFilter(Personalhistory.FirstOrDefault()))
+				{
+					<MudItem Class="text-center">No Data Found 📪</MudItem>
+				}
+			}
+
+			<MudDataGridPager T="HRMS.Model.Reimbursement"></MudDataGridPager>
+		</PagerContent>
+
+	</MudDataGrid>
+
+</MudContainer>
+
+
+
+
+<style>
+	.mud-table-root .mud-table-head {
+		background-color: darkgray;
+	}
+
+	.mud-table-toolbar {
+		height: fit-content;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		margin: 5px;
+	}
+
+	.mud-grid-item {
+		margin-top: 0px !important;
+		margin-bottom: 0px !important;
+		align-content: center;
+		padding-top: 2px;
+	}
+
+	.buttonstyle {
+		margin: 3px;
+	}
+
+</style>

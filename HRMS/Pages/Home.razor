@@ -1,0 +1,248 @@
+﻿@page "/Home"
+@using HRMS.Components
+@inherits BaseComponents
+<MudContainer Class="mt-7 mb-5">
+    <MudGrid Class="mt-7 leave">
+        <MudItem lg="11" md="11" sm="9" xs="12">
+            <h4 class="leavelist "> Leave Request</h4>
+        </MudItem>
+        <MudItem Class="btnleave" lg="1" md="1" sm="3" xs="12">
+            <MudButton Variant="Variant.Outlined" Class="buttonstyle mr-2" @onclick="GoBack"><i class="fa-solid fa-chevron-left"></i></MudButton>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+
+<MudContainer>
+    <MudGrid>
+        <MudItem lg="8" md="6" sm="6" xs="12">
+            <MudContainer Class="cardcontainer">
+                <MudGrid>
+                    @foreach (var cards in LeaveList)
+                    {
+                        <MudItem lg="6" md="12" sm="12" xs="12">
+                            <MudCard Class="cardstyle">
+                                <MudCardHeader>
+                                    <MudGrid>
+                                        <MudItem lg="6" md="6" sm="6" xs="5" Style="display:flex;">
+                                            <MudItem Style="align-content:end">
+                                                <MudText Class="ms-1">@cards.FirstName</MudText>
+                                                <MudDivider />
+                                                <MudText Class="ms-1" Style="font-size:small">@cards.Designation</MudText>
+                                            </MudItem>
+                                        </MudItem>
+                                        <MudItem lg="6" md="6" sm="6" xs="7" Style="text-align:end;">
+                                            <MudItem>
+                                                <MudText>@cards.Leavetypename</MudText>
+                                                <MudText Style="font-size:small">@cards.NoOfDays Days</MudText>
+                                            </MudItem>
+                                        </MudItem>
+                                    </MudGrid>
+                                </MudCardHeader>
+                                <MudGrid>
+                                    <MudItem lg="6" sm="5" md="6" xs="7" Style="float:left;align-content:end;">
+                                        <MudCardContent>
+                                            <MudText Class="ms-3">@cards.Reason</MudText>
+                                            <MudText Class="ms-3" Style="font-size:small">@cards.wordstartdate-@cards.wordenddate</MudText>
+                                        </MudCardContent>
+                                    </MudItem>
+                                    <MudItem lg="6" sm="7" md="6" xs="5">
+                                        <MudCardActions Class="buttoncolor" Style="display: flex;">
+                                            <MudButton Class="btncolor" Style="display:flex;align-content:flex-end;" Variant="Variant.Outlined" Color="MudBlazor.Color.Primary" OnClick="()=>valuefunc(cards.ID)">View</MudButton>
+                                        </MudCardActions>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudCard>
+                        </MudItem>
+                    }
+                </MudGrid>
+                <MudImage Src="images/emptycardimage1.jpg" Style="height: 400px;width: -webkit-fill-available;background-color:transparent;overflow:hidden;" hidden="@emptycard">
+                </MudImage>
+            </MudContainer>
+        </MudItem>
+        <MudItem lg="4" md="6" sm="6" xs="12">
+            <MudPaper>
+                <MudText Style="text-align:center;font-size:x-large;padding-top:5px;">Team Status</MudText>
+                <ApexChart TItem="HRMS.Model.Barchart">
+                    <ApexPointSeries TItem="HRMS.Model.Barchart"
+                                     Items="TodayLeavelist"
+                                     Name="Present"
+                                     XValue="e => e.a"
+                                     YValue="e => e.present"
+                                     SeriesType="SeriesType.Bar"
+                                     Color="#32de84" />
+                    <ApexPointSeries TItem="HRMS.Model.Barchart"
+                                     Items="TodayLeavelist"
+                                     Name="Absent"
+                                     XValue="e => e.a"
+                                     YValue="e => e.absent"
+                                     SeriesType="SeriesType.Bar"
+                                     Color="#ff8080" />
+                </ApexChart>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+
+<MudDialog @bind-IsVisible="visible" Options="dialogOptions">
+
+    <TitleContent>
+        <MudGrid>
+            <MudItem lg="10" md="10" xs="8" sm="8">
+                <MudText Typo="Typo.h4">Leave Information</MudText>
+            </MudItem>
+            <MudItem xs="4" sm="4" md="2" lg="2">
+                <MudIconButton Icon="@Icons.Material.Filled.Close" Style="color:red;float:right;" OnClick="Submit"></MudIconButton>
+            </MudItem>
+        </MudGrid>
+    </TitleContent>
+    <DialogContent>
+
+        <MudGrid>
+
+            <MudItem lg="6" md="6" xs="12" sm="6">
+                <MudText Style="font-weight:bold;">Employee Id</MudText>
+            </MudItem>
+            <MudItem lg="6" md="6" xs="12" sm="6">
+                <MudText>@cardlist.EmployeeCode</MudText>
+            </MudItem>
+            <MudItem lg="6" md="6" xs="12" sm="6">
+                <MudText Style="font-weight:bold;">Desination</MudText>
+            </MudItem>
+            <MudItem lg="6" md="6" xs="12" sm="6">
+                <MudText>@cardlist.Designation</MudText>
+            </MudItem>
+            <MudItem lg="6" md="6" xs="12" sm="6">
+                <MudText Style="font-weight:bold;">leavetype</MudText>
+            </MudItem>
+            <MudItem lg="6" md="6" xs="12" sm="6">
+                <MudText>@cardlist.Leavetypename</MudText>
+            </MudItem>
+            <MudItem lg="6" md="6" xs="12" sm="6">
+                <MudText Style="font-weight:bold;">DetailedReason</MudText>
+            </MudItem>
+            <MudItem lg="6" md="6" xs="12" sm="6">
+                <MudText>@cardlist.Detailedreason</MudText>
+            </MudItem>
+            <MudItem lg="6" md="6" xs="12" sm="6">
+                <MudText Style="font-weight:bold;">Date</MudText>
+            </MudItem>
+            <MudItem lg="6" md="6" xs="12" sm="6">
+                <MudText>@cardlist.wordstartdate-@cardlist.wordenddate</MudText>
+            </MudItem>
+            <MudItem lg="6" md="6" xs="12" sm="6">
+                <MudText Style="font-weight:bold;">No of days</MudText>
+            </MudItem>
+            <MudItem lg="6" md="6" xs="12" sm="6">
+                <MudText>@cardlist.NoOfDays</MudText>
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Class="btncolor mb-1 pb-1" Variant="Variant.Outlined" Style="margin-right:5px;" OnClick="updateStatus" Color="MudBlazor.Color.Error">Reject</MudButton>
+        <MudButton Class="btncolor mb-1 pb-1" Variant="Variant.Outlined" OnClick="updateStatusapprove" Color="MudBlazor.Color.Primary">Approve</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+
+<style>
+    .btnleave {
+        display: flex;
+        justify-content: end;
+    }
+
+    @@media(max-width:767px) {
+        .leave {
+            flex-flow: column-reverse;
+        }
+
+        .btnleave {
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+
+    .leaveappzove {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .applybutton {
+        height: fit-content;
+    }
+
+    .mud-card-content {
+        padding: 0px;
+    }
+
+    .progressstyle {
+        padding-top: 1px;
+        font-size: 12px;
+        padding-bottom: 10px;
+    }
+
+    .piechart {
+        height: 110px;
+    }
+
+    .cardcontainer {
+        overflow: scroll;
+        overflow-x: hidden;
+        height: 360px;
+        scrollbar-width: thin !important;
+        padding-left: 0px !important;
+        padding-right: 10px !important;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    @@media (max-width: 596px) {
+        .buttoncolor {
+            display: block;
+            flex-wrap: wrap-reverse;
+        }
+    }
+
+    .btncolor {
+        margin-left: 0px !important;
+        padding-bottom: 0px !important;
+    }
+
+    .mud-card-actions {
+        align-items: end !important;
+        justify-content: end !important;
+        padding-bottom: 0px;
+    }
+
+    .cardstyle {
+        background-color: transparent;
+        height: 160px;
+    }
+
+    .piechart {
+        color: black;
+        transition: 0.4s ease-in-out;
+        height: 110px;
+    }
+
+        .piechart:hover {
+            scale: 1.03;
+            transition: 0.4s ease-in-out;
+            cursor: pointer;
+        }
+</style>
+
+<style>
+    .form {
+        overflow-x: hidden;
+    }
+
+    .requriedcolor {
+        color: red;
+        margin-left: 4px;
+    }
+</style>

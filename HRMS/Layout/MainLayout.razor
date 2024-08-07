@@ -1,0 +1,75 @@
+﻿@inherits LayoutComponentBase
+
+
+<MudThemeProvider DefaultScrollbar="true" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <HRMS.Pages.AppBar />
+    <MudMainContent>
+        @Body
+
+    </MudMainContent>
+</MudLayout>
+
+
+<style>
+    .buttonstyle {
+        background-color: #9358ad;
+        color: white;
+        height:40px;
+    }
+
+        .buttonstyle:hover {
+            background-color: black;
+            color: white;
+        }
+
+    ::selection {
+        color: white;
+        background-color: #9358ad;
+    }
+
+    /* width */
+    ::-webkit-scrollbar {
+        width: 5px;
+        height:5px;
+    }
+
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: #9358ad;
+    }
+
+    body {
+         --mud-palette-primary: #9358ad;
+        --mud-palette-primary-darken: #9358ad;
+        --mud-palette-primary-text: white;
+        --mud-typography-h6-family: 'Poppins';
+        --mud-typography-h5-family: 'Poppins';
+        --mud-typography-h4-family: 'Poppins';
+        --mud-typography-h3-family: 'Poppins';
+        --mud-typography-h2-family: 'Poppins';
+        --mud-typography-h1-family: 'Poppins';
+        --mud-typography-button-family: 'Poppins';
+        --mud-typography-body1-family: 'Poppins';
+        --mud-typography-body2-family: 'Poppins';
+        --mud-typography-subtitle2-family: 'Poppins';
+        --mud-typography-caption-family: 'Poppins';
+        --mud-typography-button-family: 'Poppins';
+        --mud-typography-subtitle1-family: 'Poppins';
+        --mud-typography-default-family: 'Poppins', 'Arial Narrow', Arial, sans-serif;
+        background-color: #faf8fc;
+        overflow-x: hidden;
+    }
+    
+    .mud-snackbar-location-top-right {
+        margin-top:58px;
+    }
+
+    .esc {
+        color: #9358ad;
+    }
+</style>

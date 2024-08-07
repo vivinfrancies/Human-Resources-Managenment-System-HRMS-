@@ -1,0 +1,31 @@
+﻿@page "/deletesalary"
+<MudDialog>
+    <DialogContent>
+        <MudText Class="Deletesal">Delete Salary</MudText>
+        <MudText Class="delete">Are you want to delete?</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant=Variant.Filled Class="buttonstyle" OnClick="Delete">Delete</MudButton>
+        <MudButton Variant=Variant.Filled Class="buttonstyle" OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    void Delete() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+}
+<style>
+    .Deletesal {
+        text-align: center;
+        font-size: 30px;
+        font-weight: bold;
+    }
+
+    .delete {
+        text-align: center;
+        font-size: 25px;
+        font-weight: 300;
+    }
+
+</style>

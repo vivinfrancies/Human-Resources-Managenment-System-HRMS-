@@ -1,0 +1,341 @@
+﻿
+@page "/Employeeonboarding"
+@using HRMS.Components
+@inherits BaseComponents;
+@using System.Net.Http.Json;
+
+
+
+<div class="container">
+	<MudContainer>
+		<MudText Typo="Typo.h4" Class="my-10 d-flex">
+			Employee Onboarding Form
+
+			<MudSpacer />
+			<MudButton Variant="Variant.Outlined" Class="buttonstyle" @onclick="GoBack"><i class="fa-solid fa-chevron-left"></i></MudButton>
+		</MudText>
+	</MudContainer>
+
+
+	<MudPaper>
+		<MudForm @ref="form" @bind-IsValid="@success" hidden="@EmployeeDetailsHide">
+			<MudContainer>
+				<MudText Typo="Typo.h4" Class="d-flex justify-content-center align-content-center">Employee Details</MudText>
+				<MudGrid>
+					<MudItem lg="4" md="4" sm="4" xs="12">
+						<MudText Typo="Typo.subtitle1">First Name<span class="requriedcolor">*</span></MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.FirstName" Margin="Margin.Dense" Placeholder="First Name" For="()=>employeedetails.FirstName" Required="true"></MudTextField>
+					</MudItem>
+					<MudItem lg="4" md="4" sm="4" xs="12">
+						<MudText Typo="Typo.subtitle1">Middle Name</MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.MiddleName" Margin="Margin.Dense" Placeholder="Middle Name" For="()=>employeedetails.MiddleName"></MudTextField>
+					</MudItem>
+					<MudItem lg="4" md="4" sm="4" xs="12">
+						<MudText Typo="Typo.subtitle1">Last Name<span class="requriedcolor">*</span></MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.LastName" Margin="Margin.Dense" Placeholder="Last Name" For="()=>employeedetails.LastName" Required="true"></MudTextField>
+					</MudItem>
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Email<span class="requriedcolor">*</span></MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.Email" Margin="Margin.Dense" Placeholder="Email" For="()=>employeedetails.Email" Required="true"></MudTextField>
+					</MudItem>
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Phone Number<span class="requriedcolor">*</span></MudText>
+						<MudTextField T="string" Variant="Variant.Outlined" @bind-Value="@employeedetails.MobileNumber" Margin="Margin.Dense" Placeholder="Moblie Number" For="()=>employeedetails.MobileNumber" Required="true"></MudTextField>
+					</MudItem>
+					<MudItem lg="12" md="12" sm="12" xs="12">
+						<MudText Typo="Typo.subtitle1">Address<span class="requriedcolor">*</span></MudText>
+						<MudTextField @bind-Value="@employeedetails.Address" Variant="Variant.Outlined" Placeholder="Address" Lines="2" Margin="Margin.Dense" Required="true"></MudTextField>
+					</MudItem>
+
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">City<span class="requriedcolor">*</span></MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.City" Margin="Margin.Dense" Placeholder="City" For="()=>employeedetails.City" Required="true"></MudTextField>
+
+					</MudItem>
+
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Pin Code<span class="requriedcolor">*</span></MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.PinCode" Margin="Margin.Dense" Placeholder="Pin Code" For="()=>employeedetails.PinCode" Required="true"></MudTextField>
+
+					</MudItem>
+
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">State<span class="requriedcolor">*</span></MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.State" Margin="Margin.Dense" Placeholder="State" For="()=>employeedetails.State" Required="true"></MudTextField>
+
+					</MudItem>
+
+
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Country<span class="requriedcolor">*</span></MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.Country" Margin="Margin.Dense" Placeholder="Country" For="()=>employeedetails.Country" Required="true"></MudTextField>
+
+					</MudItem>
+
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Role<span class="requriedcolor">*</span></MudText>
+						<MudSelect Dense="true" Variant="Variant.Outlined" T="int" @bind-Value="@employeedetails.Role" Margin="Margin.Dense" Placeholder="Role" Required="true">
+							@foreach (var x in rolenDesignations)
+							{
+								<MudSelectItem Value="@(x.RoleId)">@x.RoleName</MudSelectItem>
+							}
+						</MudSelect>
+					</MudItem>
+
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Designation<span class="requriedcolor">*</span></MudText>
+						<MudSelect Dense="true" Variant="Variant.Outlined" T="int" @bind-Value="@employeedetails.Designation" Margin="Margin.Dense" Placeholder="Designation" Required="true">
+							@foreach (var x in Designations)
+							{
+								<MudSelectItem Value="@(x.DesignationId)">@x.DesignationName</MudSelectItem>
+							}
+
+						</MudSelect>
+
+					</MudItem>
+
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Experience<span class="requriedcolor">*</span></MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.Experience" Margin="Margin.Dense" Placeholder="Experience" For="()=>employeedetails.Experience"></MudTextField>
+					</MudItem>
+
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText>Gender<span class="requriedcolor">*</span></MudText>
+						<MudRadioGroup Class="my-1" @bind-Value="@employeedetails.Gender" Required="true" Margin="Margin.Dense" For="(()=>employeedetails.Gender)">
+							<MudRadio Value="@("Male")" Color="@MudBlazor.Color.Info">Male</MudRadio>
+							<MudRadio Value="@("Female")" Color="@MudBlazor.Color.Secondary">Female</MudRadio>
+						</MudRadioGroup>
+					</MudItem>
+
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Date Of Birth<span class="requriedcolor">*</span></MudText>
+
+						<MudDatePicker PickerVariant="PickerVariant.Dialog" Variant="Variant.Outlined" Placeholder="Date of Birth" Margin="Margin.Dense" Mask="@(new DateMask("0000-00-00"))" DateFormat="yyyy-MM-dd" @bind-Date="employeedetails.DateOfBirth" MaxDate="DateTime.Now" />
+					</MudItem>
+
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Date Of Joining <span class="requriedcolor">*</span></MudText>
+						<MudDatePicker @bind-Date="date" ReadOnly="true" Variant="Variant.Outlined" DateFormat="yyyy/MM/dd" Margin="Margin.Dense" />
+					</MudItem>
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Religion<span class="requriedcolor">*</span></MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.Religion" Margin="Margin.Dense" Placeholder="Religion" For="()=>employeedetails.Religion"></MudTextField>
+					</MudItem>
+
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Nationality<span class="requriedcolor">*</span></MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.Nationality" Margin="Margin.Dense" Placeholder="Nationality" For="()=>employeedetails.Nationality"></MudTextField>
+					</MudItem>
+
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Marital Status<span class="requriedcolor">*</span></MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.MaritalStatus" Margin="Margin.Dense" Placeholder="Marital Status" For="()=>employeedetails.MaritalStatus"></MudTextField>
+					</MudItem>
+					<MudItem lg="12" md="12" sm="12" xs="12">
+						<MudFileUpload T="IBrowserFile" For="@(() => File3)" @bind-Files="File3" Accept=".jpg,.png" Required="true">
+							<ButtonTemplate>
+								<MudButton HtmlTag="label"
+										   Variant="Variant.Filled"
+										   for="@context">
+									Upload Profile Image
+								</MudButton>
+							</ButtonTemplate>
+							<SelectedTemplate>
+								@if (context != null && File3 != null)
+								{
+									<MudText Class="px-3" Style="display:inline">@context.Name (@($"{File3.Size / 1000.00:0}") KB)</MudText>
+								}
+							</SelectedTemplate>
+						</MudFileUpload>
+
+						@{
+							if (File3 != null)
+							{
+								if (File3.Size <= 512 * 1024)
+								{
+									var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".pdf" };
+									var extension = Path.GetExtension(File3.Name).ToLower();
+
+									if (allowedExtensions.Contains(extension))
+									{
+										var buffers3 = new byte[File3.Size];
+										File3.OpenReadStream(512 * 1024).ReadAsync(buffers3);
+										employeedetails.ProfileImage = File3.Name;
+										employeedetails.FileContent3 = buffers3;
+									}
+									else
+									{
+										Snackbar.Add("File format not supported. Allowed formats are .jpg, .jpeg, .png, and .pdf.", Severity.Warning);
+										File3 = null;
+
+									}
+								}
+								else
+								{
+									Snackbar.Add("File size must be below 512 KB.", Severity.Warning);
+									File3 = null;
+								}
+							}
+						}
+					</MudItem>
+
+
+					<MudItem lg="12" md="12" sm="12" xs="12" Class="d-flex justify-content-end align-content-end">
+						<MudButton Variant="Variant.Outlined" Class="d-flex justify-content-center align-content-center" Color="@MudBlazor.Color.Primary" Disabled="@(!success)" OnClick="onclick">Next</MudButton>
+					</MudItem>
+				</MudGrid>
+			</MudContainer>
+		</MudForm>
+	</MudPaper>
+
+	<MudPaper>
+		<MudForm @ref="form2" @bind-IsValid="@success2" hidden="@Employeepersonalhide">
+			<MudContainer>
+				<MudText Typo="Typo.h4" Class="d-flex justify-content-center align-content-center my-2">Employee Personal Details</MudText>
+				<MudGrid>
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">PG Collage Name<span class="requriedcolor">*</span></MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.PgCollegeName" Margin="Margin.Dense" Placeholder="Collage Name" For="()=>employeedetails.PgCollegeName"></MudTextField>
+					</MudItem>
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">PG Course<span class="requriedcolor">*</span></MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.PgCourse" Margin="Margin.Dense" Placeholder="Course" For="()=>employeedetails.PgCourse"></MudTextField>
+					</MudItem>
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Course Start Date<span class="requriedcolor">*</span></MudText>
+
+						<MudDatePicker PickerVariant="PickerVariant.Dialog" Variant="Variant.Outlined" Placeholder="Start Date" Margin="Margin.Dense" Mask="@(new DateMask("0000-00-00"))" DateFormat="yyyy-MM-dd" @bind-Date="employeedetails.PgStart" />
+					</MudItem>
+
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Course End Date<span class="requriedcolor">*</span></MudText>
+
+						<MudDatePicker PickerVariant="PickerVariant.Dialog" Variant="Variant.Outlined" Placeholder="End Date" Margin="Margin.Dense" Mask="@(new DateMask("0000-00-00"))" DateFormat="yyyy-MM-dd" @bind-Date="employeedetails.PgEnd" />
+					</MudItem>
+
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">UG Collage Name<span class="requriedcolor">*</span></MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.UgCollageName" Margin="Margin.Dense" Placeholder="Collage Name" For="()=>employeedetails.UgCollageName"></MudTextField>
+					</MudItem>
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">UG Course<span class="requriedcolor">*</span></MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.UgCourse" Margin="Margin.Dense" Placeholder="Course" For="()=>employeedetails.UgCourse"></MudTextField>
+					</MudItem>
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Course Start Date<span class="requriedcolor">*</span></MudText>
+
+						<MudDatePicker PickerVariant="PickerVariant.Dialog" Variant="Variant.Outlined" Placeholder="Start Date" Margin="Margin.Dense" Mask="@(new DateMask("0000-00-00"))" DateFormat="yyyy-MM-dd" @bind-Date="employeedetails.UgStart" MaxDate="DateTime.Now" />
+					</MudItem>
+
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Course End Date <span class="requriedcolor">*</span> </MudText>
+
+						<MudDatePicker PickerVariant="PickerVariant.Dialog" Variant="Variant.Outlined" Placeholder="End Date" Margin="Margin.Dense" Mask="@(new DateMask("0000-00-00"))" DateFormat="yyyy-MM-dd" @bind-Date="employeedetails.UgEnd" />
+					</MudItem>
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">12th School Name<span class="requriedcolor">*</span></MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.HSCSchoolName" Margin="Margin.Dense" Placeholder="Collage Name" For="()=>employeedetails.HSCSchoolName"></MudTextField>
+					</MudItem>
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">12th Course<span class="requriedcolor">*</span></MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.HSCCourse" Margin="Margin.Dense" Placeholder="Course" For="()=>employeedetails.HSCCourse"></MudTextField>
+					</MudItem>
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Course Start Date<span class="requriedcolor">*</span></MudText>
+
+						<MudDatePicker PickerVariant="PickerVariant.Dialog" Variant="Variant.Outlined" Placeholder="Start Date" Margin="Margin.Dense" Mask="@(new DateMask("0000-00-00"))" DateFormat="yyyy-MM-dd" @bind-Date="employeedetails.HSCStart" MaxDate="DateTime.Now" />
+					</MudItem>
+
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Course End Date <span class="requriedcolor">*</span> </MudText>
+
+						<MudDatePicker PickerVariant="PickerVariant.Dialog" Variant="Variant.Outlined" Placeholder="End Date" Margin="Margin.Dense" Mask="@(new DateMask("0000-00-00"))" DateFormat="yyyy-MM-dd" @bind-Date="employeedetails.HSCEnd" MaxDate="DateTime.Now" />
+					</MudItem>
+
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">10th School Name<span class="requriedcolor">*</span></MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.SSLCSchoolName" Margin="Margin.Dense" Placeholder="Collage Name" For="()=>employeedetails.SSLCSchoolName"></MudTextField>
+					</MudItem>
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Course Start Date<span class="requriedcolor">*</span></MudText>
+
+						<MudDatePicker PickerVariant="PickerVariant.Dialog" Variant="Variant.Outlined" Placeholder="Start Date" Margin="Margin.Dense" Mask="@(new DateMask("0000-00-00"))" DateFormat="yyyy-MM-dd" @bind-Date="employeedetails.SSLCStart" MaxDate="DateTime.Now" />
+					</MudItem>
+
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Course End Date<span class="requriedcolor">*</span> </MudText>
+
+						<MudDatePicker PickerVariant="PickerVariant.Dialog" Variant="Variant.Outlined" Placeholder="End Date" Margin="Margin.Dense" Mask="@(new DateMask("0000-00-00"))" DateFormat="yyyy-MM-dd" @bind-Date="employeedetails.SSLCEnd" MaxDate="DateTime.Now" />
+					</MudItem>
+
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Emergency Contact</MudText>
+						<MudTextField T="string" Variant="Variant.Outlined" @bind-Value="@employeedetails.EmergencyContact" Margin="Margin.Dense" Placeholder="Emergency Contact" For="()=>employeedetails.EmergencyContact"></MudTextField>
+					</MudItem>
+
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Relationship</MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.Relationship" Margin="Margin.Dense" Placeholder="Relationship" For="()=>employeedetails.Relationship"></MudTextField>
+					</MudItem>
+
+					<MudItem lg="12" md="12" sm="12" xs="12" Class="d-flex justify-content-end align-content-end">
+						<MudButton Variant="Variant.Outlined" Class="d-flex justify-content-center align-content-center" Color="@MudBlazor.Color.Primary" Disabled="@(!success2)" OnClick="onclick2">Next</MudButton>
+					</MudItem>
+				</MudGrid>
+			</MudContainer>
+		</MudForm>
+	</MudPaper>
+	<MudPaper>
+		<MudForm @ref="form3" @bind-IsValid="@success3" hidden="@EmployeeAccounthide">
+			<MudContainer>
+				<MudText Typo="Typo.h4" Class="d-flex justify-content-center align-content-center my-2">Employee Account Details</MudText>
+				<MudGrid>
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Salary<span class="requriedcolor">*</span></MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.Salary" Margin="Margin.Dense" Placeholder="Salary" For="()=>employeedetails.Salary" Required="true"></MudTextField>
+					</MudItem>
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">Bank Name<span class="requriedcolor">*</span></MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.BankName" Margin="Margin.Dense" Placeholder="Bank Name" For="()=>employeedetails.BankName" Required="true"></MudTextField>
+					</MudItem>
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1"> Bank Account Number<span class="requriedcolor">*</span></MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.AccountNumber" Margin="Margin.Dense" Placeholder="Account number" For="()=>employeedetails.AccountNumber" Required="true"></MudTextField>
+					</MudItem>
+
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">IFSC Code <span class="requriedcolor">*</span> </MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.IFSCCode" Margin="Margin.Dense" Placeholder="IFSC Code" For="()=>employeedetails.IFSCCode" Required="true"></MudTextField>
+					</MudItem>
+
+					<MudItem lg="6" md="6" sm="6" xs="12">
+						<MudText Typo="Typo.subtitle1">PF Account Number </MudText>
+						<MudTextField Variant="Variant.Outlined" @bind-Value="@employeedetails.PFAccount" Margin="Margin.Dense" Placeholder="PF Account Number" For="()=>employeedetails.PFAccount"></MudTextField>
+					</MudItem>
+
+
+
+					<MudItem lg="12" md="12" sm="12" xs="12" Class="d-flex justify-content-end align-content-end">
+						<MudButton Variant="Variant.Outlined" Class="d-flex justify-content-center align-content-center" Color="@MudBlazor.Color.Primary" Disabled="@(!success3)" OnClick="Saves">SUBMIT</MudButton>
+					</MudItem>
+				</MudGrid>
+			</MudContainer>
+		</MudForm>
+	</MudPaper>
+</div>
+
+
+
+<style>
+	@@media Screen and(max-width:767px) {
+		.headingtitle {
+			font-size: 8px;
+		}
+	}
+
+	.requriedcolor {
+		color: red;
+		margin-left: 5px;
+	}
+</style>
+

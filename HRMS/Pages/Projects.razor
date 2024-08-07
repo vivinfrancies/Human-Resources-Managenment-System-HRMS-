@@ -1,0 +1,354 @@
+﻿@page "/Projects"
+@using HRMS.Components
+@inherits BaseComponents;
+
+@* title *@
+<MudContainer>
+    <MudGrid>
+        <MudItem lg="12" md="12" sm="12" xs="12" Class="btn1 mt-10">
+            <MudButton Variant="Variant.Outlined" Class="buttonstyle float-end" StartIcon="@Icons.Material.Filled.Add" @onclick="OpenDialog">add project</MudButton>
+            <MudButton Variant="Variant.Outlined" Class="buttonstyle mr-2 float-end" @onclick="GoBack"><i class="fa-solid fa-chevron-left"></i></MudButton>
+        </MudItem>
+    </MudGrid>
+    <MudText Typo="Typo.h4" Class="mt-8">
+        Project
+    </MudText>
+</MudContainer>
+
+@* main search *@
+<MudContainer>
+    <MudItem Class="search" lg="4" md="4" sm="6" xs="12">
+        <MudSelect @bind-Value="Search.Projectname" Margin="Margin.Dense" Clearable="true" Variant="Variant.Outlined" Placeholder="Select Any Project" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="@MudBlazor.Color.Primary">
+            @foreach (var emp in Login)
+            {
+                @foreach (var x in ProjectEvents)
+                {
+                    @if (emp.ProjectName == x.ProjectName)
+                    {
+                        @if (x.Status == true)
+                        {
+                            <MudSelectItem Value="@(x.ProjectName)" />
+                        }
+                    }
+
+                }
+            }
+        </MudSelect>
+    </MudItem>
+</MudContainer>
+
+<MudContainer Class="result">
+    <MudGrid>
+        @foreach (var emp in Login)
+        {
+            @foreach (var x in ProjectEvents)
+            {
+                @if (Search.Projectname == x.ProjectName)
+                {
+                    @if (emp.ProjectName == x.ProjectName)
+                    {
+                        @if (x.Status == true)
+                        {
+                            <MudItem lg="4" md="4" sm="6" xs="12">
+                                <MudCard Class="projectcard" Elevation="25">
+                                    <MudGrid>
+                                        <MudItem lg="10" md="10" sm="10" xs="10">
+                                            <MudText Typo="Typo.h5">@x.ProjectName</MudText>
+                                        </MudItem>
+                                        <MudItem lg="2" md="2" sm="2" xs="2">
+                                            <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                                                <MudMenuItem @onclick="()=>OpenTeamMembers(x.Id)" Icon="fa-solid fa-people-group">Team Members</MudMenuItem>
+                                                <MudMenuItem @onclick="()=>EditProject(x.Id)" Icon="fa-solid fa-pen-to-square">Edit</MudMenuItem>
+                                                <MudMenuItem @onclick="()=>Dialog(x.Id)" Icon="@Icons.Material.Filled.Delete">Delete</MudMenuItem>
+                                                @if (User.RoleId == 1 || User.RoleId == 4)
+                                                {
+                                                    <MudMenuItem @onclick="()=>Completed(x.Id)" Icon="@Icons.Material.Filled.Checklist">Completed</MudMenuItem>
+                                                }
+                                            </MudMenu>
+                                        </MudItem>
+                                    </MudGrid>
+                                    <MudText Typo="Typo.body2" Class="my-3">@x.OpenTask Open Task, @x.CompletedTask completed task</MudText>
+                                    <MudText>@x.Description</MudText>
+                                    <MudText Typo="Typo.h6" Class="mt-3">Deadline:</MudText>
+                                    <MudText>@x.DueDate?.ToString("dd-MM-yyyy")</MudText>
+                                    <MudText Typo="Typo.h6" Class="my-3 d-flex">Progress: <MudSpacer /> <span class="percent"> @x.Progress %</span></MudText>
+                                    <MudProgressLinear Size="@MudBlazor.Size.Small" Value=@x.Progress Color="@MudBlazor.Color.Primary" />
+                                </MudCard>
+                            </MudItem>
+                        }
+                    }
+                }
+            }
+        }
+    </MudGrid>
+</MudContainer>
+
+@* projects cards *@
+<MudContainer Class="project">
+    <MudGrid>
+        @foreach (var emp in Login)
+        {
+            @foreach (var x in ProjectEvents)
+            {
+                @if (emp.ProjectName == x.ProjectName)
+                {
+                    @if (x.Status == true)
+                    {
+                        <MudItem lg="4" md="4" sm="6" xs="12">
+                            <MudCard Class="projectcard" Elevation="25">
+                                <MudGrid>
+                                    <MudItem lg="10" md="10" sm="10" xs="10">
+                                        <MudText Typo="Typo.h5">@x.ProjectName</MudText>
+                                    </MudItem>
+                                    <MudItem lg="2" md="2" sm="2" xs="2">
+                                        <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                                            <MudMenuItem @onclick="()=>OpenTeamMembers(x.Id)" Icon="fa-solid fa-people-group">Team Members</MudMenuItem>
+                                            <MudMenuItem @onclick="()=>EditProject(x.Id)" Icon="fa-solid fa-pen-to-square">Edit</MudMenuItem>
+                                            <MudMenuItem @onclick="()=>Dialog(x.Id)" Icon="@Icons.Material.Filled.Delete">Delete</MudMenuItem>
+                                            @if (User.RoleId == 1 || User.RoleId == 4)
+                                            {
+                                                <MudMenuItem @onclick="()=>Completed(x.Id)" Icon="@Icons.Material.Filled.Checklist">Completed</MudMenuItem>
+                                            }
+                                        </MudMenu>
+                                    </MudItem>
+                                </MudGrid>
+                                <MudText Typo="Typo.body2" Class="my-3">@x.OpenTask Open Task, @x.CompletedTask completed task</MudText>
+                                <MudText>@x.Description</MudText>
+                                <MudText Typo="Typo.h6" Class="mt-3">Deadline:</MudText>
+                                <MudText>@x.DueDate?.ToString("dd-MM-yyyy")</MudText>
+                                <MudText Typo="Typo.h6" Class="my-3 d-flex">Progress: <MudSpacer /> <span class="percent"> @x.Progress %</span></MudText>
+                                <MudProgressLinear Size="@MudBlazor.Size.Small" Value=@x.Progress Color="@MudBlazor.Color.Primary" />
+                            </MudCard>
+                        </MudItem>
+                    }
+                }
+            }
+        }
+    </MudGrid>
+</MudContainer>
+
+<MudDialog @bind-IsVisible="statusvisible">
+    <TitleContent>
+        <h3>Completed Project</h3>
+    </TitleContent>
+    <DialogContent>
+        Are You Sure About The Project Completeion?
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="@MudBlazor.Color.Success" Variant="Variant.Filled" @onclick="UpdateProjectConfirmed">Confirm</MudButton>
+    </DialogActions>
+</MudDialog>
+
+<MudDialog @bind-IsVisible="visible" Options="dialogOptions">
+    <TitleContent>
+        <h3>Delete</h3>
+    </TitleContent>
+    <DialogContent>
+        Do you really want to delete the Project?
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="@MudBlazor.Color.Error" Variant="Variant.Filled" @onclick="DeleteConfirmed">Delete</MudButton>
+    </DialogActions>
+</MudDialog>
+
+<MudDialog @bind-IsVisible="visibleProject" Options="dialogOptions">
+    <TitleContent>
+        <MudItem Class="d-flex">
+            <h3>Edit Project</h3>
+            <MudSpacer />
+            <MudIconButton Icon="@Icons.Material.Filled.Close" Color="@MudBlazor.Color.Error" Class="close" OnClick="Cancel" />
+        </MudItem>
+    </TitleContent>
+    <DialogContent>
+        <MudGrid>
+            @* project name *@
+            <MudItem lg="6" md="6" sm="6" xs="12">
+                <MudGrid>
+                    <MudItem Class="star" lg="12" md="12" sm="12" xs="12">
+                        Project Name<span>*</span>
+                    </MudItem>
+                    <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                        <MudTextField T="String" @bind-Value="Projectvalue.ProjectName" For="@(() =>Projectvalue.ProjectName)" Required="true" Placeholder="Enter Project Name" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+
+            @* client name *@
+            <MudItem lg="6" md="6" sm="6" xs="12">
+                <MudGrid>
+                    <MudItem Class="star" lg="12" md="12" sm="12" xs="12">
+                        Client Name<span>*</span>
+                    </MudItem>
+                    <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                        <MudTextField T="String" @bind-Value="Projectvalue.ClientName" Required="true" Placeholder="Enter Client Name" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+
+            @* End date *@
+            <MudItem lg="12" md="12" sm="12" xs="12">
+                <MudGrid>
+                    <MudItem Class="star" lg="12" md="12" sm="12" xs="12">
+                        End Date<span>*</span>
+                    </MudItem>
+                    <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                        <MudDatePicker Margin="Margin.Dense" Color="@MudBlazor.Color.Info" Required="true" Variant="Variant.Outlined" Mask="@(new DateMask("dd-MM-yyyy"))" @bind-Date="Projectvalue.DueDate" DateFormat="dd-MM-yyyy" Placeholder="Select Start Date" />
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+
+            @* project Description *@
+            <MudItem lg="12" md="12" sm="12" xs="12">
+                <MudGrid>
+                    <MudItem Class="star" lg="12" md="12" sm="12" xs="12">
+                        Enter Project Description<span>*</span>
+                    </MudItem>
+                    <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                        <MudTextField T="String" @bind-Value="Projectvalue.Description" For="@(() =>Projectvalue.Description)" Lines="3" Placeholder="Description should be maximum of 120 character" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+
+            @* Project Member Btn *@
+            <MudItem lg="6" md="6" sm="6" xs="12" Class="position-relative my-5">
+                <MudButton OnClick="ToggleMemberVisibility" Class="position-absolute top-50 start-50 translate-middle buttonstyle">@memberbtn</MudButton>
+            </MudItem>
+
+            @* project Member *@
+            <MudItem hidden="@isTeamMemberHidden" lg="12" md="12" sm="12" xs="12">
+                <MudText>Team Members :</MudText>
+                <MudDataGrid T="HRMS.Model.Project" Items="ProjectEvents" RowsPerPage="5" Dense="true" Bordered="true" Filterable="false">
+                    <Columns>
+                        @foreach (var (project, index) in ProjectEvents.Select((value, i) => (value, i)))
+                        {
+                            project.Sno = index + 1;
+                        }
+                        <PropertyColumn Title="Sno" Property="x=>x.Sno" Filterable="false" Sortable="false" />
+                        <PropertyColumn Title="Name" Property="x=>x.TeamMembers" Filterable="false" Sortable="false" />
+                        <PropertyColumn Title="Role" Property="x=>x.Roles" Filterable="false" Sortable="false" />
+                        <PropertyColumn Title="Module" Property="x=>x.Module" Filterable="false" Sortable="false" />
+                        <TemplateColumn Filterable="false" Sortable="false" Title="Options">
+                            <CellTemplate>
+                                <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                                    <MudMenuItem Icon="fa-solid fa-pen-to-square" @onclick="()=>EditModule(context.Item.Id)">Edit</MudMenuItem>
+                                    <MudMenuItem Icon="@Icons.Material.Filled.Delete" @onclick="()=>DeleteTeamMembers(context.Item.Id)">Delete</MudMenuItem>
+                                </MudMenu>
+                            </CellTemplate>
+                        </TemplateColumn>
+                    </Columns>
+                    <PagerContent>
+                        <MudDataGridPager T="HRMS.Model.Project" />
+                    </PagerContent>
+                </MudDataGrid>
+            </MudItem>
+
+            <MudItem lg="6" md="6" sm="6" xs="12" Class="position-relative my-5">
+                <MudButton OnClick="ToggleTaskVisibility" Class="position-absolute top-50 start-50 translate-middle buttonstyle">@Btnname</MudButton>
+            </MudItem>
+
+            @* project Task *@
+            <MudItem hidden="@isTaskHidden" lg="12" md="12" sm="12" xs="12">
+                <MudText>
+                    Project Tasks :
+                </MudText>
+                <MudDataGrid T="HRMS.Model.Tasks1" Items="TasksEvents.Where(x => x.Progress < 100 && x.projectstatus == true)" RowsPerPage="5" Bordered=true Striped=true Hover=true>
+                    <Columns>
+                        @foreach (var (project, index) in TasksEvents.Where(x => x.Progress < 100 && x.projectstatus == true).Select((value, i) => (value, i)))
+                        {
+                            project.Sno = index + 1;
+                        }
+                        <PropertyColumn Style="text-align:center" Title="Sno" Property="x=>x.Sno" Filterable="false" Sortable="false" />
+                        <PropertyColumn Title="Task" Property="x=>x.TaskName" Sortable="false" />
+                        <PropertyColumn Title="Due Date" Property="x=>x.DueDate" Format="dd-MM-yyyy" Sortable="false" />
+                        <TemplateColumn Title="Status" Filterable="false" Sortable="false">
+                            <CellTemplate>
+                                <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                                    <MudMenuItem Icon="@Icons.Material.Filled.Delete" @onclick="()=>Deletetask(context.Item.Id)">Delete</MudMenuItem>
+                                </MudMenu>
+                            </CellTemplate>
+                        </TemplateColumn>
+                    </Columns>
+                </MudDataGrid>
+            </MudItem>
+            <MudItem lg="12" md="12" sm="12" xs="12" Class="position-relative">
+                <MudButton Class="my-5 buttonstyle" @onclick="()=>ProjectUpdate(Projectvalue.Id)">Update</MudButton>
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+</MudDialog>
+
+@* Inline Dialog For Delete *@
+<MudDialog @bind-IsVisible="Mdoulevisible">
+    <TitleContent>
+        <h3>Edit Module</h3>
+    </TitleContent>
+    <DialogContent>
+        <MudText>
+            Enter the Name Of The Module:
+        </MudText>
+        <MudTextField T="String" @bind-Value="Projectvalue.Module" Placeholder="Enter Module Name" Variant="Variant.Outlined" Margin="Margin.Dense" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="@MudBlazor.Color.Warning" Variant="Variant.Filled" @onclick="UpdateConfirmed">Update</MudButton>
+    </DialogActions>
+</MudDialog>
+
+<style>
+    .search {
+        width: 30%;
+    }
+
+    .project {
+        margin-top: 20px;
+    }
+
+    .percent {
+        color: #9358ad;
+    }
+
+    .projectcard {
+        padding: 20px;
+        height: 340px;
+    }
+
+    .result {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    @@media (max-width: 767px) {
+        .btn1 {
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+
+    .star span {
+        padding: 3px;
+        color: red;
+    }
+
+    .field {
+        margin-top: -25px;
+    }
+
+    .btn1 {
+        margin-top: 10px;
+        width: 90px;
+    }
+
+    .height1 {
+        max-height: 85%;
+    }
+
+    .upload {
+        text-wrap: nowrap;
+    }
+
+    .mud-icon-default {
+        color: #6f6f6f !important;
+    }
+</style>

@@ -1,0 +1,726 @@
+﻿@page "/dash"
+
+@using HRMS.Components
+@using MudExtensions
+@inherits BaseComponents
+
+<MudLoading @bind-Loading="_loading" Overlap="true" LoaderType="@_loaderType" Darken="true" Style="height:100vh;width:100vh">
+
+    <MudContainer Class="py-5">
+        @if (User.RoleId == 1 || User.RoleId == 2)
+        {
+            <MudGrid>
+                <MudItem xxl="3" xl="3" lg="3" md="6" sm="6" xs="12">
+                    <NavLink Href="/Projects">
+                        <MudPaper Class="hideover p-4" Style="background-color:lightseagreen;color:white">
+                            <MudStack Row=true Class="zoominside stack">
+                                <MudItem>
+                                    <MudIconButton Style="background-color:white" Icon="fa-regular fa-folder-open"></MudIconButton>
+                                </MudItem>
+                                <MudItem Class="makecenter">
+                                    <MudText Typo="Typo.h6">@DashboardEvent.TotalProject</MudText>
+                                    <MudText Typo="Typo.caption">Project</MudText>
+                                </MudItem>
+                            </MudStack>
+                        </MudPaper>
+                    </NavLink>
+                </MudItem>
+                <MudItem xxl="3" xl="3" lg="3" md="6" sm="6" xs="12">
+                    <NavLink Href="/client">
+                        <MudPaper Class="hideover p-4" Style="background-color:orange;color:white">
+                            <MudStack Row=true Class="zoominside stack">
+                                <MudItem>
+                                    <MudIconButton Style="background-color:white" Icon="fa-solid fa-user-tie"></MudIconButton>
+                                </MudItem>
+                                <MudItem Class="makecenter">
+                                    <MudText Typo="Typo.h6">@DashboardEvent.TotalClient</MudText>
+                                    <MudText Typo="Typo.caption">Clients</MudText>
+                                </MudItem>
+                            </MudStack>
+                        </MudPaper>
+                    </NavLink>
+                </MudItem>
+                <MudItem xxl="3" xl="3" lg="3" md="6" sm="6" xs="12">
+                    <NavLink Href="/employee">
+                        <MudPaper Class="hideover p-4" Style="background-color:cornflowerblue;color:white">
+                            <MudStack Row=true Class="zoominside stack">
+                                <MudItem>
+                                    <MudIconButton Style="background-color:white" Icon="fa-solid fa-users"></MudIconButton>
+                                </MudItem>
+                                <MudItem Class="makecenter">
+                                    <MudText Typo="Typo.h6">@DashboardEvent.TotalEmployee</MudText>
+                                    <MudText Typo="Typo.caption">Employee</MudText>
+                                </MudItem>
+                            </MudStack>
+                        </MudPaper>
+                    </NavLink>
+                </MudItem>
+                <MudItem xxl="3" xl="3" lg="3" md="6" sm="6" xs="12">
+                    <NavLink Href="/CompanyPolicy">
+                        <MudPaper Class="hideover p-4" Style="background-color:mediumvioletred;color:white">
+                            <MudStack Row=true Class="zoominside stack">
+                                <MudItem>
+                                    <MudIconButton Style="background-color:white" Icon="@Icons.Material.Filled.Policy"></MudIconButton>
+                                </MudItem>
+                                <MudItem Class="makecenter">
+                                    <MudText Typo="Typo.caption">View Policy</MudText>
+                                </MudItem>
+                            </MudStack>
+                        </MudPaper>
+                    </NavLink>
+                </MudItem>
+            </MudGrid>
+        }
+        <MudGrid>
+            <MudItem xxl="4" xl="4" lg="4" md="6" sm="12" xs="12" Class="coltotalheight">
+                @if (User.RoleId == 3 || User.RoleId == 4 || User.RoleId == 5 || User.RoleId == 1 || User.RoleId == 2)
+                {
+                    <MudPaper Class="paperstyle mb-5 px-5 py-3">
+                        <MudStack Row=true Class="stack">
+                            <MudItem>
+                                <MudText Typo="Typo.h6">Welcome, @User.FirstName</MudText>
+                                <MudText Typo="Typo.caption" Class=" py-2">EMP ID : @User.UserName</MudText>
+                            </MudItem>
+                            <MudItem>
+                                <MudAvatar Square="true" Size="@MudBlazor.Size.Large">
+                                    <MudImage Src="/images/dashboard/profile.png"></MudImage>
+                                </MudAvatar>
+                            </MudItem>
+                        </MudStack>
+                        <MudDivider Style="color:black;max-height: 3px; opacity:1;--mud-palette-divider: black;" Class="my-3" />
+                        <MudItem Class="d-flex align-content-end justify-content-end mt-2">
+                            <MudButton Variant="Variant.Outlined" Class="buttonstyle" Href="/profile">View Profile</MudButton>
+                        </MudItem>
+                    </MudPaper>
+
+                    <MudPaper Class="paperstyle px-5 py-3 mb-5">
+                        <MudGrid>
+                            <MudItem lg="12" md="12" sm="12" xs="12" Class="edu">
+                                <MudCardHeader Class="Cardhead">
+                                    <CardHeaderContent>
+                                        <MudText Typo="Typo.h6"><MudIcon Icon="fa-solid fa-people-group" Class="mx-3 mt-1" />Leave Details</MudText>
+                                    </CardHeaderContent>
+                                </MudCardHeader>
+                            </MudItem>
+                            <MudItem lg="12" md="12" sm="12" xs="12">
+                                <ApexChart TItem="HRMS.Model.Dashboard" Options="options">
+                                    <ApexPointSeries TItem="HRMS.Model.Dashboard"
+                                                     Items="LeaveCount"
+                                                     Name="Combined Data"
+                                                     SeriesType="SeriesType.Donut"
+                                                     XValue="e => e.Leavedetails"
+                                                     YValue="e => e.EmpLeave + e.EmpTotalLeave" />
+                                </ApexChart>
+                                <MudDivider Style="color:black;max-height: 3px; opacity:1;--mud-palette-divider: black;" Class="my-3" />
+                                <MudItem Class="d-flex align-content-end justify-content-end mt-2">
+                                        <MudButton Variant="Variant.Outlined" Href="/approve" Class="buttonstyle">Apply Leave<MudIcon Icon="@Icons.Material.Filled.ArrowForward" Class="ml-2" Size="@MudBlazor.Size.Small" /></MudButton>
+                                </MudItem>
+                            </MudItem>
+                        </MudGrid>
+
+                    </MudPaper>
+                }
+                @if (User.RoleId == 1 || User.RoleId == 2)
+                {
+                    <MudPaper Class="paperstyle px-5 py-3 mb-5">
+                        <MudGrid>
+                            <MudItem lg="12" md="12" sm="12" xs="12" Class="edu">
+                                <MudCardHeader Class="Cardhead">
+                                    <CardHeaderContent>
+                                        <MudText Typo="Typo.h6"><MudIcon Icon="fa-solid fa-people-group" Class="mx-3 mt-1" />Today Total Leave</MudText>
+                                    </CardHeaderContent>
+                                </MudCardHeader>
+                            </MudItem>
+                            <MudItem lg="12" md="12" sm="12" xs="12">
+
+                                <ApexChart TItem="HRMS.Model.Barchart">
+                                    <ApexPointSeries TItem="HRMS.Model.Barchart"
+                                                     Items="TodayLeave01"
+                                                     Name="Present"
+                                                     XValue="e => e.a"
+                                                     YValue="e => e.present"
+                                                     SeriesType="SeriesType.Bar"
+                                                     Color="#32de84" />
+                                    <ApexPointSeries TItem="HRMS.Model.Barchart"
+                                                     Items="TodayLeave01"
+                                                     Name="Absent"
+                                                     XValue="e => e.a"
+                                                     YValue="e => e.absent"
+                                                     SeriesType="SeriesType.Bar"
+                                                     Color="#ff8080" />
+                                </ApexChart>
+
+                            </MudItem>
+                        </MudGrid>
+
+                    </MudPaper>
+                }
+                @if (User.RoleId == 3 || User.RoleId == 4 || User.RoleId == 5 || User.RoleId == 1 || User.RoleId == 2)
+                {
+                    <MudPaper Class="paperstyle px-5 py-3 mb-5">
+                        <MudStack Row=true Spacing=6 Class="stack">
+                            <MudItem>
+                                <MudStack Row=true Class="stack">
+                                    <MudItem Style="display:flex">
+                                        <MudItem>
+                                            <MudIcon Icon="@Icons.Material.Filled.AttachMoney" Size="@MudBlazor.Size.Large"></MudIcon>
+                                        </MudItem>
+                                        <MudItem Class="ml-2">
+                                            <MudText Typo="Typo.body2">View Payroll</MudText>
+                                            <MudText Typo="Typo.caption" Class=" py-2">View Complete Payroll</MudText>
+                                        </MudItem>
+                                    </MudItem>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem>
+                                <MudButton Href="/Payroll" Variant="Variant.Outlined" Class="buttonstyle ml-3">View All<MudIcon Icon="@Icons.Material.Filled.ArrowForward" Class="ml-2" Size="@MudBlazor.Size.Small" /></MudButton>
+                            </MudItem>
+                        </MudStack>
+                    </MudPaper>
+                }
+            </MudItem>
+            <MudItem xxl="4" xl="4" lg="4" md="6" sm="12" xs="12" Class="coltotalheight">
+
+                @if (User.RoleId == 3 || User.RoleId == 4 || User.RoleId == 5 || User.RoleId == 1 || User.RoleId == 2)
+                {
+                    <MudPaper Class="paperstyle px-5 py-3 mb-5">
+                        <MudGrid>
+                            <MudItem lg="12" md="12" sm="12" xs="12">
+                                <MudCardHeader Class="Cardhead">
+                                    <CardHeaderContent>
+                                        <MudText Typo="Typo.h6"><MudIcon Icon="fa-solid fa-calendar-days" Class="mx-3 mt-1" />Daily Time Schedule</MudText>
+                                    </CardHeaderContent>
+                                </MudCardHeader>
+                            </MudItem>
+                            <MudItem lg="12" md="12" sm="12" xs="12">
+
+                                <MudTimeline>
+                                    @foreach (var x in DashboardList)
+                                    {
+                                        <MudTimelineItem Color="@MudBlazor.Color.Info" TimelineAlign="TimelineAlign.End">
+                                            <ItemOpposite>
+                                                <MudText Typo="Typo.button">@x.EventName</MudText>
+                                            </ItemOpposite>
+                                            <ItemContent>
+                                                <MudText Typo="Typo.body2" Class="mud-text-secondary">@x.TimeIn - @x.TimeOut</MudText>
+                                            </ItemContent>
+                                        </MudTimelineItem>
+                                    }
+                                </MudTimeline>
+                            </MudItem>
+                        </MudGrid>
+                    </MudPaper>
+                }
+                @if (User.RoleId == 1 || User.RoleId == 2)
+                {
+                    <MudPaper Class="paperstyle px-5 py-3 mb-5">
+                        <MudGrid>
+                            <MudItem lg="12" md="12" sm="12" xs="12">
+                                <MudCardHeader Class="Cardhead">
+                                    <CardHeaderContent>
+                                        <MudText Typo="Typo.h6"><MudIcon Icon="fa-solid fa-people-group" Class="mx-3 mt-1" />Employee Count</MudText>
+                                    </CardHeaderContent>
+                                </MudCardHeader>
+                            </MudItem>
+                            <MudItem lg="12" md="12" sm="12" xs="12">
+                                <ApexChart TItem="HRMS.Model.Dashboard">
+                                    <ApexPointSeries TItem="HRMS.Model.Dashboard"
+                                                     Items="Gender"
+                                                     Name="Count"
+                                                     XValue="e => e.EmpGender"
+                                                     YAggregate="@(e => e.Sum(e => e.GenderCount))"
+                                                     OrderByDescending="e=>e.Y"
+                                                     SeriesType="SeriesType.Bar"
+                                                     Color="#3b99f1"
+                                                     PointColor="e=> GetColor(e)" />
+                                </ApexChart>
+                            </MudItem>
+                        </MudGrid>
+
+                    </MudPaper>
+                }
+                @if (User.RoleId == 3 || User.RoleId == 4 || User.RoleId == 5 || User.RoleId == 1 || User.RoleId == 2)
+                {
+                    <MudPaper Class="paperstyle px-5 py-3 mb-5">
+                        <MudStack Row=true Spacing=6 Class="stack">
+                            <MudItem>
+                                <MudStack Row=true Class="stack">
+                                    <MudItem Style="display:flex">
+                                        <MudItem>
+                                            <MudIcon Icon="@Icons.Material.Filled.CalendarMonth" Size="@MudBlazor.Size.Large"></MudIcon>
+                                        </MudItem>
+                                        <MudItem Class="ml-2">
+                                            <MudText Typo="Typo.body2">View Holiday</MudText>
+                                            <MudText Typo="Typo.caption" Class=" py-2">Make Plan For Holiday</MudText>
+                                        </MudItem>
+                                    </MudItem>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem>
+                                <MudButton Href="/holiday" Variant="Variant.Outlined" Class="buttonstyle ml-3">View All<MudIcon Icon="@Icons.Material.Filled.ArrowForward" Class="ml-2" Size="@MudBlazor.Size.Small" /></MudButton>
+                            </MudItem>
+                        </MudStack>
+                    </MudPaper>
+
+                    <MudPaper Class="paperstyle px-5 py-3 mb-5">
+                        <MudStack Row=true Spacing=6 Class="stack">
+                            <MudItem>
+                                <MudStack Row=true Class="stack">
+                                    <MudItem Style="display:flex">
+                                        <MudItem>
+                                            <MudIcon Icon="@Icons.Material.Filled.AttachMoney" Size="@MudBlazor.Size.Large"></MudIcon>
+                                        </MudItem>
+                                        <MudItem Class="ml-2">
+                                            <MudText Typo="Typo.body2">Reimbursement </MudText>
+                                            <MudText Typo="Typo.caption" Class=" py-2"> Reimbursement Claim's </MudText>
+                                        </MudItem>
+                                    </MudItem>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem>
+                                <MudButton Href="/ReimbursementHistory" Variant="Variant.Outlined" Class="buttonstyle ml-3">View All<MudIcon Icon="@Icons.Material.Filled.ArrowForward" Class="ml-2" Size="@MudBlazor.Size.Small" /></MudButton>
+                            </MudItem>
+                        </MudStack>
+                    </MudPaper>
+                }
+            </MudItem>
+            <MudItem xxl="4" xl="4" lg="4" md="12" sm="12" xs="12" Class="coltotalheight">
+                @if (User.RoleId == 1 || User.RoleId == 2)
+                {
+                    <MudPaper Class="paperstyle px-5 py-3 mb-5">
+                        <MudGrid>
+                            <MudItem lg="12" md="12" sm="12" xs="12" Class="edu">
+                                <MudCardHeader Class="Cardhead">
+                                    <CardHeaderContent>
+                                        <MudText Typo="Typo.h6"><MudIcon Icon="fa-solid fa-chart-pie" Class="mx-3 mt-1" />Project Statistics</MudText>
+                                    </CardHeaderContent>
+                                </MudCardHeader>
+                            </MudItem>
+                            <MudItem lg="12" md="12" sm="12" xs="12">
+                                <ApexChart TItem="HRMS.Model.Dashboard">
+
+                                    <ApexPointSeries TItem="HRMS.Model.Dashboard"
+                                                     Items="DashboardList1"
+                                                     Name="Combined Data"
+                                                     SeriesType="SeriesType.Pie"
+                                                     XValue="e => GetText(e)"
+                                                     YValue="e => e.ProjectCompleteCount"
+                                                     Color="#A1DD70"
+                                                     PointColor="e=> GetColor(e)" />
+                                </ApexChart>
+
+                            </MudItem>
+                        </MudGrid>
+
+                    </MudPaper>
+                }
+                @if (User.RoleId == 3 || User.RoleId == 4 || User.RoleId == 5 || User.RoleId == 1 || User.RoleId == 2)
+                {
+                    <MudPaper Class="paperstyle px-5 py-3 mb-5" Style="max-height:max-content;">
+                        <MudGrid>
+                            <MudItem lg="12" md="12" sm="12" xs="12">
+                                <MudCardHeader Class="Cardhead">
+                                    <CardHeaderContent>
+                                        <MudText Typo="Typo.h6"><MudIcon Icon="fa-regular fa-folder-open" Class="mx-2" />Project Details</MudText>
+                                    </CardHeaderContent>
+                                </MudCardHeader>
+                            </MudItem>
+                            <MudItem lg="12" md="12" sm="12" xs="12">
+
+                                <MudPaper Class="paperstyle" Style="max-height:300px;overflow-y: auto;overflow-x: hidden">
+
+
+                                    @foreach (var emp in NewProject)
+                                    {
+                                        @foreach (var x in ProjectEvents)
+                                        {
+                                            @if (emp.ProjectName == x.ProjectName)
+                                            {
+                                                <NavLink Href="@(x.Progress > 99 ? "/Completedproject" : "/Projects")">
+                                                    <MudItem Class="card my-2 py-2 px-2">
+                                                        <MudText Typo="Typo.h6">@x.ProjectName</MudText>
+                                                        <MudText Typo="Typo.caption" Class="my-2">Project Due Date - @x.DueDate</MudText>
+                                                        <MudProgressLinear Value=@x.Progress Style="max-width:70%" Color="@MudBlazor.Color.Tertiary" />
+                                                        <MudText Typo="Typo.caption" Class="my-2">@x.Progress%</MudText>
+                                                    </MudItem>
+                                                </NavLink>
+                                            }
+                                        }
+                                    }
+                                </MudPaper>
+                                <MudDivider Style="color:black;max-height: 3px; opacity:1;--mud-palette-divider: black;" Class="my-2" />
+                                <MudItem Class="d-flex align-content-end justify-content-end mt-2">
+                                    <MudButton Href="/Projects" Variant="Variant.Outlined" Class="buttonstyle">View<MudIcon Icon="@Icons.Material.Filled.ArrowForward" Class="ml-2" Size="@MudBlazor.Size.Small" /></MudButton>
+                                </MudItem>
+                            </MudItem>
+                        </MudGrid>
+                    </MudPaper>
+
+                    @foreach (var x in EmployeeofMonth)
+                    {
+                        <MudPaper Class="paperstyle px-5 py-3 mb-5" Style="background-color: cornflowerblue; color: white;">
+                            <MudItem Style="display: flex;justify-content: space-between;">
+                                <MudItem>
+                                    <MudText Typo="Typo.h6">Employee of the month</MudText>
+
+                                    <MudText Typo="Typo.subtitle2">Congrats, @x.EOMName (@x.EOMDesignation)</MudText>
+
+                                </MudItem>
+                                <MudItem>
+                                    <MudAvatar Square="true" Size="@MudBlazor.Size.Large">
+                                        <MudImage Src="images/Project/member1.cms"></MudImage>
+                                    </MudAvatar>
+                                </MudItem>
+                            </MudItem>
+                        </MudPaper>
+                    }
+                }
+            </MudItem>
+        </MudGrid>
+
+        <MudGrid>
+            <MudItem xxl="6" xl="6" lg="6" md="6" sm="12" xs="12">
+                <MudPaper Class="paperstyle p-2 mt-5">
+                    <MudGrid>
+                        <MudItem lg="12" md="12" sm="12" xs="12" Class="edu">
+                            <MudCardHeader Class="Cardhead">
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.h6" Class="mt-2"><MudIcon Icon="fa-solid fa-ticket fa-lg" Class="mx-2" /> Ticket Status</MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                        </MudItem>
+                        <MudItem lg="12" md="12" sm="12" xs="12">
+                            <MudDataGrid Items="@TicketModellist.Take(7)" FixedHeader="true" FixedFooter="false" Height="@(true || false ?"300px":"")" Bordered=true>
+                                <Columns>
+                                    <PropertyColumn Property="x => x.TicketId" Title="Ticket ID" Sortable="false" />
+                                    <PropertyColumn Property="x=>x.TicketSubject" Title="Ticket Subject" Sortable="false" />
+                                    <PropertyColumn Property="x=>x.Priority" Sortable="false" CellStyleFunc="@colorStyle" />
+                                    <PropertyColumn Property="x=>x.Status" Sortable="false" CellStyleFunc="@colorStyle1" />
+                                </Columns>
+                            </MudDataGrid>
+                            <MudItem Class="d-flex align-content-center justify-content-center py-3 mt-2">
+                                <MudButton Href="/viewticket" Variant="Variant.Outlined" Class="buttonstyle">View All</MudButton>
+                            </MudItem>
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xxl="6" xl="6" lg="6" md="6" sm="12" xs="12">
+                <MudPaper Class="paperstyle p-2 mt-5">
+                    <MudGrid>
+                        <MudItem lg="12" md="12" sm="12" xs="12" Class="edu">
+                            <MudCardHeader Class="Cardhead">
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.h6" Class="mt-2"><MudIcon Icon="fa-solid fa-chart-simple fa-lg" Class="mx-2" />Attendance Status</MudText>
+                                </CardHeaderContent>
+                            </MudCardHeader>
+                        </MudItem>
+                        <MudItem lg="12" md="12" sm="12" xs="12">
+
+                            <MudDataGrid Items="@AttendanceEvents" FixedHeader="true" FixedFooter="false" Height="@(true || false ?"300px":"")" Bordered=true>
+                                <Columns>
+
+                                    <PropertyColumn Property="x=>x.date" Title="Date" Sortable="false" Format="dd-MM-yyyy" />
+                                    <PropertyColumn Property="x=>x.PunchIn" Title="Punch In" Sortable="false" />
+                                    <PropertyColumn Property="x=>x.PunchOut" Title="Punch Out" Sortable="false" />
+                                    <PropertyColumn Property="x=>x.WorkingHours" Title="Working Hours" Sortable="false" />
+
+                                </Columns>
+                            </MudDataGrid>
+                            <MudItem Class="d-flex align-content-center justify-content-center py-3 mt-2">
+                                <MudButton Href="/attentancepage" Variant="Variant.Outlined" Class="buttonstyle">View All</MudButton>
+                            </MudItem>
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+        @if (User.RoleId == 1 || User.RoleId == 2)
+        {
+            <MudGrid>
+                <MudItem lg="12" md="12" sm="12" xs="12">
+                    <MudPaper Class="paperstyle p-2 mt-5">
+                        <MudGrid>
+                            <MudItem lg="12" md="12" sm="12" xs="12" Class="edu">
+                                <MudCardHeader Class="Cardhead">
+                                    <CardHeaderContent>
+                                        <MudText Typo="Typo.h6" Class="mt-2"><MudIcon Icon="fa-solid fa-chart-simple fa-lg" Class="mx-2" />Time Schedule Edit</MudText>
+                                    </CardHeaderContent>
+                                </MudCardHeader>
+                            </MudItem>
+                            <MudItem lg="12" md="12" sm="12" xs="12">
+
+                                <MudDataGrid Items="@DashboardList" FixedHeader="true" FixedFooter="false" Height="@(true || false ?"300px":"")" Bordered=true>
+                                    <Columns>
+                                        <PropertyColumn Property="x=>x.EventName" Title="Event Name" Sortable="false" />
+                                        <PropertyColumn Property="x=>x.TimeIn" Title="Time In" Sortable="false" />
+                                        <PropertyColumn Property="x=>x.TimeOut" Title="Time Out" Sortable="false" />
+
+                                        <TemplateColumn Title="Edit" Filterable="false" Sortable="false">
+                                            <CellTemplate>
+                                                <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="() =>OpenInLineDialog(context.Item.EventId)"></MudIconButton>
+                                            </CellTemplate>
+                                        </TemplateColumn>
+
+                                        <TemplateColumn Filterable="false" Sortable="false">
+                                            <CellTemplate>
+                                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="MudBlazor.Color.Error" OnClick="() =>OpenInLineEventDialog(context.Item.EventId)"></MudIconButton>
+                                            </CellTemplate>
+                                        </TemplateColumn>
+
+                                    </Columns>
+                                </MudDataGrid>
+                                <MudItem Class="d-flex align-content-center justify-content-center py-3 mt-2">
+                                    <MudButton Variant="Variant.Outlined" Class="buttonstyle" OnClick="AddTimeDialog">+ Add More</MudButton>
+                                </MudItem>
+                            </MudItem>
+                        </MudGrid>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        }
+    </MudContainer>
+
+
+    <MudDialog @bind-IsVisible="visible">
+        <TitleContent>
+            <MudGrid>
+                <MudItem lg="10" md="10" xs="8" sm="8">
+                    <MudText Typo="Typo.h4">Time Schedule Information</MudText>
+                </MudItem>
+                <MudItem xs="4" sm="4" md="2" lg="2">
+                    <MudIconButton Icon="@Icons.Material.Filled.Close" Style="color:red;float:right;" OnClick="CloseDialog" />
+                </MudItem>
+            </MudGrid>
+        </TitleContent>
+        <DialogContent>
+
+            <MudGrid>
+
+                @* Holiday Name *@
+                <MudItem lg="12" md="12" sm="12" xs="12">
+                    <MudGrid>
+                        <MudItem lg="12" md="12" sm="12" xs="12">
+                            Event Name<span>*</span>
+                        </MudItem>
+                        <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                            <MudTextField T="String" Placeholder="Event Name" @bind-Value="DashboardEvent.EventName" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                        </MudItem>
+                    </MudGrid>
+                </MudItem>
+
+                @* Holiday Date *@
+                <MudItem lg="12" md="12" sm="12" xs="12">
+                    <MudGrid>
+                        <MudItem lg="12" md="12" sm="12" xs="12">
+                            Event Start Date<span>*</span>
+                        </MudItem>
+                        <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                            <MudTextField Margin="Margin.Dense" T="String" Variant="Variant.Outlined" Placeholder="00:00" @bind-Value="DashboardEvent.TimeIn" />
+                        </MudItem>
+                    </MudGrid>
+                </MudItem>
+
+                <MudItem lg="12" md="12" sm="12" xs="12">
+                    <MudGrid>
+                        <MudItem lg="12" md="12" sm="12" xs="12">
+                            Event End Date<span>*</span>
+                        </MudItem>
+                        <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                            <MudTextField Margin="Margin.Dense" T="String" Variant="Variant.Outlined" Placeholder="00:00" @bind-Value="DashboardEvent.TimeOut" />
+                        </MudItem>
+                    </MudGrid>
+                </MudItem>
+
+            </MudGrid>
+
+        </DialogContent>
+        <DialogActions>
+            <MudButton Class="mb-1 mx-4 pb-1" Variant="Variant.Filled" Color="MudBlazor.Color.Primary" OnClick="Submit">Submit</MudButton>
+        </DialogActions>
+    </MudDialog>
+
+    <MudDialog @bind-IsVisible="visible1">
+        <TitleContent>
+            <MudGrid>
+                <MudItem lg="10" md="10" xs="8" sm="8">
+                    <MudText Typo="Typo.h4">Add New Event</MudText>
+                </MudItem>
+                <MudItem xs="4" sm="4" md="2" lg="2">
+                    <MudIconButton Icon="@Icons.Material.Filled.Close" Style="color:red;float:right;" OnClick="CloseTimeDialog" />
+                </MudItem>
+            </MudGrid>
+        </TitleContent>
+        <DialogContent>
+
+            <MudGrid>
+
+                @* Event Name *@
+                <MudItem lg="12" md="12" sm="12" xs="12">
+                    <MudGrid>
+                        <MudItem Class="star" lg="12" md="12" sm="12" xs="12">
+                            Event Name<span>*</span>
+                        </MudItem>
+                        <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                            <MudTextField T="String" Placeholder="Event Name" @bind-Value="DashboardEvent.EventName" Variant="Variant.Outlined" Margin="Margin.Dense" For="@(()=>DashboardEvent.EventName)" />
+                        </MudItem>
+                    </MudGrid>
+                </MudItem>
+
+                @* Event Start Date *@
+                <MudItem lg="12" md="12" sm="12" xs="12">
+                    <MudGrid>
+                        <MudItem Class="star" lg="12" md="12" sm="12" xs="12">
+                            Event Start Time(24 hrs Format)<span>*</span>
+                        </MudItem>
+                        <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                            <MudTextField Margin="Margin.Dense" T="String" Variant="Variant.Outlined" Placeholder="00:00" @bind-Value="DashboardEvent.TimeIn" For="@(()=>DashboardEvent.TimeIn)" />
+                        </MudItem>
+                    </MudGrid>
+                </MudItem>
+
+                @* Event End Time *@
+                <MudItem lg="12" md="12" sm="12" xs="12">
+                    <MudGrid>
+                        <MudItem Class="star" lg="12" md="12" sm="12" xs="12">
+                            Event End Time(24 hrs Format)<span>*</span>
+                        </MudItem>
+                        <MudItem lg="12" md="12" sm="12" xs="12" Class="field">
+                            <MudTextField Margin="Margin.Dense" T="String" Variant="Variant.Outlined" Placeholder="00:00" @bind-Value="DashboardEvent.TimeOut" For="@(()=>DashboardEvent.TimeOut)" />
+                        </MudItem>
+                    </MudGrid>
+                </MudItem>
+
+            </MudGrid>
+
+        </DialogContent>
+        <DialogActions>
+            <MudButton Class="mb-1 mx-4 pb-1" Variant="Variant.Filled" Color="MudBlazor.Color.Primary" OnClick="Saves">Submit</MudButton>
+        </DialogActions>
+    </MudDialog>
+
+
+
+    <MudDialog @bind-IsVisible="visible2">
+        <TitleContent>
+            <MudGrid>
+                <MudItem lg="10" md="10" xs="8" sm="8">
+                    <MudText Typo="Typo.h4">Delete</MudText>
+                </MudItem>
+                <MudItem xs="4" sm="4" md="2" lg="2">
+                    <MudIconButton Icon="@Icons.Material.Filled.Close" Style="color:red;float:right;" OnClick="CloseDeleteDialog" />
+                </MudItem>
+            </MudGrid>
+        </TitleContent>
+        <DialogContent>
+            <MudText>Do you really want to delete the Event of @DashboardEvent.EventName?</MudText>
+        </DialogContent>
+        <DialogActions>
+            <MudButton Class="mb-1 pb-1" Variant="Variant.Filled" Color="MudBlazor.Color.Primary" OnClick="CloseDeleteDialog">Cancel</MudButton>
+            <MudButton Class="mb-1 pb-1" Variant="Variant.Filled" Color="MudBlazor.Color.Error" OnClick="Delete">Delete</MudButton>
+        </DialogActions>
+    </MudDialog>
+
+</MudLoading>
+<style>
+
+
+    .star span {
+        padding: 3px;
+        color: red;
+    }
+
+    .Cardhead {
+        background-color: #bfbaba;
+        color: black;
+        text-align: center;
+        height: auto;
+        padding: 3%;
+    }
+
+    .magueestyle {
+        background-color: black;
+        color: white;
+        margin-top: 4%;
+        padding: 1%;
+    }
+
+    .coltotalheight {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .hideover {
+        overflow: hidden;
+    }
+
+    .zoominside {
+        position: relative;
+        transition: all 1s ease 0s;
+    }
+
+        .zoominside:hover {
+            scale: 1.1;
+            transition: all 1s ease 0s;
+        }
+
+    .makecenter {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .newpaper {
+        background-color: mediumorchid;
+        color: white;
+    }
+
+    .stack {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .card {
+        background-color: #ece0f4;
+        color: black;
+        transition: 0.4s ease-in-out;
+        align-items: center;
+    }
+
+        .card:hover {
+            background-color: #9358ad;
+            color: white;
+            scale: 1.01;
+            transition: 0.4s ease-in-out;
+            cursor: pointer;
+        }
+
+    .card1 {
+        background-color: #ece0f4;
+        color: black;
+        transition: 0.4s ease-in-out;
+    }
+
+        .card1:hover {
+            scale: 1.03;
+            transition: 0.4s ease-in-out;
+            cursor: pointer;
+        }
+
+    .paperstyle {
+        background-color: whitesmoke;
+        color: black;
+        transition: all 1s ease 0s;
+    }
+
+        .paperstyle:hover {
+            background-color: ghostwhite;
+            color: black;
+            scale: 1.02;
+            transition: all 1s ease 0s;
+        }
+</style>

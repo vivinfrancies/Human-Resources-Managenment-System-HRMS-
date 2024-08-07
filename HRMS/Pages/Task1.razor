@@ -1,0 +1,171 @@
+﻿@page "/Task"
+@using HRMS.Components
+@inherits BaseComponents
+
+
+<MudContainer>
+    <MudItem Class="my-15 d-flex">
+        <MudText Typo="Typo.h4">
+            Task Board
+        </MudText>
+        <MudSpacer />
+        <MudButton Variant="Variant.Outlined" Class="buttonstyle mr-2" @onclick="GoBack"><i class="fa-solid fa-chevron-left"></i></MudButton>
+    </MudItem>
+</MudContainer>
+
+
+<MudContainer Class="mb-15">
+    <MudDataGrid T="HRMS.Model.Tasks1" Items="GetFilteredTasks()" RowsPerPage="5" Bordered="true" Striped="true" Hover="true">
+        <Columns>
+            @foreach (var (project, index) in GetFilteredTasks().Select((value, i) => (value, i)))
+            {
+                project.Sno = index + 1;
+            }
+            <PropertyColumn Style="text-align:center" Title="Sno" Property="x=>x.Sno" Filterable="false" Sortable="false" />
+            <PropertyColumn Title="Task" Property="x=>x.TaskName" Sortable="false" />
+            <PropertyColumn Title="Due Date" Property="x=>x.DueDate" Format="dd-MM-yyyy" Sortable="false" />
+            <PropertyColumn Title="Project" Property="x=>x.ProjectName" Sortable="false" />
+            @* Status *@
+            <TemplateColumn Title="Status" Filterable="false" Sortable="false">
+                <CellTemplate>
+                    <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                        <MudMenuItem @onclick="()=>SucessDialog(context.Item.Id)" Icon="@Icons.Material.Filled.CheckCircle">Status</MudMenuItem>
+                        <MudMenuItem Icon="@Icons.Material.Filled.Delete" @onclick="()=>DeleteDialog(context.Item.Id)">Delete</MudMenuItem>
+                    </MudMenu>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+</MudContainer>
+
+@* Inline Dialog For Delete *@
+<MudDialog @bind-IsVisible="Deletevisible" Options="dialogOptions">
+    <TitleContent>
+        <h3>Delete</h3>
+    </TitleContent>
+    <DialogContent>
+        Do you really want to delete the Task?
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="@MudBlazor.Color.Error" Variant="Variant.Filled" @onclick="DeleteConfirmed">Delete</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@* Inline Dialog For Status Update *@
+<MudDialog @bind-IsVisible="visible" Options="dialogOptions">
+    <TitleContent>
+        <h3>Task Status</h3>
+    </TitleContent>
+    <DialogContent>
+        Completed Task?
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="@MudBlazor.Color.Success" Variant="Variant.Filled" @onclick="StatusConfirmed">Completed</MudButton>
+    </DialogActions>
+</MudDialog>
+<style>
+
+    .btnadd {
+        width: 90%;
+    }
+
+    .paper {
+        padding: 20px;
+    }
+
+    .penitem {
+        background-color: #ffeff4;
+    }
+
+    .pendingcard {
+        background-color: white;
+        margin: 5%;
+        border-radius: 2%;
+        margin-bottom: 20px;
+    }
+
+    .pendinghead {
+        height: 50px;
+        background-color: #ff1d64;
+        color: white;
+        font-weight: 500;
+        font-size: 20px;
+        padding: 15px;
+        border-radius: 5px;
+    }
+
+    .taskname {
+        font-weight: 800;
+    }
+
+    .onpressitem {
+        margin-left: 0px;
+        background-color: #fffbe7;
+    }
+
+    .onprocesshead {
+        height: 50px;
+        background-color: #FFD812;
+        color: white;
+        font-weight: 500;
+        font-size: 20px;
+        padding: 15px;
+        border-radius: 5px;
+    }
+
+    .onprocesscard {
+        background-color: white;
+        margin: 5%;
+        border-radius: 2%;
+    }
+
+    .reviewitem {
+        background-color: #f7edff;
+    }
+
+    .reviewhead {
+        height: 50px;
+        background-color: #bd8be7;
+        color: white;
+        font-weight: 500;
+        font-size: 20px;
+        padding: 15px;
+        border-radius: 5px;
+    }
+
+    .progressbar {
+        --mud-palette-warning: #8e00ff;
+    }
+
+    .reviewbtn {
+        --mud-palette-primary: #8e00ff;
+    }
+
+    .mud-button-filled.mud-button-filled-primary:hover {
+        background-color: #7500d8
+    }
+
+    .Completehead {
+        height: 50px;
+        background-color: #05bc2e;
+        color: white;
+        font-weight: 500;
+        font-size: 20px;
+        padding: 15px;
+        border-radius: 5px;
+    }
+
+    .Completeitem {
+        background-color: #eefff0;
+    }
+
+    .mud-table-head {
+        padding: 12px;
+    }
+
+    .mud-table-root .mud-table-head {
+        background-color: darkgray;
+    }
+</style>

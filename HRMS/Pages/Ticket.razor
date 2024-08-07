@@ -1,0 +1,276 @@
+﻿@page "/Ticket"
+
+@using HRMS.Components
+@using HRMS.Model
+@inherits BaseComponents;
+
+
+<MudItem Class="mt-4">
+    <MudContainer Fixed="true">
+        @* Ticket DashBoard *@
+
+        <div>
+            <MudGrid>
+
+                <MudItem xl="6" lg="6" md="6" sm="6" xs="12">
+                    <MudText Typo="Typo.h4">Tickets</MudText>
+
+                </MudItem>
+                <MudItem xl="6" lg="6" md="6" sm="6" xs="12">
+
+
+                    <MudButton Class="mx-3 buttonstyle" Style="float:right" @onclick="GoBack" Variant="@MudBlazor.Variant.Filled"><MudIcon Icon="@Icons.Material.Filled.ArrowBackIosNew"></MudIcon></MudButton>
+
+                </MudItem>
+                <MudItem lg="4" md="4" sm="6" xs="12">
+                    <MudCard Class="paperstyle">
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudGrid>
+                                    <MudItem lg="1" md="1" sm="1" xs="1" Class="mt-1 mr-2">
+                                        <i class="fa-solid fa-ticket fa-2xl" style="color:#594ae2;"></i>
+                                    </MudItem>
+                                    <MudItem lg="10" md="10" sm="10" xs="10">
+                                        <MudText Typo="Typo.h5">Total Ticket</MudText>
+                                    </MudItem>
+                                </MudGrid>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudText Typo="Typo.h6">Number of Tickets : @ticketcounts.NewTicket</MudText>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+
+
+                <MudItem lg="4" md="4" sm="6" xs="12">
+                    <MudCard Class="paperstyle">
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudGrid>
+                                    <MudItem lg="1" md="1" sm="1" xs="1" Class="mt-1 mr-2">
+                                        <i class="fa-solid fa-ticket fa-2xl" style="color:#f21c0d;"></i>
+                                    </MudItem>
+                                    <MudItem lg="10" md="10" sm="10" xs="10">
+                                        <MudText Typo="Typo.h5">Pending Ticket</MudText>
+                                    </MudItem>
+                                </MudGrid>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudText Typo="Typo.h6">Number of Tickets : @ticketcounts.PendingTicket</MudText>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+                <MudItem lg="4" md="4" sm="6" xs="12">
+                    <MudCard Class="paperstyle">
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudGrid>
+                                    <MudItem lg="1" md="1" sm="1" xs="1" Class="mt-1 mr-2">
+                                        <i class="fa-solid fa-ticket fa-2xl" style="color:#00ef63;"></i>
+                                    </MudItem>
+                                    <MudItem lg="10" md="10" sm="10" xs="10">
+                                        <MudText Typo="Typo.h5">Solved Ticket</MudText>
+                                    </MudItem>
+                                </MudGrid>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudText Typo="Typo.h6">Number of Tickets : @ticketcounts.SolvedTicket</MudText>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+
+            </MudGrid>
+        </div>
+
+        @* Ticket List *@
+        <div class="mt-10 mb-10">
+
+            <MudTabs>
+
+                <MudTabPanel Text="Raised Ticket">
+
+                    <MudDataGrid T="TicketModel" Bordered=true Striped=true Hover=true Items="@ticketModellist" Filterable="false" Hideable="false" QuickFilter="@_quickFilter">
+                        <ToolBarContent>
+                            <MudSpacer />
+                            <MudSpacer />
+                            <MudSpacer />
+                            <MudSpacer />
+                            <MudTooltip>
+                                <ChildContent>
+                                    <MudIconButton Icon="@Icons.Material.Outlined.Info" />
+                                </ChildContent>
+                                <TooltipContent>
+                                    <MudText Typo="Typo.body2">Search by Ticket Subject, Employee Name, Designation</MudText>
+
+                                </TooltipContent>
+                            </MudTooltip>
+                            <MudTextField Variant="Variant.Outlined" Margin="Margin.Dense" Style="width:100%;" @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true" AdornmentColor="@MudBlazor.Color.Primary" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="@MudBlazor.Size.Medium" Class="mt-0"></MudTextField>
+
+                        </ToolBarContent>
+                        <Columns>
+                            @foreach (var (project, index) in ticketModellist.Select((value, i) => (value, i)))
+                            {
+                                project.SNo = index + 1;
+                            }
+                            <PropertyColumn Property="x => x.SNo" Title="S.No" Sortable="false" Filterable="false" />
+                            <PropertyColumn Property="x => x.TicketId" Title="Ticket Id" />
+                            <PropertyColumn Property="x => x.TicketSubject" Title="Ticket Subject" />
+                            <PropertyColumn Property="x => x.FirstName" Title="Employee Name" />
+                            <PropertyColumn Property="x => x.Designation" Title="Designation" />
+                            @* <PropertyColumn Property="x => x.AttachFile" Title="Attached File" /> *@
+                            <PropertyColumn Property="x => x.RaiseDate" Title="Raise Date" Format="dd-MM-yyyy" />
+                            <PropertyColumn Property="x => x.Priority" Title="Priority" CellStyleFunc="@colorstyle" Sortable="false" Filterable="false" />
+                            <TemplateColumn Title="Status">
+                                <CellTemplate>
+                                    @{
+                                        var status = context.Item.Status;
+                                        var color = status switch
+                                        {
+                                            "Pending" => @MudBlazor.Color.Warning,
+                                            "Approved" => @MudBlazor.Color.Success,
+                                            "Declined" => @MudBlazor.Color.Error,
+                                            _ => @MudBlazor.Color.Default
+                                        };
+                                        if (context.Item.Status == "Approved")
+                                        {
+                                            context.Item.btn = true;
+                                        }
+
+                                        if (context.Item.Status == "Declined")
+                                        {
+                                            context.Item.btn = true;
+                                        }
+                                        ticketModellist = ticketModellist
+                                        .OrderByDescending(x => x.Status == "Pending")
+                                        .ThenBy(x => x.Status == "Approved")
+                                        .ThenBy(x => x.Status == "Declined")
+                                        .ToList();
+                                    }
+                                    <MudText Color="@color">@context.Item.Status</MudText>
+                                </CellTemplate>
+                            </TemplateColumn>
+
+                            <TemplateColumn Title="Action">
+                                <CellTemplate>
+
+                                    <MudTooltip Text="Approve">
+                                        <MudIconButton Class="iconRadius" Icon="@Icons.Material.Filled.Check" Variant="Variant.Filled" Color="@MudBlazor.Color.Success" Disabled="@context.Item.btn" OnClick="()=>Approved(context.Item.ID)" />
+                                    </MudTooltip>
+                                    <MudTooltip Text="Decline">
+                                        <MudIconButton Class="iconRadius" Icon="@Icons.Material.Filled.Close" Variant="Variant.Filled" Color="@MudBlazor.Color.Error" Disabled="@context.Item.btn" OnClick="()=>Rejected(context.Item.ID)" />
+                                    </MudTooltip>
+
+                                </CellTemplate>
+                            </TemplateColumn>
+
+                        </Columns>
+                        <PagerContent>
+                            <MudGrid>
+                                <MudItem lg="12">
+                                    @if (!_quickFilter(ticketModellist.FirstOrDefault()))
+                                    {
+                                        <MudItem Class="text-center"><b>No Data Found</b></MudItem>
+                                    }
+                                    <MudDataGridPager T="HRMS.Model.TicketModel" />
+                                </MudItem>
+                            </MudGrid>
+                        </PagerContent>
+                    </MudDataGrid>
+
+                </MudTabPanel>
+                <MudTabPanel Text="Ticket History">
+                    <MudDataGrid T="TicketModel" Bordered=true Striped=true Hover=true Items="@ticketHistory" Filterable="false" Hideable="false" QuickFilter="@_quickFilter">
+                        <ToolBarContent>
+                            <MudSpacer />
+                            <MudSpacer />
+                            <MudSpacer />
+                            <MudSpacer />
+                            <MudTooltip>
+                                <ChildContent>
+                                    <MudIconButton Icon="@Icons.Material.Outlined.Info" />
+                                </ChildContent>
+                                <TooltipContent >
+                                    <MudText Typo="Typo.body2">Search by Ticket Subject, Employee Name, Designation</MudText>
+
+                                </TooltipContent>
+                            </MudTooltip>
+                            <MudTextField Variant="Variant.Outlined" Margin="Margin.Dense" Style="width:100%;" @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true" AdornmentColor="@MudBlazor.Color.Primary" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="@MudBlazor.Size.Medium" Class="mt-0"></MudTextField>
+
+                        </ToolBarContent>
+                        <Columns>
+                            @foreach (var (project, index) in ticketHistory.Select((value, i) => (value, i)))
+                            {
+                                project.SNo = index + 1;
+                            }
+                            <PropertyColumn Property="x => x.SNo" Title="S.No" Sortable="false" Filterable="false" />
+                            <PropertyColumn Property="x => x.TicketId" Title="Ticket Id" />
+                            <PropertyColumn Property="x => x.TicketSubject" Title="Ticket Subject" />
+                            <PropertyColumn Property="x => x.FirstName" Title="Employee Name" />
+                            <PropertyColumn Property="x => x.Designation" Title="Designation" />
+                            <PropertyColumn Property="x => x.AttachFile" Title="Attached File" />
+                            <PropertyColumn Property="x => x.RaiseDate" Title="Raise Date" Format="dd-MM-yyyy" />
+                            <PropertyColumn Property="x => x.Priority" Title="Priority" CellStyleFunc="@colorstyle" />
+                            <TemplateColumn Title="Status">
+                                <CellTemplate>
+                                    @{
+                                        var status = context.Item.Status;
+                                        var color = status switch
+                                        {
+                                            "Pending" => @MudBlazor.Color.Warning,
+                                            "Approved" => @MudBlazor.Color.Success,
+                                            "Declined" => @MudBlazor.Color.Error,
+                                            _ => @MudBlazor.Color.Default
+                                        };
+                                        if (context.Item.Status == "Approved")
+                                        {
+                                            context.Item.btn = true;
+                                        }
+
+                                        if (context.Item.Status == "Declined")
+                                        {
+                                            context.Item.btn = true;
+                                        }
+                                        ticketHistory = ticketHistory
+                                        .OrderByDescending(x => x.Status == "Pending")
+                                        .ThenBy(x => x.Status == "Approved")
+                                        .ThenBy(x => x.Status == "Declined")
+                                        .ToList();
+                                    }
+                                    <MudText Color="@color">@context.Item.Status</MudText>
+                                </CellTemplate>
+                            </TemplateColumn>
+
+                        </Columns>
+                        <PagerContent>
+                            <MudGrid>
+                                <MudItem lg="12">
+                                    @if (!_quickFilter(ticketHistory.FirstOrDefault()))
+                                    {
+                                        <MudItem Class="text-center"><b>No Data Found</b></MudItem>
+                                    }
+                                    <MudDataGridPager T="HRMS.Model.TicketModel" />
+                                </MudItem>
+                            </MudGrid>
+                        </PagerContent>
+                    </MudDataGrid>
+                </MudTabPanel>
+
+            </MudTabs>
+        </div>
+    </MudContainer>
+</MudItem>
+
+
+<style>
+    .iconRadius {
+        border-radius: 50% !important;
+    }
+
+    .mud-table-root .mud-table-head {
+        background-color: darkgray;
+    }
+
+</style>
